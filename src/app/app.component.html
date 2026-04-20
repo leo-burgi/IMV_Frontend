@@ -1,0 +1,148 @@
+<div class="navbar navbar-expand navbar-light topbar mb-4 static-top shadow">
+      <div class="topbar-inner d-flex align-items-center justify-content-between w-100">
+        <h5 class="m-0 font-weight-bold topbar-title">Portal de Gestión v1.0</h5>
+        <form class="topbar-search mb-0" (submit)="buscar(searchInput.value); $event.preventDefault();">
+          <div class="search-input-wrapper">
+            <i class="fas fa-search search-icon"></i>
+            <input #searchInput type="search" class="form-control" placeholder="Buscar sección..." aria-label="Buscar sección" (keyup.enter)="buscar(searchInput.value)" />
+          </div>
+        </form>
+        <div class="topbar-user d-flex align-items-center text-secondary ml-3">
+          <i class="fas fa-user-circle mr-2"></i>
+          <span class="user-name">Admin</span>
+        </div>
+      </div>
+    </div>
+<div id="wrapper">
+  <nav id="sidebar-wrapper">
+    <div class="sidebar-heading">
+      <img src="assets/img/IMV-sinfondo.png" alt="IMV Rafaela">
+    </div>
+
+    <div class="list-group list-group-flush">
+      <a (click)="cambiarSeccion('home')" class="nav-link" [class.active]="seccionActiva === 'home'" style="cursor: pointer;">
+        <i class="fas fa-fw fa-th-large mr-2"></i> <span>Home</span>
+      </a>
+      <a (click)="cambiarSeccion('planes')" class="nav-link" [class.active]="seccionActiva === 'planes'" style="cursor: pointer;">
+        <i class="fas fa-fw fa-clipboard-list mr-2"></i> <span>Planes</span>
+      </a>
+      <a class="nav-link text-muted disabled-link">
+        <i class="fas fa-fw fa-map-marked-alt mr-2"></i> <span>Barrios</span>
+      </a>
+      <a class="nav-link text-muted disabled-link">
+        <i class="fas fa-fw fa-road mr-2"></i> <span>Calles</span>
+      </a>
+      <a class="nav-link text-muted disabled-link">
+        <i class="fas fa-fw fa-user-tie mr-2"></i> <span>Personas</span>
+      </a>
+      <a class="nav-link text-muted disabled-link">
+        <i class="fas fa-fw fa-key mr-2"></i> <span>Adjudicaciones</span>
+      </a>
+      <a class="nav-link text-muted disabled-link">
+        <i class="fas fa-fw fa-handshake mr-2"></i> <span>Convenios</span>
+      </a>
+      <a class="nav-link text-muted disabled-link">
+        <i class="fas fa-fw fa-file-signature mr-2"></i> <span>Notariales</span>
+      </a>
+      <a class="nav-link text-muted disabled-link">
+        <i class="fas fa-fw fa-tools mr-2"></i> <span>Área Técnica</span>
+      </a>
+    </div>
+  </nav>
+ 
+  <div id="content-wrapper">
+    
+   
+
+    <div class="container-fluid">
+      
+      <div *ngIf="seccionActiva === 'home'" class="py-4">
+        <div class="welcome-banner p-4 mb-4 rounded shadow-sm bg-white">
+          <div class="d-flex flex-column flex-lg-row align-items-center justify-content-between">
+            <div>
+              <h2 class="text-secondary mb-2">Bienvenido al Portal de Gestión</h2>
+              <p class="text-muted mb-0">Seleccione una sección en la barra lateral para comenzar a operar.</p>
+            </div>
+            <img src="assets/img/rafaela-logo.png" alt="Rafaela" class="home-logo mt-4 mt-lg-0" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-4 mb-4 mb-lg-0">
+            <div class="card shadow h-100 dashboard-card pointer" (click)="cambiarSeccion('planes')">
+              <div class="card-body d-flex align-items-center justify-content-between">
+                <div>
+                  <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Planes</div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800">Planes Activos</div>
+                </div>
+                <div class="section-card-icon text-primary">
+                  <i class="fas fa-clipboard-list"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-8">
+            <div class="row">
+              <div class="col-md-6 mb-4">
+                <div class="card shadow h-100 pointer" (click)="cambiarSeccion('planes')">
+                  <div class="card-body d-flex align-items-center">
+                    <i class="fas fa-clipboard-list fa-2x text-primary mr-3"></i>
+                    <div>
+                      <div class="text-muted small mb-1">Planes</div>
+                      <div class="font-weight-bold">Gestión de Planes</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 mb-4">
+                <div class="card shadow h-100 disabled-card">
+                  <div class="card-body d-flex align-items-center">
+                    <i class="fas fa-map-marked-alt fa-2x text-secondary mr-3"></i>
+                    <div>
+                      <div class="text-muted small mb-1">Barrios</div>
+                      <div class="font-weight-bold">Próximamente</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 mb-4">
+                <div class="card shadow h-100 disabled-card">
+                  <div class="card-body d-flex align-items-center">
+                    <i class="fas fa-road fa-2x text-secondary mr-3"></i>
+                    <div>
+                      <div class="text-muted small mb-1">Calles</div>
+                      <div class="font-weight-bold">Próximamente</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 mb-4">
+                <div class="card shadow h-100 disabled-card">
+                  <div class="card-body d-flex align-items-center">
+                    <i class="fas fa-user-tie fa-2x text-secondary mr-3"></i>
+                    <div>
+                      <div class="text-muted small mb-1">Personas</div>
+                      <div class="font-weight-bold">Próximamente</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="seccionActiva === 'planes'">
+        <div class="card shadow mb-4">
+          <div class="card-header py-3 d-flex justify-content-between align-items-center bg-white">
+            <h6 class="m-0 font-weight-bold text-dark">ABM Planes</h6>
+          </div>
+          <div class="card-body">
+            <app-planes></app-planes>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

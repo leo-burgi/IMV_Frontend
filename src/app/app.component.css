@@ -1,0 +1,74 @@
+.topbar-title {
+  color: #333333 !important;
+}
+
+.topbar-inner {
+  width: 100%;
+  gap: 1rem;
+}
+
+.topbar-search {
+  width: 40%;
+  min-width: 240px;
+}
+
+.search-input-wrapper {
+  position: relative;
+}
+
+.search-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6c757d;
+  pointer-events: none;
+  font-size: 0.95rem;
+}
+
+.topbar-search .form-control {
+  padding: 0.65rem 1rem 0.65rem 2.8rem;
+  border-radius: 999px;
+}
+
+.topbar-user {
+  font-size: 0.95rem;
+  color: #6c757d;
+}
+
+.topbar-user .fa-user-circle {
+  font-size: 1.2rem;
+}
+
+.welcome-banner {
+  background-color: #ffffff;
+}
+
+.home-logo {
+  width: 140px;
+  opacity: 0.85;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.dashboard-card {
+  border-left: 0.35rem solid #4e73df;
+}
+
+.section-card-icon {
+  font-size: 2.2rem;
+}
+
+.disabled-card {
+  cursor: default;
+  opacity: 0.85;
+}
+
+@media (max-width: 992px) {
+  .topbar-search {
+    width: 100%;
+    max-width: 100%;
+  }
+}

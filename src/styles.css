@@ -1,0 +1,86 @@
+/* Layout del Dashboard */
+body {
+    overflow-x: hidden;
+    background-color: #d7d9de; /* Gris claro de fondo profesional */
+}
+
+#wrapper { /* Contenedor principal del dashboard */
+    display: flex;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding-top: 1px;
+}
+
+.sidebar-heading img { /* Estilo del logo en el sidebar */
+    max-width: 90%;
+    height: auto;
+    padding: 1px 0;
+    filter: brightness(50); /* Efecto de desenfoque para el logo */
+
+}
+
+#sidebar-wrapper {/* Estilo del sidebar */
+    margin: 0 10px 10px 20px;
+    min-height: auto;
+    width: 300px;
+    background-color: #162b6d; /* Azul IMV */
+    color: white;
+    transition: all 0.3s;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 10px 10px 8px rgba(0,0,0,0.1);
+}
+
+
+#content-wrapper {/* Estilo del contenido principal */
+    margin: 5px 20px 10px 10px;
+    background-color: white;
+    border-radius: 20px;
+    box-shadow: 10px 10px 8px rgba(0,0,0,0.1);
+    width: 100%;
+    overflow-y: 100%;
+}
+
+.sidebar-heading { /* Estilo del encabezado del sidebar */
+    padding: 1.5rem 1rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.nav-link { /* Estilo de los enlaces del sidebar */
+    color: white !important;
+    margin: 2px 6px;
+    border-radius: 12px;
+        transition: background-color 0.2s, color 0.2s;
+}
+
+.nav-link:hover, .nav-link:active{ /* Estilo de los enlaces al pasar el mouse o al hacer clic */
+    color: rgb(109, 100, 100); 
+}
+
+.nav-link.active { /* Estilo del enlace activo */
+    color: rgb(255, 255, 255) !important;
+    font-weight: bold;
+    background: rgba(221, 60, 60, 0.967);
+}
+
+.topbar { /* Estilo de la barra superior */
+    margin:5px 20px 10px 20px;
+    border-radius: 20px;
+    height: 4.375rem;
+    background-color: rgba(246, 220, 220, 0.921);
+    box-shadow: 0 .15rem 1.75rem 0 rgba(58,59,69,.15);
+    display: flex;
+    align-items: center;
+
+}
+
+.container-fluid { /* Estilo del contenedor de contenido */
+    background-color: white;
+    border-radius: 20px;
+    box-shadow: 10px 10px 8px rgba(0,0,0,0.1);
+    flex-grow: 1;
+}
