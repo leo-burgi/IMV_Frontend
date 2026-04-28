@@ -26,10 +26,10 @@
       <a (click)="cambiarSeccion('planes')" class="nav-link" [class.active]="seccionActiva === 'planes'" style="cursor: pointer;">
         <i class="fas fa-fw fa-clipboard-list mr-2"></i> <span>Planes</span>
       </a>
-      <a class="nav-link text-muted disabled-link">
+      <a (click)="cambiarSeccion('barrios')" class="nav-link" [class.active]="seccionActiva === 'barrios'" style="cursor: pointer;">
         <i class="fas fa-fw fa-map-marked-alt mr-2"></i> <span>Barrios</span>
       </a>
-      <a class="nav-link text-muted disabled-link">
+      <a (click)="cambiarSeccion('calles')" class="nav-link"[class.active]="seccionActiva === 'calles'" style="cursor: pointer;">
         <i class="fas fa-fw fa-road mr-2"></i> <span>Calles</span>
       </a>
       <a class="nav-link text-muted disabled-link">
