@@ -1,0 +1,94 @@
+<div class="row mb-2 md-2 px-3">
+  
+  <div class="col-lg-2 col-md-2 mb-4">
+    <div class="card shadow h-100 py-3 text-center pointer dashboard-card border-bottom-primary" (click)="irASeccion('planes')" style="transition: transform 0.2s; cursor: pointer;">
+      <div class="card-body d-flex flex-column justify-content-center align-items-center">
+        <i class="fas fa-clipboard-list fa-3x text-primary mb-3"></i>
+        <div class="h4 font-weight text-gray-600">
+          <i class="fas fa-spinner fa-spin" *ngIf="!dashboardData"></i>
+          {{ dashboardData?.TotalPlanes }}
+        </div>
+        <div class="text-xs font-weight-bold text-muted text-uppercase mt-2">Planes Registrados</div>
+        <div class="small text-primary mt-3"><i class="fas fa-arrow-right mr-1"></i> Ir a Planes</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-2 col-md-2 mb-4">
+    <div class="card shadow h-100 py-3 text-center pointer dashboard-card border-bottom-success" (click)="irASeccion('barrios')" style="transition: transform 0.2s; cursor: pointer;">
+      <div class="card-body d-flex flex-column justify-content-center align-items-center">
+        <i class="fas fa-map-marked-alt fa-3x text-success mb-3"></i>
+        <div class="h4 font-weight-bold text-gray-800">
+          <i class="fas fa-spinner fa-spin" *ngIf="!dashboardData"></i>
+          {{ dashboardData?.TotalBarrios }}
+        </div>
+        <div class="text-xs font-weight-bold text-muted text-uppercase mt-2">Barrios Registrados</div>
+        <div class="small text-success mt-3"><i class="fas fa-arrow-right mr-1"></i> Ir a Barrios</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4 col-md-2 mb-4">
+    <div class="card shadow h-100 py-3 text-center dashboard-card border-bottom-warning">
+      <div class="card-body d-flex flex-column justify-content-center align-items-center">
+        <i class="fas fa-users fa-3x text-danger mb-3"></i>
+        <div class="h4 font-weight-bold text-gray-800">
+          <i class="fas fa-spinner fa-spin" *ngIf="!dashboardData"></i>
+          {{ dashboardData?.TotalPersonas}}
+        </div>
+        <div class="text-xs font-weight-bold text-muted text-uppercase mt-2">Personas Beneficiadas</div>
+        <div class="small text-muted mt-3"><i class="fas fa-lock mr-1"></i> Ir a Personas</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4 col-md-2 mb-4">
+    <div class="card shadow h-100 py-3 text-center dashboard-card border-bottom-warning">
+      <div class="card-body d-flex flex-column justify-content-center align-items-center">
+        <i class="fas fa-key fa-3x text-warning mb-3"></i>
+        <div class="h4 font-weight-bold text-gray-800">
+          <i class="fas fa-spinner fa-spin" *ngIf="!dashboardData"></i>
+          {{ dashboardData?.TotalAdjudicaciones }}
+        </div>
+        <div class="text-xs font-weight-bold text-muted text-uppercase mt-2">Adjudicaciones Activas</div>
+        <div class="small text-muted mt-3"><i class="fas fa-lock mr-1"></i> Ir a Adjudicaciones</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="row px-3">
+  <div class="col-lg-12 mb-2">
+    <div class="card shadow h-100">
+      <div class="card-header py-3 bg-white">
+        <h6 class="m-0 font-weight-bold text-primary">
+          <i class="fas fa-chart-bar mr-2"></i> Top 3 de Barrios con más Adjudicaciones
+        </h6>
+      </div>
+      <div class="card-body">
+        <div *ngIf="!dashboardData" class="text-center py-4">
+          <i class="fas fa-spinner fa-spin text-primary fa-2x mb-3"></i>
+          <p class="text-muted">Procesando métricas desde el servidor...</p>
+        </div>
+        
+        <div *ngIf="dashboardData?.TopBarrios?.length > 0" class="mt-2">
+          <div *ngFor="let barrio of dashboardData.TopBarrios" class="mb-4">
+            <h4 class="small font-weight-bold text-dark mb-1">
+              {{ barrio.Nombre }} 
+              <span class="float-right text-primary">{{ barrio.Cantidad }} adjudicaciones ({{ barrio.Porcentaje | number:'1.0-1' }}%)</span>
+            </h4>
+            <div class="progress" style="height: 12px;">
+              <div class="progress-bar bg-primary" role="progressbar" [style.width.%]="barrio.Porcentaje" [attr.aria-valuenow]="barrio.Porcentaje" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="dashboardData?.TopBarrios?.length === 0" class="text-muted text-center py-4">
+          <i class="fas fa-info-circle fa-2x mb-3 text-gray-300"></i>
+          <p>No hay datos suficientes para generar el ranking.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

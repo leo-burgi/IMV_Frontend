@@ -6,12 +6,16 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  seccionActiva: string = 'home';
+  
+  //estado inicial
+  seccionActiva: string = 'bienvenida';
 
   cambiarSeccion(seccion: string) {
     this.seccionActiva = seccion;
+
   }
 
+  //buscador rústico del layout
   buscar(query: string) {
     const texto = (query || '').trim().toLowerCase();
     if (!texto) {
@@ -28,11 +32,17 @@ export class AppComponent {
       return;
     }
 
-    if (texto.includes('barrio') || texto.includes('barrios') || texto.includes('calle') || texto.includes('calles') || texto.includes('persona') || texto.includes('personas') || texto.includes('adjudicacion') || texto.includes('convenio') || texto.includes('notarial') || texto.includes('técnica') || texto.includes('tecnica')) {
-      this.cambiarSeccion('home');
+    if (texto.includes('barrio') || texto.includes('barrios') || texto.includes('bario') || texto.includes('barios') ) {
+      this.cambiarSeccion('barrios');
       return;
     }
 
+    if (texto.includes('calle') || texto.includes('calles') || texto.includes('cale') || texto.includes('cales')) {
+      this.cambiarSeccion('calles');
+      return;
+    }
+
+    //si no coincide con nada, dashboard por defecto
     this.cambiarSeccion('home');
   }
 }

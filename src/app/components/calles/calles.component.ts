@@ -5,7 +5,6 @@ import { Calle } from 'src/app/models/calle.model';
 @Component({
   selector: 'app-calles',
   templateUrl: './calles.component.html',
-  styleUrls: ['./calles.component.css']
 })
 export class CallesComponent implements OnInit {
   listarCalles: Calle[]=[];
@@ -17,5 +16,8 @@ export class CallesComponent implements OnInit {
       this.listarCalles = data;
     });
   }
-
+  verDetalle(calle: any) {
+  alert('Vas a ver el detalle de la calle: ' + calle.NombreCalle);
+  
+}
 }
