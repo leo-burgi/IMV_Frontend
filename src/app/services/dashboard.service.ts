@@ -8,7 +8,7 @@ import { DashboardDTO } from '../models/dashboard.model';
 })
 export class DashboardService {
   // Ajustá esta URL al puerto real de tu API en .NET
-  private apiUrl = 'http://localhost:44350/api/dashboard/resumen'; 
+  private apiUrl = 'https://localhost:44350/api/dashboard/resumen'; 
 
   constructor(private http: HttpClient) { }
 

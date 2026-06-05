@@ -12,7 +12,7 @@ export class DashboardComponent implements OnInit {
   dashboardData: DashboardDTO | null = null;
   errorMensaje: string = '';
 
-  // Creamos el emisor de eventos. 
+ 
   // Esto va a disparar un string (el nombre de la sección) hacia afuera.
   @Output() solicitarNavegacion = new EventEmitter<string>();
 
