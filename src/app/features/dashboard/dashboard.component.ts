@@ -1,6 +1,6 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { DashboardDTO } from 'src/app/models/dashboard.model';
-import { DashboardService } from 'src/app/services/dashboard.service';
+import { DashboardDTO } from 'src/app/core/models/dashboard.model';
+import { DashboardService } from 'src/app/core/services/dashboard.service';
 
 @Component({
   selector: 'app-dashboard',

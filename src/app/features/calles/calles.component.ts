@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { CalleService } from 'src/app/services/calle.service';
-import { Calle } from 'src/app/models/calle.model';
+import { CalleService } from 'src/app/core/services/calle.service';
+import { Calle } from 'src/app/core/models/calle.model';
 
 @Component({
   selector: 'app-calles',

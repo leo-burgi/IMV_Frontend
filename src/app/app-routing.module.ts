@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { PlanesComponent } from './components/planes/planes.component';
-import { BarriosComponent } from './components/barrios/barrios.component';
-import { CallesComponent } from './components/calles/calles.component';
+import { PlanesComponent } from './features/planes/planes.component';
+import { BarriosComponent } from './features/barrios/barrios.component';
+import { CallesComponent } from './features/calles/calles.component';
 
 const routes: Routes = [
   { path: 'planes', component: PlanesComponent },
