@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Barrio } from 'src/app/models/barrio.model';
-import { BarrioService } from 'src/app/services/barrio.service';
+import { Barrio } from 'src/app/core/models/barrio.model';
+import { BarrioService } from 'src/app/core/services/barrio.service';
 
 @Component({
   selector: 'app-barrios',

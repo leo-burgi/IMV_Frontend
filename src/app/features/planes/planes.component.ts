@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { PlanService } from 'src/app/services/plan.service';
-import { Plan } from 'src/app/models/plan.model';
+import { PlanService } from 'src/app/core/services/plan.service';
+import { Plan } from 'src/app/core/models/plan.model';
 
 @Component({
   selector: 'app-planes',
