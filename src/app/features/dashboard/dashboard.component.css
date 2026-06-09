@@ -1,0 +1,221 @@
+/* ═══════════════════════════════════════════════════════
+   DASHBOARD — estilos del componente
+   Las variables globales (--imv-*) vienen del
+   app.component.css y están disponibles globalmente.
+════════════════════════════════════════════════════════ */
+
+/* Header */
+.dash-header {
+  margin-bottom: 20px;
+}
+
+/* ── GRID DE MÉTRICAS ── */
+.dash-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+/* Stat card base */
+.dash-stat-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), 0 0 1px rgba(0, 0, 0, 0.04);
+  padding: 18px 16px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.dash-stat-card--clickable {
+  cursor: pointer;
+}
+
+.dash-stat-card--clickable:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12), 0 0 1px rgba(0, 0, 0, 0.06);
+  transform: translateY(-2px);
+}
+
+/* Ícono */
+.dash-stat-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+}
+
+.dash-stat-icon--blue  { background: var(--imv-blue-bg,  #e6f1fb); color: var(--imv-blue,  #185fa5); }
+.dash-stat-icon--green { background: var(--imv-green-bg, #eaf3de); color: var(--imv-green, #2e7d4f); }
+.dash-stat-icon--amber { background: var(--imv-amber-bg, #faeeda); color: var(--imv-amber, #854f0b); }
+.dash-stat-icon--teal  { background: var(--imv-teal-bg,  #e1f5ee); color: var(--imv-teal,  #0f6e56); }
+
+/* Número */
+.dash-stat-num {
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--imv-text-primary, #1a1a2e);
+  line-height: 1;
+}
+
+.dash-stat-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--imv-text-muted, #9ca3af);
+}
+
+.dash-stat-body {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+}
+
+/* Link al pie de la card */
+.dash-stat-link {
+  font-size: 12px;
+  color: var(--imv-blue, #185fa5);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 2px;
+}
+
+.dash-stat-link--locked {
+  color: var(--imv-text-muted, #9ca3af);
+  cursor: default;
+}
+
+/* ── FILA INFERIOR ── */
+.dash-bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Card genérica del dashboard */
+.dash-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), 0 0 1px rgba(0, 0, 0, 0.04);
+}
+
+.dash-card__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 20px;
+  border-bottom: 0.5px solid rgba(0, 0, 0, 0.07);
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--imv-text-secondary, #6b7280);
+}
+
+.dash-card__header i {
+  font-size: 15px;
+  color: var(--imv-blue, #185fa5);
+}
+
+.dash-card__body {
+  padding: 20px;
+}
+
+/* ── BARRAS ── */
+.dash-bar-row {
+  margin-bottom: 18px;
+}
+
+.dash-bar-row:last-child {
+  margin-bottom: 0;
+}
+
+.dash-bar-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 7px;
+  font-size: 13px;
+}
+
+.dash-bar-meta strong {
+  color: var(--imv-text-primary, #1a1a2e);
+  font-weight: 600;
+}
+
+.dash-bar-meta span {
+  color: var(--imv-text-secondary, #6b7280);
+  font-size: 12px;
+}
+
+.dash-bar-meta em {
+  font-style: normal;
+  opacity: 0.7;
+}
+
+.dash-bar-track {
+  height: 7px;
+  background: #f0f2f7;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.dash-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  background: var(--imv-blue, #185fa5);
+  transition: width 0.6s ease;
+}
+
+.dash-bar-fill--b { background: #378add; }
+.dash-bar-fill--c { background: #85b7eb; }
+
+/* ── ESTADOS ── */
+.dash-loading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--imv-text-muted, #9ca3af);
+  font-size: 13px;
+  padding: 16px 0;
+}
+
+.dash-empty {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--imv-text-muted, #9ca3af);
+  font-size: 13px;
+  padding: 16px 0;
+}
+
+.dash-error {
+  background: #fcebeb;
+  color: #a32d2d;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1100px) {
+  .dash-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .dash-stats {
+    grid-template-columns: 1fr;
+  }
+}

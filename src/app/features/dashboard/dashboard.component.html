@@ -1,94 +1,135 @@
-<div class="row mb-2 md-2 px-3">
-  
-  <div class="col-lg-2 col-md-2 mb-4">
-    <div class="card shadow h-100 py-3 text-center pointer dashboard-card border-bottom-primary" (click)="irASeccion('planes')" style="transition: transform 0.2s; cursor: pointer;">
-      <div class="card-body d-flex flex-column justify-content-center align-items-center">
-        <i class="fas fa-clipboard-list fa-3x text-primary mb-3"></i>
-        <div class="h4 font-weight text-gray-600">
-          <i class="fas fa-spinner fa-spin" *ngIf="!dashboardData"></i>
-          {{ dashboardData?.TotalPlanes }}
-        </div>
-        <div class="text-xs font-weight-bold text-muted text-uppercase mt-2">Planes Registrados</div>
-        <div class="small text-primary mt-3"><i class="fas fa-arrow-right mr-1"></i> Ir a Planes</div>
+<!-- ═══════════════════════════════════════════════════════
+     DASHBOARD — Header
+════════════════════════════════════════════════════════ -->
+<div class="dash-header">
+  <h2 class="imv-page-title">Dashboard</h2>
+  <p class="imv-page-sub">Resumen general — Instituto Municipal de la Vivienda Rafaela</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     MÉTRICAS
+════════════════════════════════════════════════════════ -->
+<div class="dash-stats">
+
+  <!-- Planes -->
+  <div class="dash-stat-card dash-stat-card--clickable" (click)="irASeccion('planes')">
+    <div class="dash-stat-icon dash-stat-icon--blue">
+      <i class="fas fa-clipboard-list"></i>
+    </div>
+    <div class="dash-stat-body">
+      <div class="dash-stat-num">
+        <i class="fas fa-spinner fa-spin" *ngIf="!dashboardData"></i>
+        <span *ngIf="dashboardData">{{ dashboardData.TotalPlanes }}</span>
       </div>
+      <div class="dash-stat-label">Planes registrados</div>
+    </div>
+    <div class="dash-stat-link">
+      <i class="fas fa-arrow-right"></i> Ver planes
     </div>
   </div>
 
-  <div class="col-lg-2 col-md-2 mb-4">
-    <div class="card shadow h-100 py-3 text-center pointer dashboard-card border-bottom-success" (click)="irASeccion('barrios')" style="transition: transform 0.2s; cursor: pointer;">
-      <div class="card-body d-flex flex-column justify-content-center align-items-center">
-        <i class="fas fa-map-marked-alt fa-3x text-success mb-3"></i>
-        <div class="h4 font-weight-bold text-gray-800">
-          <i class="fas fa-spinner fa-spin" *ngIf="!dashboardData"></i>
-          {{ dashboardData?.TotalBarrios }}
-        </div>
-        <div class="text-xs font-weight-bold text-muted text-uppercase mt-2">Barrios Alcanzados</div>
-        <div class="small text-success mt-3"><i class="fas fa-arrow-right mr-1"></i> Ir a Barrios</div>
+  <!-- Barrios -->
+  <div class="dash-stat-card dash-stat-card--clickable" (click)="irASeccion('barrios')">
+    <div class="dash-stat-icon dash-stat-icon--green">
+      <i class="fas fa-map-marked-alt"></i>
+    </div>
+    <div class="dash-stat-body">
+      <div class="dash-stat-num">
+        <i class="fas fa-spinner fa-spin" *ngIf="!dashboardData"></i>
+        <span *ngIf="dashboardData">{{ dashboardData.TotalBarrios }}</span>
       </div>
+      <div class="dash-stat-label">Barrios alcanzados</div>
+    </div>
+    <div class="dash-stat-link">
+      <i class="fas fa-arrow-right"></i> Ver barrios
     </div>
   </div>
 
-  <div class="col-lg-4 col-md-2 mb-4">
-    <div class="card shadow h-100 py-3 text-center dashboard-card border-bottom-warning">
-      <div class="card-body d-flex flex-column justify-content-center align-items-center">
-        <i class="fas fa-users fa-3x text-danger mb-3"></i>
-        <div class="h4 font-weight-bold text-gray-800">
-          <i class="fas fa-spinner fa-spin" *ngIf="!dashboardData"></i>
-          {{ dashboardData?.TotalPersonas}}
-        </div>
-        <div class="text-xs font-weight-bold text-muted text-uppercase mt-2">Personas Beneficiadas</div>
-        <div class="small text-muted mt-3"><i class="fas fa-lock mr-1"></i> Ir a Personas</div>
+  <!-- Personas -->
+  <div class="dash-stat-card">
+    <div class="dash-stat-icon dash-stat-icon--amber">
+      <i class="fas fa-users"></i>
+    </div>
+    <div class="dash-stat-body">
+      <div class="dash-stat-num">
+        <i class="fas fa-spinner fa-spin" *ngIf="!dashboardData"></i>
+        <span *ngIf="dashboardData">{{ dashboardData.TotalPersonas }}</span>
       </div>
+      <div class="dash-stat-label">Personas beneficiadas</div>
+    </div>
+    <div class="dash-stat-link dash-stat-link--locked">
+      <i class="fas fa-lock"></i> Acceso restringido
     </div>
   </div>
 
-  <div class="col-lg-4 col-md-2 mb-4">
-    <div class="card shadow h-100 py-3 text-center dashboard-card border-bottom-warning">
-      <div class="card-body d-flex flex-column justify-content-center align-items-center">
-        <i class="fas fa-key fa-3x text-warning mb-3"></i>
-        <div class="h4 font-weight-bold text-gray-800">
-          <i class="fas fa-spinner fa-spin" *ngIf="!dashboardData"></i>
-          {{ dashboardData?.TotalAdjudicaciones }}
-        </div>
-        <div class="text-xs font-weight-bold text-muted text-uppercase mt-2">Adjudicaciones Activas</div>
-        <div class="small text-muted mt-3"><i class="fas fa-lock mr-1"></i> Ir a Adjudicaciones</div>
+  <!-- Adjudicaciones -->
+  <div class="dash-stat-card">
+    <div class="dash-stat-icon dash-stat-icon--teal">
+      <i class="fas fa-key"></i>
+    </div>
+    <div class="dash-stat-body">
+      <div class="dash-stat-num">
+        <i class="fas fa-spinner fa-spin" *ngIf="!dashboardData"></i>
+        <span *ngIf="dashboardData">{{ dashboardData.TotalAdjudicaciones | number }}</span>
       </div>
+      <div class="dash-stat-label">Adjudicaciones activas</div>
+    </div>
+    <div class="dash-stat-link dash-stat-link--locked">
+      <i class="fas fa-lock"></i> Acceso restringido
     </div>
   </div>
 
 </div>
 
-<div class="row px-3">
-  <div class="col-lg-12 mb-2">
-    <div class="card shadow h-100">
-      <div class="card-header py-3 bg-white">
-        <h6 class="m-0 font-weight-bold text-muted text-uppercase">
-          <i class="fas fa-chart-bar mr-2"></i> Top 3 de Barrios con más Adjudicaciones
-        </h6>
+<!-- ═══════════════════════════════════════════════════════
+     FILA INFERIOR
+════════════════════════════════════════════════════════ -->
+<div class="dash-bottom">
+
+  <!-- Gráfico de barras -->
+  <div class="dash-card">
+    <div class="dash-card__header">
+      <i class="fas fa-chart-bar"></i>
+      <span>Top 3 barrios con más adjudicaciones</span>
+    </div>
+    <div class="dash-card__body">
+
+      <!-- Loading -->
+      <div *ngIf="!dashboardData" class="dash-loading">
+        <i class="fas fa-spinner fa-spin fa-lg"></i>
+        <span>Procesando métricas...</span>
       </div>
-      <div class="card-body">
-        <div *ngIf="!dashboardData" class="text-center py-4">
-          <i class="fas fa-spinner fa-spin text-primary fa-2x mb-3"></i>
-          <p class="text-muted">Procesando métricas desde el servidor...</p>
-        </div>
-        
-        <div *ngIf="dashboardData?.TopBarrios?.length > 0" class="mt-2">
-          <div *ngFor="let barrio of dashboardData.TopBarrios" class="mb-4">
-            <h4 class="small font-weight-bold text-dark mb-1">
-              {{ barrio.Nombre }} 
-              <span class="float-right text-secondary">{{ barrio.Cantidad }} adjudicaciones ({{ barrio.Porcentaje | number:'1.0-1' }}%)</span>
-            </h4>
-            <div class="progress" style="height: 12px;">
-              <div class="progress-bar bg-primary" role="progressbar" [style.width.%]="barrio.Porcentaje" [attr.aria-valuenow]="barrio.Porcentaje" aria-valuemin="0" aria-valuemax="100"></div>
-            </div>
+
+      <!-- Barras -->
+      <div *ngIf="dashboardData?.TopBarrios?.length > 0">
+        <div *ngFor="let barrio of dashboardData.TopBarrios; let i = index"
+             class="dash-bar-row">
+          <div class="dash-bar-meta">
+            <strong>{{ barrio.Nombre }}</strong>
+            <span>{{ barrio.Cantidad | number }} &nbsp;<em>({{ barrio.Porcentaje | number:'1.0-1' }}%)</em></span>
+          </div>
+          <div class="dash-bar-track">
+            <div class="dash-bar-fill"
+                 [class.dash-bar-fill--b]="i === 1"
+                 [class.dash-bar-fill--c]="i === 2"
+                 [style.width.%]="barrio.Porcentaje"></div>
           </div>
         </div>
-
-        <div *ngIf="dashboardData?.TopBarrios?.length === 0" class="text-muted text-center py-4">
-          <i class="fas fa-info-circle fa-2x mb-3 text-gray-300"></i>
-          <p>No hay datos suficientes para generar el ranking.</p>
-        </div>
       </div>
+
+      <!-- Sin datos -->
+      <div *ngIf="dashboardData?.TopBarrios?.length === 0" class="dash-empty">
+        <i class="fas fa-info-circle"></i>
+        <span>No hay datos suficientes para generar el ranking.</span>
+      </div>
+
     </div>
   </div>
+
+  <!-- Error general -->
+  <div *ngIf="errorMensaje" class="dash-error">
+    <i class="fas fa-exclamation-triangle"></i>
+    {{ errorMensaje }}
+  </div>
+
 </div>

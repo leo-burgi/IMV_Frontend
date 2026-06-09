@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ImvSearchService } from './core/services/imv-search.service';
 
 @Component({
   selector: 'app-root',
@@ -6,43 +7,54 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  
-  //estado inicial
+
+  // estado inicial
   seccionActiva: string = 'bienvenida';
+
+  // sidebar colapsable
+  sidebarCollapsed: boolean = false;
+
+  avisosImportantes: string[] = [
+    'Germán no viene el lunes',
+    'Estela viene lunes, miercoles y viernes',
+    'Las secciones aún están en desarrollo, pueden tener datos de prueba o no funcionar del todo'
+  ];
+
+  constructor(private searchService: ImvSearchService) {}
+
+  toggleSidebar() {
+    this.sidebarCollapsed = !this.sidebarCollapsed;
+  }
 
   cambiarSeccion(seccion: string) {
     this.seccionActiva = seccion;
-
   }
 
-  //buscador rústico del layout
+  // buscador
   buscar(query: string) {
     const texto = (query || '').trim().toLowerCase();
-    if (!texto) {
-      return;
-    }
+    this.searchService.setSearch(texto);
+
+    if (!texto) { return; }
 
     if (texto.includes('plan')) {
-      this.cambiarSeccion('planes');
+      this.cambiarSeccion('planes'); return;
+    }
+    if (texto.includes('home') || texto.includes('inicio') ||
+        texto.includes('portal') || texto.includes('dashboard')) {
+      this.cambiarSeccion('home'); return;
+    }
+    if (texto.includes('barrio') || texto.includes('bario')) {
+      this.cambiarSeccion('barrios'); return;
+    }
+    if (texto.includes('calle') || texto.includes('cale')) {
+      this.cambiarSeccion('calles'); return;
+    }
+
+    if (['planes', 'barrios', 'calles'].includes(this.seccionActiva)) {
       return;
     }
 
-    if (texto.includes('home') || texto.includes('inicio') || texto.includes('portal') || texto.includes('dashboard')) {
-      this.cambiarSeccion('home');
-      return;
-    }
-
-    if (texto.includes('barrio') || texto.includes('barrios') || texto.includes('bario') || texto.includes('barios') ) {
-      this.cambiarSeccion('barrios');
-      return;
-    }
-
-    if (texto.includes('calle') || texto.includes('calles') || texto.includes('cale') || texto.includes('cales')) {
-      this.cambiarSeccion('calles');
-      return;
-    }
-
-    //si no coincide con nada, dashboard por defecto
     this.cambiarSeccion('home');
   }
 }

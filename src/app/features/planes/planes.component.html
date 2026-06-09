@@ -1,33 +1,135 @@
+<!-- ═══════════════════════════════════════════════════════
+     PLANES — ABM
+════════════════════════════════════════════════════════ -->
 
-<div class="table-responsive">
-  <table class="table table-hover" id="dataTable" width="100%" cellspacing="20">
-    <thead class="thead-light">
-      <tr>
-        <th>ID</th>
-        <th>Origen</th>
-        <th>Programa</th>
-        <th class="text-center">Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let plan of listaPlanes">
-        <td><span class="badge badge-secondary">#{{ plan.IdPlan }}</span></td>
-        <td class="font-weight-bold">{{ plan.NombrePlan }}</td>
-        <td>{{ plan.Programa }}</td>
-        <td class="text-center">
-          <button class="btn btn-info btn-sm mr-1" (click)="verDetalle(plan)">
-            <i class="fas fa-eye"></i>
-          </button>
-          <button class="btn btn-warning btn-sm" (click)="editarPlan(plan)" title="Editar">
-            <i class="fas fa-edit text-white"></i>
-          </button>
-        </td>
-      </tr>
-      <tr *ngIf="listaPlanes.length === 0">
-        <td colspan="4" class="text-center text-muted py-4">
-          <i class="fas fa-spinner fa-spin mr-2"></i> Cargando datos desde el servidor IMV...
-        </td>
-      </tr>
-    </tbody>
-  </table>
+<!-- Header de sección -->
+<div class="imv-abm-header">
+  <div class="imv-abm-header__titles">
+    <h2 class="imv-page-title">Planes</h2>
+    <p class="imv-page-sub">Listado de planes registrados en el sistema</p>
+  </div>
+  <div class="imv-abm-header__actions">
+    <button class="imv-btn imv-btn--primary" type="button" title="Nuevo plan" (click)="abrirModalAlta()">
+      <i class="fas fa-plus"></i> Nuevo plan
+    </button>
+  </div>
+</div>
+
+<div class="imv-alert imv-alert--success" *ngIf="mensajeExito">{{ mensajeExito }}</div>
+
+<div class="imv-modal-backdrop" *ngIf="mostrarModalAlta">
+  <div class="imv-modal" role="dialog" aria-modal="true" aria-labelledby="modalNuevoPlanTitle">
+    <div class="imv-modal__header">
+      <h3 id="modalNuevoPlanTitle">{{ modoEdicion ? 'Editar plan' : 'Nuevo plan' }}</h3>
+      <button class="imv-btn imv-btn--ghost imv-btn--icon" type="button" (click)="cerrarModalAlta()" title="Cerrar">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <div class="imv-modal__body">
+      <div class="imv-form-row">
+        <label for="nombrePlan">Nombre del plan</label>
+        <input id="nombrePlan" type="text" name="nombrePlan" [(ngModel)]="planForm.NombrePlan" required />
+      </div>
+
+      <div class="imv-form-row">
+        <label for="programaPlan">Programa</label>
+        <input id="programaPlan" type="text" name="programaPlan" [(ngModel)]="planForm.Programa" required />
+      </div>
+
+      <p class="imv-form-error" *ngIf="mensajeError">{{ mensajeError }}</p>
+    </div>
+
+    <div class="imv-modal__footer">
+      <button class="imv-btn imv-btn--ghost" type="button" (click)="cerrarModalAlta()">Cancelar</button>
+      <button class="imv-btn imv-btn--primary" type="button" (click)="guardarPlan()" [disabled]="guardando || !planForm.NombrePlan?.trim() || !planForm.Programa?.trim()">
+        <i class="fas fa-spinner fa-spin" *ngIf="guardando"></i>
+        {{ modoEdicion ? 'Guardar cambios' : 'Guardar plan' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Card contenedora -->
+<div class="imv-card">
+
+  <!-- Barra de herramientas -->
+  <div class="imv-table-toolbar" justify-content="space-between">
+    <div class="imv-table-search">
+      <i class="fas fa-search imv-table-search__icon"></i>
+      <input
+        type="search"
+        class="imv-table-search__input"
+        placeholder="Buscar por nombre o programa..."
+        [(ngModel)]="filtroBusqueda"
+        (ngModelChange)="onFiltroChange($event)"
+      />
+    </div>
+    
+    <span class="imv-table-count">
+      {{ (listaPlanes | imvFilter:filtroBusqueda:['NombrePlan','Programa']).length }} registros
+    </span>
+  </div>
+
+  <!-- Tabla -->
+  <div class="imv-table-wrapper">
+    <table class="imv-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Origen</th>
+          <th>Programa</th>
+          <th class="col-actions">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <!-- Filas de datos -->
+        <tr *ngFor="let plan of listaPlanes | imvFilter:filtroBusqueda:['NombrePlan','Programa']">
+          <td>
+            <span class="imv-badge-id">#{{ plan.IdPlan }}</span>
+          </td>
+          <td class="col-name">{{ plan.NombrePlan }}</td>
+          <td>{{ plan.Programa }}</td>
+          <td class="col-actions">
+            <div class="imv-table-actions">
+              <button class="imv-btn imv-btn--icon imv-btn--view"
+                      (click)="verDetalle(plan)"
+                      title="Ver detalle">
+                <i class="fas fa-eye"></i>
+              </button>
+              <button class="imv-btn imv-btn--icon imv-btn--edit"
+                      (click)="editarPlan(plan)"
+                      title="Editar">
+                <i class="fas fa-edit"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+
+        <!-- Estado: cargando -->
+        <tr *ngIf="listaPlanes.length === 0">
+          <td colspan="4">
+            <div class="imv-table-empty">
+              <i class="fas fa-spinner fa-spin"></i>
+              Cargando planes desde el servidor IMV...
+            </div>
+          </td>
+        </tr>
+
+        <!-- Estado: sin resultados de búsqueda -->
+        <tr *ngIf="listaPlanes.length > 0 &&
+                   (listaPlanes | imvFilter:filtroBusqueda:['NombrePlan','Programa']).length === 0">
+          <td colspan="4">
+            <div class="imv-table-empty">
+              <i class="fas fa-search"></i>
+              No se encontraron planes para "{{ filtroBusqueda }}"
+            </div>
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+
 </div>

@@ -1,0 +1,410 @@
+/* ═══════════════════════════════════════════════════════
+   IMV-TABLE.CSS — Estilos compartidos para tablas ABM
+   
+   USO: agregar en el styleUrls de cada componente de tabla,
+   DESPUÉS de los estilos propios del componente:
+   
+     styleUrls: [
+       '../../shared/imv-table.css',
+       './planes.component.css'      ← estilos específicos si los hay
+     ]
+   
+   O bien, como este proyecto usa ViewEncapsulation por defecto,
+   también puede copiarse el contenido en cada .css del componente.
+   Se documenta aquí como fuente única de verdad.
+   
+   Las variables --imv-* vienen de styles.css (global).
+════════════════════════════════════════════════════════ */
+
+
+/* ── Header de sección ── */
+.imv-abm-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.imv-abm-header__titles .imv-page-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--imv-text-primary, #1a1a2e);
+  margin: 0 0 4px;
+}
+
+.imv-abm-header__titles .imv-page-sub {
+  font-size: 13px;
+  color: var(--imv-text-secondary, #6b7280);
+  margin: 0;
+}
+
+.imv-abm-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+
+/* ── Barra de herramientas (búsqueda + botón nuevo) ── */
+.imv-table-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.imv-table-search {
+  position: relative;
+  flex: 1;
+  max-width: 320px;
+}
+
+.imv-table-search__icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--imv-text-muted, #9ca3af);
+  font-size: 13px;
+  pointer-events: none;
+}
+
+.imv-table-search__input {
+  width: 100%;
+  padding: 8px 14px 8px 34px;
+  background: var(--imv-bg, #f0f2f7);
+  border: 0.5px solid transparent;
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--imv-text-primary, #1a1a2e);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.imv-table-search__input:focus {
+  border-color: var(--imv-accent, #4a9eff);
+  box-shadow: 0 0 0 3px rgba(74,158,255,0.12);
+  background: #fff;
+}
+
+.imv-table-search__input::placeholder {
+  color: var(--imv-text-muted, #9ca3af);
+}
+
+/* Contador de registros */
+.imv-table-count {
+  font-size: 12px;
+  color: var(--imv-text-muted, #9ca3af);
+  white-space: nowrap;
+}
+
+
+/* ── Botón primario IMV ── */
+.imv-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, box-shadow 0.15s, transform 0.1s;
+  white-space: nowrap;
+}
+
+.imv-btn:active { transform: translateY(1px); }
+
+.imv-btn--primary {
+  background: var(--imv-navy, #1a2e5a);
+  color: #fff;
+}
+
+.imv-btn--primary:hover {
+  background: var(--imv-navy-light, #243670);
+  box-shadow: 0 2px 8px rgba(26,46,90,0.25);
+}
+
+.imv-btn--ghost {
+  background: transparent;
+  color: var(--imv-text-secondary, #6b7280);
+  border: 0.5px solid var(--imv-border, rgba(0,0,0,0.07));
+}
+
+.imv-btn--ghost:hover {
+  background: var(--imv-bg, #f0f2f7);
+  color: var(--imv-text-primary, #1a1a2e);
+}
+
+/* Botones de acción en filas */
+.imv-btn--icon {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border-radius: 7px;
+  justify-content: center;
+  font-size: 13px;
+}
+
+.imv-btn--view {
+  background: var(--imv-blue-bg, #e6f1fb);
+  color: var(--imv-blue, #185fa5);
+  border: none;
+}
+
+.imv-btn--view:hover {
+  background: #d0e5f7;
+  box-shadow: 0 2px 6px rgba(24,95,165,0.15);
+}
+
+.imv-btn--edit {
+  background: var(--imv-amber-bg, #faeeda);
+  color: var(--imv-amber, #854f0b);
+  border: none;
+}
+
+.imv-btn--edit:hover {
+  background: #f5ddb8;
+  box-shadow: 0 2px 6px rgba(133,79,11,0.15);
+}
+
+.imv-btn--delete {
+  background: #fce8e8;
+  color: #a32d2d;
+  border: none;
+}
+
+.imv-btn--delete:hover {
+  background: #f8d0d0;
+  box-shadow: 0 2px 6px rgba(163,45,45,0.15);
+}
+
+
+/* ── Tabla ── */
+.imv-table-wrapper {
+  overflow-x: auto;
+  border-radius: 10px;
+}
+
+.imv-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+/* Encabezado */
+.imv-table thead tr {
+  background: var(--imv-bg, #f0f2f7);
+  border-bottom: 1.5px solid rgba(0,0,0,0.06);
+}
+
+.imv-table thead th {
+  padding: 10px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--imv-text-secondary, #6b7280);
+  white-space: nowrap;
+}
+
+.imv-table thead th.col-actions {
+  text-align: center;
+}
+
+/* Filas */
+.imv-table tbody tr {
+  border-bottom: 0.5px solid rgba(0,0,0,0.05);
+  transition: background 0.1s;
+}
+
+.imv-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.imv-table tbody tr:hover {
+  background: rgba(74,158,255,0.04);
+}
+
+.imv-table td {
+  padding: 11px 14px;
+  color: var(--imv-text-primary, #1a1a2e);
+  vertical-align: middle;
+}
+
+/* Badge ID */
+.imv-badge-id {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  background: var(--imv-bg, #f0f2f7);
+  color: var(--imv-text-secondary, #6b7280);
+  border-radius: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Celda de nombre principal */
+.imv-table td.col-name {
+  font-weight: 500;
+  color: var(--imv-text-primary, #1a1a2e);
+}
+
+/* Celda de acciones */
+.imv-table td.col-actions {
+  text-align: center;
+}
+
+.imv-table-actions {
+  display: inline-flex;
+  gap: 6px;
+  justify-content: center;
+}
+
+
+/* ── Estados vacío / cargando ── */
+.imv-table-empty {
+  padding: 32px 16px;
+  text-align: center;
+  color: var(--imv-text-muted, #9ca3af);
+  font-size: 13px;
+}
+
+.imv-table-empty i {
+  display: block;
+  font-size: 22px;
+  margin-bottom: 8px;
+  opacity: 0.5;
+}
+
+
+/* ── Alertas y modal emergente ── */
+.imv-alert {
+  margin-bottom: 14px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.imv-alert--success {
+  background: #ecfdf3;
+  color: #027a48;
+  border: 0.5px solid rgba(2, 122, 72, 0.16);
+}
+
+.imv-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 2000;
+}
+
+.imv-modal {
+  width: min(100%, 480px);
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.2);
+  overflow: hidden;
+}
+
+.imv-modal__header,
+.imv-modal__body,
+.imv-modal__footer {
+  padding: 16px 20px;
+}
+
+.imv-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 0.5px solid rgba(0,0,0,0.08);
+}
+
+.imv-modal__header h3 {
+  margin: 0;
+  font-size: 17px;
+  color: var(--imv-text-primary, #1a1a2e);
+}
+
+.imv-modal__body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.imv-form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.imv-form-row label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--imv-text-secondary, #6b7280);
+}
+
+.imv-form-row input {
+  width: 100%;
+  padding: 9px 12px;
+  border: 0.5px solid rgba(0,0,0,0.12);
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--imv-text-primary, #1a1a2e);
+  outline: none;
+}
+
+.imv-form-row input:focus {
+  border-color: var(--imv-accent, #4a9eff);
+  box-shadow: 0 0 0 3px rgba(74,158,255,0.12);
+}
+
+.imv-form-error {
+  margin: 0;
+  font-size: 13px;
+  color: #b42318;
+}
+
+.imv-modal__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  border-top: 0.5px solid rgba(0,0,0,0.08);
+  background: var(--imv-bg, #f0f2f7);
+}
+
+.imv-btn:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .imv-table-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .imv-table-search {
+    max-width: 100%;
+  }
+
+  .imv-modal__footer {
+    flex-direction: column-reverse;
+  }
+
+  .imv-modal__footer .imv-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
