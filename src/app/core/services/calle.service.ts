@@ -11,7 +11,15 @@ export class CalleService {
 
   constructor(private http: HttpClient) { }
 
-  getCalles():Observable<Calle[]> {
+  getCalles(): Observable<Calle[]> {
     return this.http.get<Calle[]>(`${this.apiUrl}/listar`);
+  }
+
+  createCalle(calle: Partial<Calle>): Observable<Calle> {
+    return this.http.post<Calle>(`${this.apiUrl}/guardar`, calle);
+  }
+
+  updateCalle(calle: Calle): Observable<Calle> {
+    return this.http.put<Calle>(`${this.apiUrl}/editar`, calle);
   }
 }

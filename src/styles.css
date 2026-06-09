@@ -1,86 +1,171 @@
-/* Layout del Dashboard */
+/* ═══════════════════════════════════════════════════════════════
+   STYLES.CSS — Hoja global IMV Rafaela
+   
+   RESPONSABILIDAD DE ESTE ARCHIVO:
+     · Variables de diseño (design tokens)
+     · Reset / base del documento
+     · Tipografía global
+     · Utilidades mínimas compartidas entre todos los componentes
+   
+   LO QUE YA NO VA AQUÍ (vivía en el global anterior y causaba
+   solapamientos):
+     · #wrapper, #sidebar-wrapper, #content-wrapper  → eliminados,
+       esos IDs ya no existen en el nuevo HTML
+     · .topbar, .nav-link, .sidebar-heading, .container-fluid
+       → eran estilos del layout, ahora viven en app.component.css
+     · .nav-link.active, .nav-link:hover → ídem, en app.component.css
+   
+═══════════════════════════════════════════════════════════════ */
+
+
+/* ── 1. VARIABLES GLOBALES (design tokens) ──────────────────── */
+/*
+   Definidas aquí en :root para que estén disponibles en TODOS
+   los componentes sin importar su encapsulación de ViewEncapsulation.
+   app.component.css las referencia; los componentes hijos también
+   pueden usarlas directamente.
+*/
+:root {
+  /* Paleta de marca */
+  --imv-navy:          #1a2e5a;
+  --imv-navy-dark:     #111e3d;
+  --imv-navy-light:    #243670;
+  --imv-accent:        #4a9eff;
+  --imv-accent-hover:  #6db3ff;
+
+  /* Fondos */
+  --imv-bg:            #d0d0c067;
+  --imv-white:         #ffffff;
+
+  /* Tipografía */
+  --imv-text-primary:  #1a1a2e;
+  --imv-text-secondary:#6b7280;
+  --imv-text-muted:    #9ca3af;
+
+  /* Bordes */
+  --imv-border:        rgba(0, 0, 0, 0.07);
+
+  /* Sombra estándar de cards (sin borde) */
+  --imv-card-shadow:       0 2px 8px rgba(0, 0, 0, 0.08),
+                           0 0 1px rgba(0, 0, 0, 0.04);
+  --imv-card-shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.12),
+                           0 0 1px rgba(0, 0, 0, 0.06);
+
+  /* Colores semánticos de métricas */
+  --imv-blue:      #185fa5;
+  --imv-blue-bg:   #e6f1fb;
+  --imv-green:     #2e7d4f;
+  --imv-green-bg:  #eaf3de;
+  --imv-amber:     #854f0b;
+  --imv-amber-bg:  #faeeda;
+  --imv-teal:      #0f6e56;
+  --imv-teal-bg:   #e1f5ee;
+
+  /* Dimensiones del layout (referencia compartida) */
+  --sidebar-w:     220px;
+  --sidebar-w-min:  60px;
+  --topbar-h:       50px;
+}
+
+
+/* ── 2. RESET Y BASE ─────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
 body {
-    overflow-x: hidden;
-    background-color: #d7d9de; /* Gris claro de fondo profesional */
-}
-
-#wrapper { /* Contenedor principal del dashboard */
-    display: flex;
-    align-items: flex-start;
-    min-height: 100vh;
-    padding-top: 1px;
-}
-
-.sidebar-heading img { /* Estilo del logo en el sidebar */
-    max-width: 90%;
-    height: auto;
-    padding: 1px 0;
-    filter: brightness(50); /* Efecto de desenfoque para el logo */
-
-}
-
-#sidebar-wrapper {/* Estilo del sidebar */
-    margin: 0 10px 10px 20px;
-    min-height: auto;
-    width: 300px;
-    background-color: #162b6d; /* Azul IMV */
-    color: white;
-    transition: all 0.3s;
-    border-radius: 20px;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 10px 10px 8px rgba(0,0,0,0.1);
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  background-color: var(--imv-bg);          /* reemplaza el #d7d9de anterior */
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  color: var(--imv-text-primary);
+  line-height: 1.5;
 }
 
 
-#content-wrapper {/* Estilo del contenido principal */
-    margin: 5px 20px 10px 10px;
-    background-color: white;
-    border-radius: 20px;
-    box-shadow: 10px 10px 8px rgba(0,0,0,0.1);
-    width: 100%;
-    overflow-y: 100%;
+/* ── 3. TIPOGRAFÍA BASE ──────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--imv-text-primary);
 }
 
-.sidebar-heading { /* Estilo del encabezado del sidebar */
-    padding: 1.5rem 1rem;
-    font-size: 1.2rem;
-    font-weight: bold;
-    text-align: center;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+p {
+  margin: 0;
 }
 
-.nav-link { /* Estilo de los enlaces del sidebar */
-    color: white !important;
-    margin: 2px 6px;
-    border-radius: 12px;
-        transition: background-color 0.2s, color 0.2s;
+a {
+  color: var(--imv-accent);
+  text-decoration: none;
 }
 
-.nav-link:hover, .nav-link:active{ /* Estilo de los enlaces al pasar el mouse o al hacer clic */
-    color: rgb(109, 100, 100); 
+a:hover {
+  color: var(--imv-accent-hover);
 }
 
-.nav-link.active { /* Estilo del enlace activo */
-    color: rgb(255, 255, 255) !important;
-    font-weight: bold;
-    background: rgba(221, 60, 60, 0.967);
+
+/* ── 4. UTILIDADES COMPARTIDAS ───────────────────────────────── */
+/*
+   Solo clases que se usen en MÁS DE UN componente.
+   Si una clase la usa un solo componente, va en su .css propio.
+*/
+
+/* Spinner de carga (usado en dashboard y potencialmente en otros) */
+.imv-spinner {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--imv-text-muted);
+  font-size: 10px;
 }
 
-.topbar { /* Estilo de la barra superior */
-    margin:5px 20px 10px 20px;
-    border-radius: 20px;
-    height: 4.375rem;
-    background-color: rgba(246, 220, 220, 0.921);
-    box-shadow: 0 .15rem 1.75rem 0 rgba(58,59,69,.15);
-    display: flex;
-    align-items: center;
-
+/* Card base reutilizable — cualquier sección puede usarla */
+.imv-card {
+  background: var(--imv-white);
+  border-radius: 25px;
+  box-shadow: var(--imv-card-shadow);
+  padding: 24px;
 }
 
-.container-fluid { /* Estilo del contenedor de contenido */
-    background-color: white;
-    border-radius: 20px;
-    box-shadow: 10px 10px 8px rgba(0,0,0,0.1);
-    flex-grow: 1;
+/* Entrada de sección animada */
+.imv-page-enter {
+  animation: imvFadeIn 0.2s ease;
+}
+
+@keyframes imvFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+
+/* ── 5. OVERRIDES DE BOOTSTRAP ───────────────────────────────── */
+/*
+   Correcciones puntuales para que Bootstrap 4 no interfiera
+   con el nuevo layout. Solo lo mínimo necesario.
+*/
+
+/* Bootstrap agrega max-width al .container; el layout nuevo no lo usa */
+.container-fluid {
+  padding-left: 0;
+  padding-right: 0;
+  background-color: transparent;   /* anula el fondo blanco del global anterior */
+  box-shadow: none;                 /* anula la sombra del global anterior */
+  border-radius: 0;
+}
+
+/* Bootstrap pisa el color de los enlaces en .nav — lo neutralizamos
+   para que los nuevos estilos de .imv-nav-item tomen control sin
+   necesidad de !important en app.component.css */
+.imv-sidebar a,
+.imv-sidebar a:hover,
+.imv-sidebar a:focus {
+  color: inherit;
+  text-decoration: none;
 }

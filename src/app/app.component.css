@@ -1,74 +1,419 @@
-.topbar-title {
-  color: #333333 !important;
+/* ═══════════════════════════════════════════════════════
+   APP.COMPONENT.CSS — Layout principal IMV Rafaela
+   
+   RESPONSABILIDAD:
+     · Topbar, sidebar, área de contenido, bienvenida
+     · Las variables --imv-* y el reset de body viven en
+       styles.css (global). Este archivo solo las consume.
+════════════════════════════════════════════════════════ */
+
+
+/* ═══════════════════════════════════════════════════════
+   TOPBAR
+════════════════════════════════════════════════════════ */
+.imv-topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--topbar-h);
+  background: var(--imv-white);
+  border-bottom: 0.5px solid var(--imv-border);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  padding: 0 24px 0 calc(var(--sidebar-w) + 24px);
+  transition: padding-left 0.25s ease;
 }
 
-.topbar-inner {
+.imv-layout.sidebar-collapsed .imv-topbar {
+  padding-left: calc(var(--sidebar-w-min) + 24px);
+}
+
+.imv-topbar__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   width: 100%;
-  gap: 1rem;
 }
 
-.topbar-search {
-  width: 40%;
-  min-width: 240px;
+.imv-topbar__search {
+  flex: 1;
+  max-width: 400px;
 }
 
-.search-input-wrapper {
+.imv-search-wrapper {
   position: relative;
 }
 
-.search-icon {
+.imv-search-icon {
   position: absolute;
-  left: 1rem;
+  left: 14px;
   top: 50%;
   transform: translateY(-50%);
-  color: #6c757d;
+  color: var(--imv-text-muted);
+  font-size: 0.85rem;
   pointer-events: none;
-  font-size: 0.95rem;
 }
 
-.topbar-search .form-control {
-  padding: 0.65rem 1rem 0.65rem 2.8rem;
-  border-radius: 999px;
+.imv-search-input {
+  width: 100%;
+  padding: 8px 16px 8px 38px;
+  background: var(--imv-bg);
+  border: 0.5px solid transparent;
+  border-radius: 15px;
+  font-size: 13px;
+  color: var(--imv-text-primary);
+  transition: border-color 0.15s, box-shadow 0.15s;
+  outline: none;
 }
 
-.topbar-user {
-  font-size: 0.95rem;
-  color: #6c757d;
+.imv-search-input:focus {
+  border-color: var(--imv-accent);
+  box-shadow: 0 0 0 3px rgba(74,158,255,0.12);
+  background: var(--imv-white);
 }
 
-.topbar-user .fa-user-circle {
-  font-size: 1.2rem;
+.imv-search-input::placeholder {
+  color: var(--imv-text-muted);
 }
 
-.welcome-banner {
-  background-color: #ffffff;
+.imv-topbar__user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: 24px;
 }
 
-.home-logo {
-  width: 140px;
-  opacity: 0.85;
+.imv-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  background: var(--imv-navy);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
 }
 
-.pointer {
+.imv-user-name {
+  font-size: 12px;
+  color: var(--imv-text-secondary);
+  white-space: nowrap;
+}
+
+
+
+/* ═══════════════════════════════════════════════════════
+   LAYOUT PRINCIPAL
+════════════════════════════════════════════════════════ */
+.imv-layout {
+  display: flex;
+  padding-top: var(--topbar-h);
+  min-height: 100vh;
+}
+
+
+/* ═══════════════════════════════════════════════════════
+   SIDEBAR
+════════════════════════════════════════════════════════ */
+.imv-sidebar {
+  position: fixed;
+  top: var(--topbar-h);
+  left: 0;
+  bottom: 0;
+  width: var(--sidebar-w);
+  background: var(--imv-navy);
+  display: flex;
+  flex-direction: column;
+  transition: width 0.25s ease;
+  z-index: 900;
+  overflow: hidden;
+}
+
+.imv-sidebar--collapsed {
+  width: var(--sidebar-w-min);
+  justify-content: center;
+
+}
+
+.imv-sidebar__logo {
+  padding: 18px 14px;
+  border-bottom: 0.5px solid rgba(255,255,255,0.08);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 68px;
+  overflow: hidden;
   cursor: pointer;
+  background: transparent;
+  border: none;
+  width: 100%;
+  text-align: left;
+  color: inherit;
 }
 
-.dashboard-card {
-  border-left: 0.35rem solid #4e73df;
+.imv-sidebar__logo:hover {
+  background: rgba(255,255,255,0.05);
 }
 
-.section-card-icon {
-  font-size: 2.2rem;
+.imv-logo-box {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  background: rgba(255, 255, 255, 0.221);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.disabled-card {
-  cursor: default;
-  opacity: 0.85;
+.imv-logo-img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
 }
 
-@media (max-width: 992px) {
-  .topbar-search {
-    width: 100%;
-    max-width: 100%;
-  }
+.imv-logo-text {
+  display: flex;
+  flex-direction: column;
+  white-space: nowrap;
+  overflow: hidden;
+  opacity: 1;
+  transition: opacity 0.2s;
+}
+
+.imv-sidebar--collapsed .imv-logo-text {
+  opacity: 0;
+  width: var(--sidebar-w-min);
+}
+
+.imv-logo-text strong {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.3;
+}
+
+.imv-logo-text span {
+  font-size: 11px;
+  color: rgba(255,255,255,0.5);
+  line-height: 1.4;
+}
+
+.imv-sidebar__nav {
+  flex: 1;
+  padding: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.imv-sidebar__nav::-webkit-scrollbar { width: 3px; }
+.imv-sidebar__nav::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.15);
+  border-radius: 15px;
+}
+
+.imv-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  color: rgba(255,255,255,0.6);
+  font-size: 13px;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+  text-decoration: none;
+  user-select: none;
+}
+
+.imv-nav-item:hover {
+  background: rgba(255,255,255,0.07);
+  color: rgba(255,255,255,0.9);
+  text-decoration: none;
+}
+
+.imv-nav-item--active {
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  border-left-color: var(--imv-accent);
+}
+
+.imv-nav-item--active .imv-nav-icon {
+  color: var(--imv-accent);
+}
+
+.imv-nav-item--disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.imv-nav-icon {
+  font-size: 15px;
+  min-width: 16px;
+  text-align: center;
+  transition: color 0.15s;
+}
+
+.imv-nav-label {
+  overflow: hidden;
+  opacity: 1;
+  transition: opacity 0.2s;
+}
+
+.imv-sidebar--collapsed .imv-nav-label {
+  opacity: 0;
+  width: 0;
+}
+
+.imv-nav-divider {
+  height: 0.5px;
+  background: rgba(255,255,255,0.08);
+  margin: 8px 14px;
+}
+
+.imv-sidebar__toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px;
+  background: transparent;
+  border: none;
+  border-top: 0.5px solid rgba(255,255,255,0.08);
+  color: rgba(255, 255, 255, 0.166);
+  font-size: 16px;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+  width: 100%;
+}
+.imv-sidebar__toggle:focus {
+  outline: none;
+}
+
+.imv-sidebar__toggle:hover {
+  color: #fff;
+  background: rgba(255,255,255,0.06);
+}
+
+
+/* ═══════════════════════════════════════════════════════
+   ÁREA DE CONTENIDO
+════════════════════════════════════════════════════════ */
+.imv-content {
+  flex: 1;
+  margin-left: var(--sidebar-w);
+  padding: 28px 28px 40px;
+  transition: margin-left 0.25s ease;
+  min-width: 0;
+}
+
+.imv-layout.sidebar-collapsed .imv-content {
+  margin-left: var(--sidebar-w-min);
+}
+
+.imv-page {
+  animation: imvFadeIn 0.2s ease;
+}
+
+/* imvFadeIn declarada en styles.css como @keyframes global —
+   Angular la puede ver desde cualquier componente */
+
+.imv-page-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--imv-text-primary);
+  margin: 0 0 4px;
+}
+
+.imv-page-sub {
+  font-size: 13px;
+  color: var(--imv-text-secondary);
+  margin: 0 0 20px;
+}
+
+.imv-section-header {
+  margin-bottom: 16px;
+}
+
+
+/* ═══════════════════════════════════════════════════════
+   BIENVENIDA
+════════════════════════════════════════════════════════ */
+.imv-welcome {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--imv-white);
+  border-radius: 24px;
+  box-shadow: var(--imv-card-shadow);
+  padding: 28px 32px;
+  gap: 24px;
+}
+
+.imv-welcome__text h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--imv-text-primary);
+  margin: 0 0 6px;
+}
+
+.imv-welcome__text p {
+  font-size: 14px;
+  color: var(--imv-text-secondary);
+  margin: 0;
+}
+
+.imv-welcome__logo {
+  width: 120px;
+  opacity: 0.8;
+  flex-shrink: 0;
+}
+
+.imv-notice-list {
+  margin: 10px 0 0 18px;
+  padding: 0;
+  list-style: disc;
+  color: var(--imv-text-secondary);
+}
+
+.imv-notice-item {
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+/* ═══════════════════════════════════════════════════════
+   AJUSTES PARA SIDEBAR COLAPSADA (Centrado de íconos)
+════════════════════════════════════════════════════════ */
+
+/* Centrar el logo y quitar márgenes internos */
+.imv-sidebar--collapsed .imv-sidebar__logo {
+  justify-content: center;
+  padding-left: 0;
+  padding-right: 0;
+  gap: 0;
+}
+
+/* Centrar los items de navegación, eliminando el gap que empuja el ícono */
+.imv-sidebar--collapsed .imv-nav-item {
+  justify-content: center;
+  padding-left: 0;
+  padding-right: 0;
+  gap: 0; 
+}
+
+/* Asegurar que el label no ocupe espacio residual oculto */
+.imv-sidebar--collapsed .imv-nav-label {
+  opacity: 0;
+  width: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
 }

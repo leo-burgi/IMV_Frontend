@@ -1,4 +1,4 @@
 export interface Barrio {
-    IdBarrio: number;
+    IdBarrio?: number;
     Nombre: string;
 }
