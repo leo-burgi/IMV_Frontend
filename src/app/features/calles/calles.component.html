@@ -26,10 +26,10 @@
       </button>
     </div>
 
-    <div class="imv-modal__body">
+    <div class="imv-modal__body"> 
       <div class="imv-form-row">
-        <label for="nombreCalle">Nombre de la calle</label>
-        <input id="nombreCalle" type="text" name="nombreCalle" [(ngModel)]="calleForm.NombreCalle" required />
+        <label for="nombre">Nombre de la calle</label>
+        <input id="nombre" type="text" name="nombre" [(ngModel)]="calleForm.Nombre" required />
       </div>
 
       <div class="imv-form-row">
@@ -42,7 +42,7 @@
 
     <div class="imv-modal__footer">
       <button class="imv-btn imv-btn--ghost" type="button" (click)="cerrarModalAlta()">Cancelar</button>
-      <button class="imv-btn imv-btn--primary" type="button" (click)="guardarCalle()" [disabled]="guardando || !calleForm.NombreCalle?.trim()">
+      <button class="imv-btn imv-btn--primary" type="button" (click)="guardarCalle()" [disabled]="guardando || !calleForm.Nombre?.trim()">
         <i class="fas fa-spinner fa-spin" *ngIf="guardando"></i>
         {{ modoEdicion ? 'Guardar cambios' : 'Guardar calle' }}
       </button>
@@ -66,7 +66,7 @@
       />
     </div>
     <span class="imv-table-count">
-      {{ (listarCalles | imvFilter:filtroBusqueda:['NombreCalle','NombreReducido']).length }} registros
+      {{ (listarCalles | imvFilter:filtroBusqueda:['Nombre','NombreReducido']).length }} registros
     </span>
   </div>
 
@@ -84,11 +84,11 @@
       <tbody>
 
         <!-- Filas de datos -->
-        <tr *ngFor="let calle of listarCalles | imvFilter:filtroBusqueda:['NombreCalle','NombreReducido']">
+        <tr *ngFor="let calle of listarCalles | imvFilter:filtroBusqueda:['Nombre','NombreReducido']">
           <td>
             <span class="imv-badge-id">#{{ calle.IdCalle }}</span>
           </td>
-          <td class="col-name">{{ calle.NombreCalle }}</td>
+          <td class="col-name">{{ calle.Nombre }}</td>
           <td>{{ calle.NombreReducido }}</td>
           <td class="col-actions">
             <div class="imv-table-actions">
@@ -118,7 +118,7 @@
 
         <!-- Estado: sin resultados de búsqueda -->
         <tr *ngIf="listarCalles.length > 0 &&
-                   (listarCalles | imvFilter:filtroBusqueda:['NombreCalle','NombreReducido']).length === 0">
+                   (listarCalles | imvFilter:filtroBusqueda:['Nombre','NombreReducido']).length === 0">
           <td colspan="4">
             <div class="imv-table-empty">
               <i class="fas fa-search"></i>

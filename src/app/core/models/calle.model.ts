@@ -1,5 +1,5 @@
 export interface Calle {
     IdCalle?: number;
-    NombreCalle: string;
+    Nombre: string;
     NombreReducido?: string;
 }

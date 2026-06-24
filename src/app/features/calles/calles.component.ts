@@ -16,21 +16,34 @@ export class CallesComponent implements OnInit {
   guardando = false;
   mensajeError = '';
   mensajeExito = '';
-  calleForm: Partial<Calle> = { NombreCalle: '', NombreReducido: '' };
 
-  constructor(private calleService: CalleService, private searchService: ImvSearchService) { }
+  calleForm: Partial<Calle> = {
+    Nombre: '',
+    NombreReducido: ''
+  };
+
+  constructor(
+    private calleService: CalleService,
+    private searchService: ImvSearchService
+  ) { }
 
   ngOnInit(): void {
     this.searchService.searchTerm$.subscribe((term) => {
       this.filtroBusqueda = term || '';
     });
+
     this.cargarCalles();
   }
 
   cargarCalles(): void {
     this.calleService.getCalles().subscribe({
-      next: (data) => this.listarCalles = data || [],
-      error: () => this.mensajeError = 'No se pudieron cargar las calles desde IMV.Api.'
+      next: (data) => {
+        console.log('Calles recibidas desde API:', data);
+        this.listarCalles = data || [];
+      },
+      error: () => {
+        this.mensajeError = 'No se pudieron cargar las calles desde IMV.Api.';
+      }
     });
   }
 
@@ -43,7 +56,11 @@ export class CallesComponent implements OnInit {
     this.mensajeError = '';
     this.mensajeExito = '';
     this.modoEdicion = !!calle;
-    this.calleForm = calle ? { ...calle } : { NombreCalle: '', NombreReducido: '' };
+
+    this.calleForm = calle
+      ? { ...calle }
+      : { Nombre: '', NombreReducido: '' };
+
     this.mostrarModalAlta = true;
   }
 
@@ -52,11 +69,16 @@ export class CallesComponent implements OnInit {
     this.guardando = false;
     this.mensajeError = '';
     this.modoEdicion = false;
-    this.calleForm = { NombreCalle: '', NombreReducido: '' };
+
+    this.calleForm = {
+      Nombre: '',
+      NombreReducido: ''
+    };
   }
 
   guardarCalle(): void {
-    const nombre = this.calleForm.NombreCalle?.trim();
+    const nombre = this.calleForm.Nombre?.trim();
+
     if (!nombre) {
       this.mensajeError = 'El nombre de la calle es obligatorio.';
       return;
@@ -66,22 +88,32 @@ export class CallesComponent implements OnInit {
     this.mensajeError = '';
 
     const payload: Partial<Calle> = {
-      NombreCalle: nombre,
+      IdCalle: this.calleForm.IdCalle,
+      Nombre: nombre,
       NombreReducido: this.calleForm.NombreReducido?.trim() || ''
     };
 
-    const request = this.modoEdicion && this.calleForm.IdCalle
-      ? this.calleService.updateCalle(this.calleForm as Calle)
-      : this.calleService.createCalle(payload);
+    const request =
+      this.modoEdicion && this.calleForm.IdCalle
+        ? this.calleService.updateCalle(payload as Calle)
+        : this.calleService.createCalle(payload);
 
     request.subscribe({
       next: () => {
         this.cargarCalles();
         this.mostrarModalAlta = false;
         this.guardando = false;
-        this.mensajeExito = this.modoEdicion ? 'La calle se actualizó correctamente.' : 'La calle se cargó correctamente.';
+
+        this.mensajeExito = this.modoEdicion
+          ? 'La calle se actualizó correctamente.'
+          : 'La calle se cargó correctamente.';
+
         this.modoEdicion = false;
-        this.calleForm = { NombreCalle: '', NombreReducido: '' };
+
+        this.calleForm = {
+          Nombre: '',
+          NombreReducido: ''
+        };
       },
       error: () => {
         this.guardando = false;
@@ -91,7 +123,8 @@ export class CallesComponent implements OnInit {
   }
 
   verDetalle(calle: Calle): void {
-    alert('Vas a ver el detalle de la calle: ' + calle.NombreCalle);
+    console.log('Calle seleccionada:', calle);
+    alert('Vas a ver el detalle de la calle: ' + calle.Nombre);
   }
 
   editarCalle(calle: Calle): void {
