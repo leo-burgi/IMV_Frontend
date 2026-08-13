@@ -1,0 +1,64 @@
+<div class="imv-abm-header">
+  <div class="imv-abm-header__titles">
+    <h2 class="imv-page-title">Personas</h2>
+    <p class="imv-page-sub">Listado de personas registradas en el sistema</p>
+  </div>
+  <button class="imv-btn imv-btn--primary" type="button" (click)="abrirModalAlta()">
+    <i class="fas fa-plus"></i> Nueva persona
+  </button>
+</div>
+
+<div class="imv-alert imv-alert--success" *ngIf="mensajeExito">{{ mensajeExito }}</div>
+
+<div class="imv-modal-backdrop" *ngIf="mostrarModalAlta">
+  <div class="imv-modal" role="dialog" aria-modal="true" aria-labelledby="personaTitle">
+    <div class="imv-modal__header">
+      <h3 id="personaTitle">{{ modoEdicion ? 'Editar persona' : 'Nueva persona' }}</h3>
+      <button class="imv-btn imv-btn--ghost imv-btn--icon" type="button" (click)="cerrarModalAlta()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="imv-modal__body">
+      <div class="imv-form-row"><label for="dni">DNI</label><input id="dni" [(ngModel)]="personaForm.DNI" /></div>
+      <div class="imv-form-row"><label for="cuil">CUIL/CUIT</label><input id="cuil" [(ngModel)]="personaForm.CuilCuit" /></div>
+      <div class="imv-form-row"><label for="apellido">Apellido</label><input id="apellido" [(ngModel)]="personaForm.Apellido" /></div>
+      <div class="imv-form-row"><label for="personaNombre">Nombre</label><input id="personaNombre" [(ngModel)]="personaForm.Nombre" /></div>
+      <div class="imv-form-row"><label for="telefono">Teléfono</label><input id="telefono" [(ngModel)]="personaForm.Telefono" /></div>
+      <div class="imv-form-row"><label for="email">Email</label><input id="email" type="email" [(ngModel)]="personaForm.Email" /></div>
+      <p class="imv-form-error" *ngIf="mensajeError">{{ mensajeError }}</p>
+    </div>
+    <div class="imv-modal__footer">
+      <button class="imv-btn imv-btn--ghost" type="button" (click)="cerrarModalAlta()">Cancelar</button>
+      <button class="imv-btn imv-btn--primary" type="button" (click)="guardarPersona()"
+              [disabled]="guardando || !personaForm.DNI?.trim() || !personaForm.Apellido?.trim() || !personaForm.Nombre?.trim()">
+        <i class="fas fa-spinner fa-spin" *ngIf="guardando"></i>
+        {{ modoEdicion ? 'Guardar cambios' : 'Guardar persona' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="imv-card">
+  <div class="imv-table-toolbar">
+    <div class="imv-table-search">
+      <i class="fas fa-search imv-table-search__icon"></i>
+      <input type="search" class="imv-table-search__input" placeholder="Buscar por DNI, apellido o nombre..."
+             [(ngModel)]="filtroBusqueda" (ngModelChange)="onFiltroChange($event)" />
+    </div>
+    <span class="imv-table-count">{{ (listaPersonas | imvFilter:filtroBusqueda:['DNI','CuilCuit','Apellido','Nombre']).length }} registros</span>
+  </div>
+  <div class="imv-table-wrapper">
+    <table class="imv-table">
+      <thead><tr><th>DNI</th><th>Apellido y nombre</th><th>CUIL/CUIT</th><th>Contacto</th><th class="col-actions">Acciones</th></tr></thead>
+      <tbody>
+        <tr *ngFor="let persona of listaPersonas | imvFilter:filtroBusqueda:['DNI','CuilCuit','Apellido','Nombre']">
+          <td>{{ persona.DNI }}</td><td class="col-name">{{ persona.Apellido }}, {{ persona.Nombre }}</td>
+          <td>{{ persona.CuilCuit }}</td><td>{{ persona.Telefono || persona.Email }}</td>
+          <td class="col-actions"><button class="imv-btn imv-btn--icon imv-btn--edit" type="button" (click)="editarPersona(persona)" title="Editar"><i class="fas fa-edit"></i></button></td>
+        </tr>
+        <tr *ngIf="cargando"><td colspan="5"><div class="imv-table-empty"><i class="fas fa-spinner fa-spin"></i> Cargando personas...</div></td></tr>
+        <tr *ngIf="!cargando && listaPersonas.length === 0"><td colspan="5"><div class="imv-table-empty">No hay personas registradas.</div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
