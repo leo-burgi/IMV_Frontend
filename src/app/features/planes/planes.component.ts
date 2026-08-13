@@ -14,6 +14,7 @@ export class PlanesComponent implements OnInit {
   mostrarModalAlta = false;
   modoEdicion = false;
   guardando = false;
+  cargando = false;
   mensajeError = '';
   mensajeExito = '';
   planForm: Partial<Plan> = { NombrePlan: '', Programa: '' };
@@ -28,9 +29,17 @@ export class PlanesComponent implements OnInit {
   }
 
   cargarPlanes(): void {
+    this.cargando = true;
+    this.mensajeError = '';
     this.planService.getPlanes().subscribe({
-      next: (data) => this.listaPlanes = data || [],
-      error: () => this.mensajeError = 'No se pudieron cargar los planes desde IMV.Api.'
+      next: (data) => {
+        this.listaPlanes = data || [];
+        this.cargando = false;
+      },
+      error: () => {
+        this.cargando = false;
+        this.mensajeError = 'No se pudieron cargar los planes desde IMV.Api.';
+      }
     });
   }
 
@@ -59,18 +68,24 @@ export class PlanesComponent implements OnInit {
     const nombre = this.planForm.NombrePlan?.trim();
     const programa = this.planForm.Programa?.trim();
 
-    if (!nombre || !programa) {
-      this.mensajeError = 'El nombre del plan y el programa son obligatorios.';
+    if (!nombre) {
+      this.mensajeError = 'El nombre del plan es obligatorio.';
       return;
     }
 
     this.guardando = true;
     this.mensajeError = '';
 
-    const payload: Partial<Plan> = { NombrePlan: nombre, Programa: programa };
+    const datosPlan: Plan = {
+      NombrePlan: nombre,
+      Programa: programa || undefined
+    };
     const request = this.modoEdicion && this.planForm.IdPlan
-      ? this.planService.updatePlan(this.planForm as Plan)
-      : this.planService.createPlan(payload);
+      ? this.planService.updatePlan({
+          ...datosPlan,
+          IdPlan: this.planForm.IdPlan
+        })
+      : this.planService.createPlan(datosPlan);
 
     request.subscribe({
       next: () => {
