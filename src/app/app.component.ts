@@ -50,8 +50,14 @@ export class AppComponent {
     if (texto.includes('calle') || texto.includes('cale')) {
       this.cambiarSeccion('calles'); return;
     }
+    if (texto.includes('persona')) {
+      this.cambiarSeccion('personas'); return;
+    }
+    if (texto.includes('notarial')) {
+      this.cambiarSeccion('notariales'); return;
+    }
 
-    if (['planes', 'barrios', 'calles'].includes(this.seccionActiva)) {
+    if (['planes', 'barrios', 'calles', 'personas', 'notariales'].includes(this.seccionActiva)) {
       return;
     }
 

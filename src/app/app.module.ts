@@ -10,6 +10,8 @@ import { CallesComponent } from './features/calles/calles.component';
 import { AppRoutingModule } from './app-routing.module';
 import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { ImvFilterPipe } from './shared/imv-filter.pipe';
+import { PersonasComponent } from './features/personas/personas.component';
+import { NotarialesComponent } from './features/notariales/notariales.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +20,9 @@ import { ImvFilterPipe } from './shared/imv-filter.pipe';
     BarriosComponent, 
     CallesComponent, 
     DashboardComponent,
-    ImvFilterPipe
+    ImvFilterPipe,
+    PersonasComponent,
+    NotarialesComponent
   ],
   imports: [
     BrowserModule,

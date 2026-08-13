@@ -96,9 +96,11 @@ export class PlanesComponent implements OnInit {
         this.modoEdicion = false;
         this.planForm = { NombrePlan: '', Programa: '' };
       },
-      error: () => {
+      error: error => {
         this.guardando = false;
-        this.mensajeError = 'No se pudo guardar el plan. Verificá la conexión con IMV.Api.';
+        this.mensajeError = error.error && error.error.Message
+          ? error.error.Message
+          : 'No se pudo guardar el plan. Verificá la conexión con IMV.Api.';
       }
     });
   }
