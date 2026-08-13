@@ -14,6 +14,7 @@ export class BarriosComponent implements OnInit {
   mostrarModalAlta = false;
   modoEdicion = false;
   guardando = false;
+  cargando = false;
   mensajeError = '';
   mensajeExito = '';
   barrioForm: Partial<Barrio> = { Nombre: '' };
@@ -28,9 +29,17 @@ export class BarriosComponent implements OnInit {
   }
 
   cargarBarrios(): void {
+    this.cargando = true;
+    this.mensajeError = '';
     this.barrioService.getBarrios().subscribe({
-      next: (data) => this.listaBarrios = data || [],
-      error: () => this.mensajeError = 'No se pudieron cargar los barrios desde IMV.Api.'
+      next: (data) => {
+        this.listaBarrios = data || [];
+        this.cargando = false;
+      },
+      error: () => {
+        this.cargando = false;
+        this.mensajeError = 'No se pudieron cargar los barrios desde IMV.Api.';
+      }
     });
   }
 
@@ -65,10 +74,13 @@ export class BarriosComponent implements OnInit {
     this.guardando = true;
     this.mensajeError = '';
 
-    const payload: Partial<Barrio> = { Nombre: nombre };
+    const datosBarrio: Barrio = { Nombre: nombre };
     const request = this.modoEdicion && this.barrioForm.IdBarrio
-      ? this.barrioService.updateBarrio(this.barrioForm as Barrio)
-      : this.barrioService.createBarrio(payload);
+      ? this.barrioService.updateBarrio({
+          ...datosBarrio,
+          IdBarrio: this.barrioForm.IdBarrio
+        })
+      : this.barrioService.createBarrio(datosBarrio);
 
     request.subscribe({
       next: () => {

@@ -34,7 +34,7 @@
 
       <div class="imv-form-row">
         <label for="programaPlan">Programa</label>
-        <input id="programaPlan" type="text" name="programaPlan" [(ngModel)]="planForm.Programa" required />
+        <input id="programaPlan" type="text" name="programaPlan" [(ngModel)]="planForm.Programa" />
       </div>
 
       <p class="imv-form-error" *ngIf="mensajeError">{{ mensajeError }}</p>
@@ -42,7 +42,7 @@
 
     <div class="imv-modal__footer">
       <button class="imv-btn imv-btn--ghost" type="button" (click)="cerrarModalAlta()">Cancelar</button>
-      <button class="imv-btn imv-btn--primary" type="button" (click)="guardarPlan()" [disabled]="guardando || !planForm.NombrePlan?.trim() || !planForm.Programa?.trim()">
+      <button class="imv-btn imv-btn--primary" type="button" (click)="guardarPlan()" [disabled]="guardando || !planForm.NombrePlan?.trim()">
         <i class="fas fa-spinner fa-spin" *ngIf="guardando"></i>
         {{ modoEdicion ? 'Guardar cambios' : 'Guardar plan' }}
       </button>
@@ -108,12 +108,18 @@
         </tr>
 
         <!-- Estado: cargando -->
-        <tr *ngIf="listaPlanes.length === 0">
+        <tr *ngIf="cargando">
           <td colspan="4">
             <div class="imv-table-empty">
               <i class="fas fa-spinner fa-spin"></i>
               Cargando planes desde el servidor IMV...
             </div>
+          </td>
+        </tr>
+
+        <tr *ngIf="!cargando && listaPlanes.length === 0">
+          <td colspan="4">
+            <div class="imv-table-empty">No hay planes registrados.</div>
           </td>
         </tr>
 

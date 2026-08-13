@@ -100,12 +100,18 @@
         </tr>
 
         <!-- Estado: cargando -->
-        <tr *ngIf="listaBarrios.length === 0">
+        <tr *ngIf="cargando">
           <td colspan="3">
             <div class="imv-table-empty">
               <i class="fas fa-spinner fa-spin"></i>
               Cargando barrios desde el servidor IMV...
             </div>
+          </td>
+        </tr>
+
+        <tr *ngIf="!cargando && listaBarrios.length === 0">
+          <td colspan="3">
+            <div class="imv-table-empty">No hay barrios registrados.</div>
           </td>
         </tr>
 
