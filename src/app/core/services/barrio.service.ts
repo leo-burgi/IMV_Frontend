@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Barrio } from '../models/barrio.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BarrioService {
-  private apiUrl = 'https://localhost:44350/api/barrios';
+  private readonly apiUrl = `${environment.apiUrl}/barrios`;
 
   constructor(private http: HttpClient) { }
 

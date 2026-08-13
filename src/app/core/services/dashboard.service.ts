@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { DashboardDTO } from '../models/dashboard.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DashboardService {
   // Ajustá esta URL al puerto real de tu API en .NET
-  private apiUrl = 'https://localhost:44350/api/dashboard/resumen'; 
+  private readonly apiUrl = `${environment.apiUrl}/dashboard/resumen`;
 
   constructor(private http: HttpClient) { }
 
