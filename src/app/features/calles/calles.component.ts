@@ -14,6 +14,7 @@ export class CallesComponent implements OnInit {
   mostrarModalAlta = false;
   modoEdicion = false;
   guardando = false;
+  cargando = false;
   mensajeError = '';
   mensajeExito = '';
 
@@ -36,12 +37,15 @@ export class CallesComponent implements OnInit {
   }
 
   cargarCalles(): void {
+    this.cargando = true;
+    this.mensajeError = '';
     this.calleService.getCalles().subscribe({
       next: (data) => {
-        console.log('Calles recibidas desde API:', data);
         this.listarCalles = data || [];
+        this.cargando = false;
       },
       error: () => {
+        this.cargando = false;
         this.mensajeError = 'No se pudieron cargar las calles desde IMV.Api.';
       }
     });
@@ -87,16 +91,18 @@ export class CallesComponent implements OnInit {
     this.guardando = true;
     this.mensajeError = '';
 
-    const payload: Partial<Calle> = {
-      IdCalle: this.calleForm.IdCalle,
+    const datosCalle: Calle = {
       Nombre: nombre,
-      NombreReducido: this.calleForm.NombreReducido?.trim() || ''
+      NombreReducido: this.calleForm.NombreReducido?.trim() || undefined
     };
 
     const request =
       this.modoEdicion && this.calleForm.IdCalle
-        ? this.calleService.updateCalle(payload as Calle)
-        : this.calleService.createCalle(payload);
+        ? this.calleService.updateCalle({
+            ...datosCalle,
+            IdCalle: this.calleForm.IdCalle
+          })
+        : this.calleService.createCalle(datosCalle);
 
     request.subscribe({
       next: () => {

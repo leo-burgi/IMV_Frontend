@@ -107,11 +107,19 @@
         </tr>
 
         <!-- Estado: cargando -->
-        <tr *ngIf="listarCalles.length === 0">
+        <tr *ngIf="cargando">
           <td colspan="4">
             <div class="imv-table-empty">
               <i class="fas fa-spinner fa-spin"></i>
               Cargando calles desde el servidor IMV...
+            </div>
+          </td>
+        </tr>
+
+        <tr *ngIf="!cargando && listarCalles.length === 0">
+          <td colspan="4">
+            <div class="imv-table-empty">
+              No hay calles registradas.
             </div>
           </td>
         </tr>
