@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BarriosComponent } from './barrios.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { FormsModule } from '@angular/forms';
+import { ImvFilterPipe } from '../../shared/imv-filter.pipe';
 
 
 describe('BarriosComponent', () => {
@@ -9,8 +11,8 @@ describe('BarriosComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ BarriosComponent ],
-      imports: [ HttpClientTestingModule ]
+      declarations: [BarriosComponent, ImvFilterPipe],
+      imports: [HttpClientTestingModule, FormsModule]
     })
     .compileComponents();
   });
