@@ -46,7 +46,13 @@
   </div>
 
   <!-- Personas -->
-  <div class="dash-stat-card">
+  <div class="dash-stat-card dash-stat-card--clickable"
+       role="button"
+       tabindex="0"
+       aria-label="Ver personas registradas"
+       (click)="irASeccion('personas')"
+       (keydown.enter)="irASeccion('personas')"
+       (keydown.space)="irASeccion('personas')">
     <div class="dash-stat-icon dash-stat-icon--amber">
       <i class="fas fa-users"></i>
     </div>
@@ -55,10 +61,10 @@
         <i class="fas fa-spinner fa-spin" *ngIf="!dashboardData"></i>
         <span *ngIf="dashboardData">{{ dashboardData.TotalPersonas }}</span>
       </div>
-      <div class="dash-stat-label">Personas beneficiadas</div>
+      <div class="dash-stat-label">Personas registradas</div>
     </div>
-    <div class="dash-stat-link dash-stat-link--locked">
-      <i class="fas fa-lock"></i> Acceso restringido
+    <div class="dash-stat-link">
+      <i class="fas fa-arrow-right"></i> Ver personas
     </div>
   </div>
 
@@ -85,6 +91,8 @@
      FILA INFERIOR
 ════════════════════════════════════════════════════════ -->
 <div class="dash-bottom">
+
+  <div class="dash-insights">
 
   <!-- Gráfico de barras -->
   <div class="dash-card">
@@ -124,6 +132,49 @@
       </div>
 
     </div>
+  </div>
+
+  <!-- Distribucion de escrituras por estado -->
+  <div class="dash-card">
+    <div class="dash-card__header">
+      <i class="fas fa-chart-pie"></i>
+      <span>Escrituras seg&uacute;n estado del tr&aacute;mite</span>
+    </div>
+    <div class="dash-card__body">
+      <div *ngIf="!dashboardData" class="dash-loading">
+        <i class="fas fa-spinner fa-spin fa-lg"></i>
+        <span>Procesando estados...</span>
+      </div>
+
+      <div *ngIf="dashboardData?.EstadosEscrituras?.length > 0" class="dash-pie-layout">
+        <div class="dash-pie"
+             role="img"
+             [attr.aria-label]="descripcionGraficoEscrituras"
+             [style.background]="estiloGraficoEscrituras">
+          <div class="dash-pie__center">
+            <strong>{{ dashboardData.TotalAdjudicaciones | number }}</strong>
+            <span>tr&aacute;mites</span>
+          </div>
+        </div>
+
+        <div class="dash-legend">
+          <div *ngFor="let estado of dashboardData.EstadosEscrituras; let i = index"
+               class="dash-legend__item">
+            <span class="dash-legend__color" [style.background]="colorEstado(i)"></span>
+            <span class="dash-legend__name">{{ estado.Estado }}</span>
+            <strong>{{ estado.Cantidad | number }}</strong>
+            <span>{{ estado.Porcentaje | number:'1.0-1' }}%</span>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="dashboardData?.EstadosEscrituras?.length === 0" class="dash-empty">
+        <i class="fas fa-info-circle"></i>
+        <span>No hay estados de escritura para mostrar.</span>
+      </div>
+    </div>
+  </div>
+
   </div>
 
   <!-- Error general -->

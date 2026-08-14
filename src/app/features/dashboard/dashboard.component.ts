@@ -11,6 +11,10 @@ export class DashboardComponent implements OnInit {
   
   dashboardData: DashboardDTO | null = null;
   errorMensaje: string = '';
+  readonly coloresEstados: string[] = [
+    '#185fa5', '#2e7d4f', '#d97706', '#7c3aed',
+    '#0f6e56', '#c24156', '#64748b', '#378add'
+  ];
 
  
   // Esto va a disparar un string (el nombre de la sección) hacia afuera.
@@ -37,5 +41,37 @@ export class DashboardComponent implements OnInit {
   // Método local del HTML que activa el emisor
   irASeccion(seccion: string) {
     this.solicitarNavegacion.emit(seccion);
+  }
+
+  colorEstado(indice: number): string {
+    return this.coloresEstados[indice % this.coloresEstados.length];
+  }
+
+  get estiloGraficoEscrituras(): string {
+    const estados = this.dashboardData && this.dashboardData.EstadosEscrituras
+      ? this.dashboardData.EstadosEscrituras.filter(estado => estado.Porcentaje > 0)
+      : [];
+
+    if (estados.length === 0) {
+      return '#eef1f5';
+    }
+
+    let acumulado = 0;
+    const segmentos = estados.map((estado, indice) => {
+      const inicio = acumulado;
+      acumulado += estado.Porcentaje;
+      return `${this.colorEstado(indice)} ${inicio}% ${Math.min(acumulado, 100)}%`;
+    });
+
+    return `conic-gradient(${segmentos.join(', ')})`;
+  }
+
+  get descripcionGraficoEscrituras(): string {
+    const estados = this.dashboardData && this.dashboardData.EstadosEscrituras
+      ? this.dashboardData.EstadosEscrituras
+      : [];
+    return estados.length === 0
+      ? 'No hay escrituras con estados registrados.'
+      : estados.map(estado => `${estado.Estado}: ${estado.Porcentaje}%`).join(', ');
   }
 }

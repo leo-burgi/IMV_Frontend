@@ -4,6 +4,12 @@ export interface BarrioRankingDTO {
     Porcentaje: number;
 }
 
+export interface EstadoEscrituraDTO {
+    Estado: string;
+    Cantidad: number;
+    Porcentaje: number;
+}
+
 export interface DashboardDTO {
     TotalBarrios: number;
     TotalAdjudicaciones: number;
@@ -11,4 +17,5 @@ export interface DashboardDTO {
     TotalPersonas: number;
     MontoTotalDeudaActiva?: number; 
     TopBarrios: BarrioRankingDTO[];
+    EstadosEscrituras: EstadoEscrituraDTO[];
 }
