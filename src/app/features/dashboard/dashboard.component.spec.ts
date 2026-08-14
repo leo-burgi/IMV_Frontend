@@ -24,4 +24,30 @@ describe('DashboardComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('debe solicitar la navegacion a Personas', () => {
+    spyOn(component.solicitarNavegacion, 'emit');
+
+    component.irASeccion('personas');
+
+    expect(component.solicitarNavegacion.emit).toHaveBeenCalledWith('personas');
+  });
+
+  it('debe construir el grafico con la distribucion de estados', () => {
+    component.dashboardData = {
+      TotalBarrios: 1,
+      TotalAdjudicaciones: 10,
+      TotalPlanes: 1,
+      TotalPersonas: 12,
+      TopBarrios: [],
+      EstadosEscrituras: [
+        { Estado: 'Iniciada', Cantidad: 6, Porcentaje: 60 },
+        { Estado: 'Finalizada', Cantidad: 4, Porcentaje: 40 }
+      ]
+    };
+
+    expect(component.estiloGraficoEscrituras).toContain('conic-gradient');
+    expect(component.estiloGraficoEscrituras).toContain('60%');
+    expect(component.descripcionGraficoEscrituras).toContain('Finalizada: 40%');
+  });
 });
