@@ -81,7 +81,8 @@
         <span class="imv-nav-label">Personas</span>
       </a>
 
-      <a class="imv-nav-item imv-nav-item--disabled" title="Próximamente">
+      <a class="imv-nav-item" [class.imv-nav-item--active]="seccionActiva === 'adjudicaciones'"
+         (click)="cambiarSeccion('adjudicaciones')" title="Adjudicaciones">
         <i class="fas fa-fw fa-key imv-nav-icon"></i>
         <span class="imv-nav-label">Adjudicaciones</span>
       </a>
@@ -131,6 +132,10 @@
         </div>
         <img src="assets/img/rafaela-logo.png" alt="Rafaela" class="imv-welcome__logo" />
       </div>
+
+      <app-calidad-datos-panel
+        (verAdjudicaciones)="cambiarSeccion('adjudicaciones')">
+      </app-calidad-datos-panel>
     </div>
 
     <!-- Dashboard -->
@@ -170,6 +175,10 @@
 
     <div *ngIf="seccionActiva === 'personas'" class="imv-page">
       <div class="imv-card"><app-personas></app-personas></div>
+    </div>
+
+    <div *ngIf="seccionActiva === 'adjudicaciones'" class="imv-page">
+      <div class="imv-card"><app-adjudicaciones></app-adjudicaciones></div>
     </div>
 
     <div *ngIf="seccionActiva === 'notariales'" class="imv-page">

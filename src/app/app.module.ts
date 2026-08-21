@@ -12,6 +12,8 @@ import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { ImvFilterPipe } from './shared/imv-filter.pipe';
 import { PersonasComponent } from './features/personas/personas.component';
 import { NotarialesComponent } from './features/notariales/notariales.component';
+import { AdjudicacionesComponent } from './features/adjudicaciones/adjudicaciones.component';
+import { CalidadDatosPanelComponent } from './features/inicio/calidad-datos-panel.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +24,9 @@ import { NotarialesComponent } from './features/notariales/notariales.component'
     DashboardComponent,
     ImvFilterPipe,
     PersonasComponent,
-    NotarialesComponent
+    NotarialesComponent,
+    AdjudicacionesComponent,
+    CalidadDatosPanelComponent
   ],
   imports: [
     BrowserModule,

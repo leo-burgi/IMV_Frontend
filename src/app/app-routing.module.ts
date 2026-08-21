@@ -5,6 +5,7 @@ import { BarriosComponent } from './features/barrios/barrios.component';
 import { CallesComponent } from './features/calles/calles.component';
 import { PersonasComponent } from './features/personas/personas.component';
 import { NotarialesComponent } from './features/notariales/notariales.component';
+import { AdjudicacionesComponent } from './features/adjudicaciones/adjudicaciones.component';
 
 const routes: Routes = [
   { path: 'planes', component: PlanesComponent },
@@ -12,6 +13,7 @@ const routes: Routes = [
   { path: 'calles', component: CallesComponent },
   { path: 'personas', component: PersonasComponent },
   { path: 'notariales', component: NotarialesComponent },
+  { path: 'adjudicaciones', component: AdjudicacionesComponent },
   { path: '', redirectTo: '/planes', pathMatch: 'full' } // Redirección por defecto
 ];
 

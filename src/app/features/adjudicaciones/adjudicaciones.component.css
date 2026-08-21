@@ -1,0 +1,30 @@
+.adjudicaciones-toolbar { align-items: center; }
+.adjudicaciones-toolbar .imv-table-search { max-width: 430px; }
+.adjudicaciones-filter,
+.imv-form-row select {
+  padding: 8px 10px;
+  border: 0.5px solid rgba(0,0,0,0.12);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--imv-text-primary);
+  font-size: 13px;
+}
+.adjudicaciones-modal { width: min(100%, 760px); }
+.adjudicacion-form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.adjudicacion-form-wide { grid-column: 1 / -1; }
+.adjudicacion-checkbox label { display: flex; align-items: center; gap: 8px; }
+.adjudicacion-checkbox input { width: auto; }
+.adjudicacion-detail-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.adjudicacion-detail-grid div { display: flex; flex-direction: column; gap: 3px; }
+.adjudicacion-detail-grid span, .imv-form-row small { color: var(--imv-text-muted); font-size: 11px; }
+.adjudicacion-detail-grid strong { font-size: 14px; }
+.adjudicacion-secondary { display: block; color: var(--imv-text-muted); font-size: 11px; margin-top: 2px; }
+.adjudicacion-status { display: inline-flex; padding: 3px 8px; border-radius: 999px; background: var(--imv-green-bg); color: var(--imv-green); font-size: 11px; font-weight: 600; }
+.adjudicacion-status--inactive { background: #eef1f5; color: var(--imv-text-secondary); }
+.adjudicaciones-error { margin-bottom: 14px; padding: 10px 12px; border-radius: 10px; background: #fcebeb; color: #a32d2d; font-size: 13px; }
+.adjudicaciones-table td { min-width: 110px; }
+.adjudicaciones-table td:first-child, .adjudicaciones-table td:last-child { min-width: auto; }
+@media (max-width: 700px) {
+  .adjudicacion-form-grid, .adjudicacion-detail-grid { grid-template-columns: 1fr; }
+  .adjudicacion-form-wide { grid-column: auto; }
+}
