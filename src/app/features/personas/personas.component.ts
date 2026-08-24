@@ -17,6 +17,8 @@ export class PersonasComponent implements OnInit {
   cargando = false;
   mensajeError = '';
   mensajeExito = '';
+  readonly pageSize = 15;
+  currentPage = 1;
   personaForm: Partial<Persona> = this.emptyForm();
 
   constructor(
@@ -25,7 +27,10 @@ export class PersonasComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.searchService.searchTerm$.subscribe(term => this.filtroBusqueda = term || '');
+    this.searchService.searchTerm$.subscribe(term => {
+      this.filtroBusqueda = term || '';
+      this.currentPage = 1;
+    });
     this.cargarPersonas();
   }
 
@@ -46,8 +51,34 @@ export class PersonasComponent implements OnInit {
 
   onFiltroChange(term: string): void {
     this.filtroBusqueda = term;
+    this.currentPage = 1;
     this.searchService.setSearch(term);
   }
+
+  get personasFiltradas(): Persona[] {
+    const term = this.filtroBusqueda.trim().toLowerCase();
+    const termDigits = this.onlyDigits(term);
+
+    return this.listaPersonas.filter(persona => {
+      if (!term) return true;
+
+      const text = `${persona.Apellido || ''} ${persona.Nombre || ''} ${persona.DNI || ''} ${persona.CuilCuit || ''}`
+        .toLowerCase();
+      const identifierMatches = !!termDigits && (
+        this.onlyDigits(persona.DNI).includes(termDigits) ||
+        this.onlyDigits(persona.CuilCuit).includes(termDigits)
+      );
+
+      return text.includes(term) || identifierMatches;
+    });
+  }
+
+  get personasPaginadas(): Persona[] {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.personasFiltradas.slice(start, start + this.pageSize);
+  }
+
+  cambiarPagina(page: number): void { this.currentPage = page; }
 
   abrirModalAlta(persona?: Persona): void {
     this.mensajeError = '';
@@ -118,5 +149,9 @@ export class PersonasComponent implements OnInit {
 
   private optional(value?: string): string | undefined {
     return value && value.trim() ? value.trim() : undefined;
+  }
+
+  private onlyDigits(value?: string): string {
+    return (value || '').replace(/\D/g, '');
   }
 }
