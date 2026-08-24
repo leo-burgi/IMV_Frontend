@@ -1,5 +1,5 @@
 export interface Plan {
   IdPlan?: number;
-  NombrePlan: string;
-  Programa?: string;
+  OrigenPlan: string;
+  NombrePlan: string | null;
 }

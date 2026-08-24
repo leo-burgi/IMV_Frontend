@@ -19,7 +19,7 @@ describe('PlanService', () => {
   afterEach(() => httpMock.verify());
 
   it('debe obtener planes mediante GET', () => {
-    const expected: Plan[] = [{ IdPlan: 1, NombrePlan: 'Plan A', Programa: 'Programa A' }];
+    const expected: Plan[] = [{ IdPlan: 1, OrigenPlan: 'IMV', NombrePlan: 'Plan A' }];
     service.getPlanes().subscribe(response => expect(response).toEqual(expected));
     const req = httpMock.expectOne(`${apiUrl}/listar`);
     expect(req.request.method).toBe('GET');
@@ -27,7 +27,7 @@ describe('PlanService', () => {
   });
 
   it('debe crear un plan mediante POST', () => {
-    const payload: Plan = { NombrePlan: 'Plan B' };
+    const payload: Plan = { OrigenPlan: 'IMV', NombrePlan: 'Plan B' };
     const expected: Plan = { IdPlan: 2, ...payload };
     service.createPlan(payload).subscribe(response => expect(response).toEqual(expected));
     const req = httpMock.expectOne(`${apiUrl}/guardar`);
@@ -37,7 +37,7 @@ describe('PlanService', () => {
   });
 
   it('debe editar un plan mediante PUT incluyendo IdPlan', () => {
-    const payload: Plan = { IdPlan: 2, NombrePlan: 'Plan actualizado', Programa: 'Programa' };
+    const payload: Plan = { IdPlan: 2, OrigenPlan: 'PROVINCIAL', NombrePlan: 'Plan actualizado' };
     service.updatePlan(payload).subscribe(response => expect(response).toEqual(payload));
     const req = httpMock.expectOne(`${apiUrl}/editar`);
     expect(req.request.method).toBe('PUT');

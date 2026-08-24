@@ -24,6 +24,11 @@
 .adjudicaciones-error { margin-bottom: 14px; padding: 10px 12px; border-radius: 10px; background: #fcebeb; color: #a32d2d; font-size: 13px; }
 .adjudicaciones-table td { min-width: 110px; }
 .adjudicaciones-table td:first-child, .adjudicaciones-table td:last-child { min-width: auto; }
+.cotitular-block { display: flex; flex-direction: column; gap: 2px; padding: 4px 0; }
+.cotitular-block + .cotitular-block { border-top: 1px solid rgba(0,0,0,0.08); margin-top: 4px; }
+.cotitular-block small, .cotitular-block span { color: var(--imv-text-muted); font-size: 11px; }
+.cotitular-block strong { font-size: 12px; }
+.adjudicacion-detail-cotitulares { grid-column: 1 / -1; }
 @media (max-width: 700px) {
   .adjudicacion-form-grid, .adjudicacion-detail-grid { grid-template-columns: 1fr; }
   .adjudicacion-form-wide { grid-column: auto; }

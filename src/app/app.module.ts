@@ -14,6 +14,7 @@ import { PersonasComponent } from './features/personas/personas.component';
 import { NotarialesComponent } from './features/notariales/notariales.component';
 import { AdjudicacionesComponent } from './features/adjudicaciones/adjudicaciones.component';
 import { CalidadDatosPanelComponent } from './features/inicio/calidad-datos-panel.component';
+import { PropiedadesComponent } from './features/propiedades/propiedades.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { CalidadDatosPanelComponent } from './features/inicio/calidad-datos-pane
     PersonasComponent,
     NotarialesComponent,
     AdjudicacionesComponent,
-    CalidadDatosPanelComponent
+    CalidadDatosPanelComponent,
+    PropiedadesComponent
   ],
   imports: [
     BrowserModule,

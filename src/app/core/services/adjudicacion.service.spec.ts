@@ -10,7 +10,7 @@ describe('AdjudicacionService', () => {
   const apiUrl = `${environment.apiUrl}/adjudicaciones`;
   const adjudicacion: Adjudicacion = {
     IdAdjudicacion: 1, IdPropiedad: 2, Propiedad: 'Belgrano 100', Catastro: '123',
-    IdPlan: 3, Plan: 'Plan A', IdTitularPrincipal: 4, TitularPrincipal: 'Pérez, Ana',
+    IdPlan: 3, NombrePlan: 'Plan A', OrigenPlan: 'IMV', IdTitularPrincipal: 4, TitularPrincipal: 'Pérez, Ana',
     Cotitulares: [], Activa: true
   };
 

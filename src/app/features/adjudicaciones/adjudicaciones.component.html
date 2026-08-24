@@ -28,11 +28,18 @@
         <div><span>Estado</span><strong>{{ seleccionada.Activa ? 'Activa' : 'Inactiva' }}</strong></div>
         <div><span>Propiedad</span><strong>{{ seleccionada.Propiedad }}</strong></div>
         <div><span>Catastro</span><strong>{{ seleccionada.Catastro || 'Sin dato' }}</strong></div>
-        <div><span>Plan</span><strong>{{ seleccionada.Plan }} {{ seleccionada.Programa || '' }}</strong></div>
+        <div><span>Plan</span><strong>{{ seleccionada.NombrePlan || 'Sin nombre informado' }}</strong><small>{{ seleccionada.OrigenPlan }}</small></div>
         <div><span>Legajo</span><strong>{{ seleccionada.NroLegajoFisico || 'Sin dato' }}</strong></div>
         <div><span>Titular principal</span><strong>{{ seleccionada.TitularPrincipal }}</strong></div>
         <div><span>DNI</span><strong>{{ seleccionada.DniTitularPrincipal || 'Sin dato' }}</strong></div>
-        <div><span>Cotitulares</span><strong>{{ nombresCotitulares(seleccionada) }}</strong></div>
+        <div class="adjudicacion-detail-cotitulares"><span>Cotitulares</span>
+          <strong *ngIf="!seleccionada.Cotitulares?.length">Sin cotitular</strong>
+          <div class="cotitular-block" *ngFor="let cotitular of seleccionada.Cotitulares; let i = index">
+            <small *ngIf="seleccionada.Cotitulares.length > 1">Cotitular {{ i + 1 }}</small>
+            <strong>{{ cotitular.NombreCompleto }}</strong>
+            <span>DNI: {{ cotitular.DNI || 'Sin dato' }}</span>
+          </div>
+        </div>
         <div><span>Fecha</span><strong>{{ seleccionada.FechaAdjudicacion ? (seleccionada.FechaAdjudicacion | date:'dd/MM/yyyy') : 'Sin dato' }}</strong></div>
       </div>
     </div>
@@ -51,7 +58,7 @@
         <label for="plan">Plan</label>
         <select id="plan" [(ngModel)]="formulario.IdPlan">
           <option [ngValue]="0">Seleccionar Plan</option>
-          <option *ngFor="let plan of catalogos.Planes" [ngValue]="plan.IdPlan">{{ plan.Nombre }} {{ plan.Programa || '' }}</option>
+          <option *ngFor="let plan of catalogos.Planes" [ngValue]="plan.IdPlan">{{ plan.NombrePlan || 'Sin nombre informado' }} — {{ plan.OrigenPlan }}</option>
         </select>
       </div>
       <div class="imv-form-row">
@@ -99,7 +106,7 @@
     </div>
     <select class="adjudicaciones-filter" [(ngModel)]="filtroPlan">
       <option [ngValue]="0">Todos los planes</option>
-      <option *ngFor="let plan of catalogos.Planes" [ngValue]="plan.IdPlan">{{ plan.Nombre }}</option>
+      <option *ngFor="let plan of catalogos.Planes" [ngValue]="plan.IdPlan">{{ plan.NombrePlan || 'Sin nombre informado' }} — {{ plan.OrigenPlan }}</option>
     </select>
     <select class="adjudicaciones-filter" [(ngModel)]="filtroEstado">
       <option value="todas">Todas</option><option value="activas">Activas</option><option value="inactivas">Inactivas</option>
@@ -114,9 +121,16 @@
         <tr *ngFor="let item of filtradas">
           <td><span class="imv-badge-id">{{ item.IdAdjudicacion }}</span></td>
           <td class="col-name">{{ item.Propiedad }}</td><td>{{ item.Catastro || 'Sin dato' }}</td>
-          <td>{{ item.Plan }}<small class="adjudicacion-secondary" *ngIf="item.Programa">{{ item.Programa }}</small></td>
+          <td>{{ item.NombrePlan || 'Sin nombre informado' }}<small class="adjudicacion-secondary">{{ item.OrigenPlan }}</small></td>
           <td>{{ item.TitularPrincipal }}<small class="adjudicacion-secondary">DNI {{ item.DniTitularPrincipal || 'sin dato' }}</small></td>
-          <td>{{ nombresCotitulares(item) }}</td><td>{{ item.NroLegajoFisico || 'Sin dato' }}</td>
+          <td>
+            <span *ngIf="!item.Cotitulares?.length">Sin cotitular</span>
+            <div class="cotitular-block" *ngFor="let cotitular of item.Cotitulares; let i = index">
+              <small *ngIf="item.Cotitulares.length > 1">Cotitular {{ i + 1 }}</small>
+              <strong>{{ cotitular.NombreCompleto }}</strong>
+              <span>DNI: {{ cotitular.DNI || 'Sin dato' }}</span>
+            </div>
+          </td><td>{{ item.NroLegajoFisico || 'Sin dato' }}</td>
           <td>{{ item.FechaAdjudicacion ? (item.FechaAdjudicacion | date:'dd/MM/yyyy') : 'Sin dato' }}</td>
           <td><span class="adjudicacion-status" [class.adjudicacion-status--inactive]="!item.Activa">{{ item.Activa ? 'Activa' : 'Inactiva' }}</span></td>
           <td class="col-actions"><div class="imv-table-actions">

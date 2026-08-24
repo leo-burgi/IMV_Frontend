@@ -56,11 +56,14 @@ export class AppComponent {
     if (texto.includes('adjudic')) {
       this.cambiarSeccion('adjudicaciones'); return;
     }
+    if (texto.includes('propiedad') || texto.includes('inmueble')) {
+      this.cambiarSeccion('propiedades'); return;
+    }
     if (texto.includes('notarial')) {
       this.cambiarSeccion('notariales'); return;
     }
 
-    if (['planes', 'barrios', 'calles', 'personas', 'adjudicaciones', 'notariales'].includes(this.seccionActiva)) {
+    if (['planes', 'barrios', 'calles', 'personas', 'adjudicaciones', 'propiedades', 'notariales'].includes(this.seccionActiva)) {
       return;
     }
 

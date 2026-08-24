@@ -87,6 +87,12 @@
         <span class="imv-nav-label">Adjudicaciones</span>
       </a>
 
+      <a class="imv-nav-item" [class.imv-nav-item--active]="seccionActiva === 'propiedades'"
+         (click)="cambiarSeccion('propiedades')" title="Propiedades">
+        <i class="fas fa-fw fa-home imv-nav-icon"></i>
+        <span class="imv-nav-label">Propiedades</span>
+      </a>
+
       <a class="imv-nav-item imv-nav-item--disabled" title="Próximamente">
         <i class="fas fa-fw fa-handshake imv-nav-icon"></i>
         <span class="imv-nav-label">Convenios</span>
@@ -179,6 +185,10 @@
 
     <div *ngIf="seccionActiva === 'adjudicaciones'" class="imv-page">
       <div class="imv-card"><app-adjudicaciones></app-adjudicaciones></div>
+    </div>
+
+    <div *ngIf="seccionActiva === 'propiedades'" class="imv-page">
+      <div class="imv-card"><app-propiedades></app-propiedades></div>
     </div>
 
     <div *ngIf="seccionActiva === 'notariales'" class="imv-page">

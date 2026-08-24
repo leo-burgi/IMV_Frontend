@@ -10,8 +10,8 @@ export interface Adjudicacion {
   Propiedad: string;
   Catastro?: string;
   IdPlan: number;
-  Plan: string;
-  Programa?: string;
+  NombrePlan: string | null;
+  OrigenPlan: string;
   IdTitularPrincipal: number;
   TitularPrincipal: string;
   DniTitularPrincipal?: string;
@@ -40,8 +40,8 @@ export interface PropiedadOpcion {
 
 export interface PlanOpcion {
   IdPlan: number;
-  Nombre: string;
-  Programa?: string;
+  NombrePlan: string | null;
+  OrigenPlan: string;
 }
 
 export interface PersonaOpcion {

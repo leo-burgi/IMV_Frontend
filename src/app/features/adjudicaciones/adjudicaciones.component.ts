@@ -44,8 +44,8 @@ export class AdjudicacionesComponent implements OnInit {
       const coincideEstado = this.filtroEstado === 'todas'
         || (this.filtroEstado === 'activas' && item.Activa)
         || (this.filtroEstado === 'inactivas' && !item.Activa);
-      const texto = [item.IdAdjudicacion, item.Propiedad, item.Catastro, item.Plan,
-        item.Programa, item.TitularPrincipal, item.DniTitularPrincipal,
+      const texto = [item.IdAdjudicacion, item.Propiedad, item.Catastro, item.NombrePlan,
+        item.OrigenPlan, item.TitularPrincipal, item.DniTitularPrincipal,
         item.NroLegajoFisico, ...(item.Cotitulares || []).map(x => `${x.NombreCompleto} ${x.DNI || ''}`)]
         .join(' ').toLowerCase();
       return coincidePlan && coincideEstado && (!termino || texto.includes(termino));
@@ -161,12 +161,6 @@ export class AdjudicacionesComponent implements OnInit {
           : 'No se pudo guardar la adjudicación.';
       }
     });
-  }
-
-  nombresCotitulares(item: Adjudicacion): string {
-    return item.Cotitulares && item.Cotitulares.length
-      ? item.Cotitulares.map(x => x.NombreCompleto).join('; ')
-      : 'Sin cotitular';
   }
 
   private abrirModal(): void {

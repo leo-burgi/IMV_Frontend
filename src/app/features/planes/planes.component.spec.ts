@@ -41,17 +41,24 @@ describe('PlanesComponent', () => {
     expect(planService.getPlanes).toHaveBeenCalled();
   });
 
-  it('debe incluir IdPlan al editar y permitir Programa vacío', () => {
-    const plan: Plan = { IdPlan: 5, NombrePlan: 'Original', Programa: 'Anterior' };
-    planService.updatePlan.and.returnValue(of({ IdPlan: 5, NombrePlan: 'Editado' }));
+  it('debe incluir IdPlan, origen y nombre normalizados al editar', () => {
+    const plan: Plan = { IdPlan: 5, OrigenPlan: 'IMV', NombrePlan: 'Original' };
+    planService.updatePlan.and.returnValue(of({ IdPlan: 5, OrigenPlan: 'PROVINCIAL', NombrePlan: 'Editado' }));
     component.abrirModalAlta(plan);
+    component.planForm.OrigenPlan = ' PROVINCIAL ';
     component.planForm.NombrePlan = ' Editado ';
-    component.planForm.Programa = '   ';
     component.guardarPlan();
     expect(planService.updatePlan).toHaveBeenCalledWith({
       IdPlan: 5,
-      NombrePlan: 'Editado',
-      Programa: undefined
+      OrigenPlan: 'PROVINCIAL',
+      NombrePlan: 'Editado'
     });
+  });
+
+  it('debe conservar visibles los planes históricos sin nombre', () => {
+    component.listaPlanes = [{ IdPlan: 113, OrigenPlan: 'IMV', NombrePlan: null }];
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain('Sin nombre informado');
+    expect(fixture.nativeElement.textContent).toContain('IMV');
   });
 });
