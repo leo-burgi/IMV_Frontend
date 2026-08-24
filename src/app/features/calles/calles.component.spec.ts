@@ -1,3 +1,4 @@
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { of } from 'rxjs';
@@ -28,6 +29,7 @@ describe('CallesComponent', () => {
     await TestBed.configureTestingModule({
       imports: [FormsModule],
       declarations: [CallesComponent, ImvFilterPipe],
+      schemas: [NO_ERRORS_SCHEMA],
       providers: [
         { provide: CalleService, useValue: calleService },
         { provide: ImvSearchService, useValue: searchService }

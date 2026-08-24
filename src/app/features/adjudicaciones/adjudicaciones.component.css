@@ -27,7 +27,7 @@
 .cotitular-block { display: flex; flex-direction: column; gap: 2px; padding: 4px 0; }
 .cotitular-block + .cotitular-block { border-top: 1px solid rgba(0,0,0,0.08); margin-top: 4px; }
 .cotitular-block small, .cotitular-block span { color: var(--imv-text-muted); font-size: 11px; }
-.cotitular-block strong { font-size: 12px; }
+.cotitular-name { color: var(--imv-text-primary) !important; font-size: 12px !important; font-weight: 400; }
 .adjudicacion-detail-cotitulares { grid-column: 1 / -1; }
 @media (max-width: 700px) {
   .adjudicacion-form-grid, .adjudicacion-detail-grid { grid-template-columns: 1fr; }

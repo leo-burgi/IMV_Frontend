@@ -61,7 +61,7 @@
       />
     </div>
     <span class="imv-table-count">
-      {{ (listaBarrios | imvFilter:filtroBusqueda:['Nombre']).length }} registros
+      {{ barriosFiltrados.length }} registros
     </span>
   </div>
 
@@ -78,7 +78,7 @@
       <tbody>
 
         <!-- Filas de datos -->
-        <tr *ngFor="let barrio of listaBarrios | imvFilter:filtroBusqueda:['Nombre']">
+        <tr *ngFor="let barrio of barriosPaginados">
           <td>
             <span class="imv-badge-id">#{{ barrio.IdBarrio }}</span>
           </td>
@@ -117,7 +117,7 @@
 
         <!-- Estado: sin resultados de búsqueda -->
         <tr *ngIf="listaBarrios.length > 0 &&
-                   (listaBarrios | imvFilter:filtroBusqueda:['Nombre']).length === 0">
+                   barriosFiltrados.length === 0">
           <td colspan="3">
             <div class="imv-table-empty">
               <i class="fas fa-search"></i>
@@ -129,5 +129,8 @@
       </tbody>
     </table>
   </div>
+
+  <app-pagination [page]="currentPage" [pageSize]="pageSize" [total]="barriosFiltrados.length"
+                  (pageChange)="cambiarPagina($event)"></app-pagination>
 
 </div>

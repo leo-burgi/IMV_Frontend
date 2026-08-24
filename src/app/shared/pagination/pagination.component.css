@@ -1,0 +1,6 @@
+.imv-pagination { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 12px; color: var(--imv-text-muted); font-size: 11px; }
+.imv-pagination__controls { display: flex; align-items: center; gap: 4px; }
+.imv-pagination button { min-width: 28px; height: 28px; padding: 0 7px; border: 1px solid var(--imv-border); border-radius: 7px; background: #fff; color: var(--imv-text-secondary); font-size: 12px; cursor: pointer; }
+.imv-pagination button:hover:not(:disabled), .imv-pagination__page--active { border-color: var(--imv-navy) !important; background: var(--imv-navy) !important; color: #fff !important; }
+.imv-pagination button:disabled { opacity: .4; cursor: default; }
+@media (max-width: 520px) { .imv-pagination { align-items: flex-start; flex-direction: column; } }

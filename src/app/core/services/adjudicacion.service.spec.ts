@@ -29,6 +29,17 @@ describe('AdjudicacionService', () => {
     req.flush([adjudicacion]);
   });
 
+  it('debe enviar página y filtros al endpoint paginado', () => {
+    service.getAdjudicacionesPaginadas(2, 15, 'Pérez', 3, 'activas').subscribe();
+    const req = httpMock.expectOne(request => request.url === `${apiUrl}/paginadas`);
+    expect(req.request.params.get('page')).toBe('2');
+    expect(req.request.params.get('pageSize')).toBe('15');
+    expect(req.request.params.get('search')).toBe('Pérez');
+    expect(req.request.params.get('idPlan')).toBe('3');
+    expect(req.request.params.get('estado')).toBe('activas');
+    req.flush({ Page: 2, PageSize: 15, Total: 20, Items: [] });
+  });
+
   it('debe obtener el detalle mediante GET', () => {
     service.getDetalle(1).subscribe(response => expect(response).toEqual(adjudicacion));
     const req = httpMock.expectOne(`${apiUrl}/detalle/1`);

@@ -17,6 +17,8 @@ export class PlanesComponent implements OnInit {
   cargando = false;
   mensajeError = '';
   mensajeExito = '';
+  readonly pageSize = 15;
+  currentPage = 1;
   planForm: Partial<Plan> = { OrigenPlan: '', NombrePlan: '' };
 
   constructor(private planService: PlanService, private searchService: ImvSearchService) { }
@@ -24,6 +26,7 @@ export class PlanesComponent implements OnInit {
   ngOnInit(): void {
     this.searchService.searchTerm$.subscribe((term) => {
       this.filtroBusqueda = term || '';
+      this.currentPage = 1;
     });
     this.cargarPlanes();
   }
@@ -45,8 +48,22 @@ export class PlanesComponent implements OnInit {
 
   onFiltroChange(term: string): void {
     this.filtroBusqueda = term;
+    this.currentPage = 1;
     this.searchService.setSearch(term);
   }
+
+  get planesFiltrados(): Plan[] {
+    const term = this.filtroBusqueda.trim().toLowerCase();
+    return this.listaPlanes.filter(plan => !term ||
+      `${plan.NombrePlan || ''} ${plan.OrigenPlan || ''}`.toLowerCase().includes(term));
+  }
+
+  get planesPaginados(): Plan[] {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.planesFiltrados.slice(start, start + this.pageSize);
+  }
+
+  cambiarPagina(page: number): void { this.currentPage = page; }
 
   abrirModalAlta(plan?: Plan): void {
     this.mensajeError = '';

@@ -6,15 +6,15 @@
 
 /* Header */
 .dash-header {
-  margin-bottom: 20px;
+  margin-bottom: 12px;
 }
 
 /* ── GRID DE MÉTRICAS ── */
 .dash-stats {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 16px;
-  margin-bottom: 20px;
+  gap: 12px;
+  margin-bottom: 12px;
 }
 
 /* Stat card base */
@@ -22,10 +22,10 @@
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), 0 0 1px rgba(0, 0, 0, 0.04);
-  padding: 18px 16px 14px;
+  padding: 12px 14px 10px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 7px;
   transition: box-shadow 0.2s, transform 0.2s;
 }
 
@@ -40,13 +40,13 @@
 
 /* Ícono */
 .dash-stat-icon {
-  width: 38px;
-  height: 38px;
+  width: 32px;
+  height: 32px;
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 17px;
+  font-size: 15px;
 }
 
 .dash-stat-icon--blue  { background: var(--imv-blue-bg,  #e6f1fb); color: var(--imv-blue,  #185fa5); }
@@ -56,7 +56,7 @@
 
 /* Número */
 .dash-stat-num {
-  font-size: 26px;
+  font-size: 23px;
   font-weight: 600;
   color: var(--imv-text-primary, #1a1a2e);
   line-height: 1;
@@ -96,13 +96,13 @@
 .dash-bottom {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
 }
 
 .dash-insights {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
+  gap: 12px;
 }
 
 /* Card genérica del dashboard */
@@ -116,7 +116,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 14px 20px;
+  padding: 10px 16px;
   border-bottom: 0.5px solid rgba(0, 0, 0, 0.07);
   font-size: 13px;
   font-weight: 600;
@@ -131,12 +131,12 @@
 }
 
 .dash-card__body {
-  padding: 20px;
+  padding: 14px 16px;
 }
 
 /* ── BARRAS ── */
 .dash-bar-row {
-  margin-bottom: 18px;
+  margin-bottom: 11px;
 }
 
 .dash-bar-row:last-child {
@@ -180,29 +180,26 @@
   transition: width 0.6s ease;
 }
 
-.dash-bar-fill--b { background: #378add; }
-.dash-bar-fill--c { background: #85b7eb; }
-
 /* Grafico circular */
 .dash-pie-layout {
   display: flex;
   align-items: center;
-  gap: 28px;
-  min-height: 190px;
+  gap: 20px;
+  min-height: 160px;
 }
 
 .dash-pie {
-  width: 160px;
-  height: 160px;
+  width: 136px;
+  height: 136px;
   border-radius: 50%;
   display: grid;
   place-items: center;
-  flex: 0 0 160px;
+  flex: 0 0 136px;
 }
 
 .dash-pie__center {
-  width: 92px;
-  height: 92px;
+  width: 78px;
+  height: 78px;
   border-radius: 50%;
   background: #fff;
   display: flex;
@@ -214,7 +211,7 @@
 
 .dash-pie__center strong {
   color: var(--imv-text-primary, #1a1a2e);
-  font-size: 24px;
+  font-size: 21px;
 }
 
 .dash-pie__center span {
@@ -227,7 +224,7 @@
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: 10px;
+  gap: 7px;
   min-width: 0;
 }
 

@@ -1,0 +1,9 @@
+<nav class="imv-pagination" *ngIf="total > pageSize" aria-label="Paginación de resultados">
+  <span class="imv-pagination__summary">15 resultados por página</span>
+  <div class="imv-pagination__controls">
+    <button type="button" (click)="goTo(page - 1)" [disabled]="page === 1" aria-label="Página anterior">‹</button>
+    <button type="button" *ngFor="let item of pages" (click)="goTo(item)"
+            [class.imv-pagination__page--active]="item === page" [attr.aria-current]="item === page ? 'page' : null">{{ item }}</button>
+    <button type="button" (click)="goTo(page + 1)" [disabled]="page === totalPages" aria-label="Página siguiente">›</button>
+  </div>
+</nav>

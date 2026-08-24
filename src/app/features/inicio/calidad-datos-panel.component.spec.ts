@@ -51,6 +51,9 @@ describe('CalidadDatosPanelComponent', () => {
 
     expect(component.calidadDatos).toEqual(metricas);
     expect(fixture.nativeElement.textContent).toContain('25 de 100 (25.0%)');
+    expect(fixture.nativeElement.textContent).toContain('Faltan 10 registros por asociar a un plan');
+    expect(fixture.nativeElement.textContent).not.toContain('Control administrativo');
+    expect(fixture.nativeElement.textContent).not.toContain('Los indicadores pueden');
     expect(fixture.nativeElement.querySelector('.quality-card').classList).toContain('quality-card--alta');
   });
 

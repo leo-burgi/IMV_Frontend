@@ -17,6 +17,8 @@ export class BarriosComponent implements OnInit {
   cargando = false;
   mensajeError = '';
   mensajeExito = '';
+  readonly pageSize = 15;
+  currentPage = 1;
   barrioForm: Partial<Barrio> = { Nombre: '' };
 
   constructor(private barrioService: BarrioService, private searchService: ImvSearchService) { }
@@ -24,6 +26,7 @@ export class BarriosComponent implements OnInit {
   ngOnInit(): void {
     this.searchService.searchTerm$.subscribe((term) => {
       this.filtroBusqueda = term || '';
+      this.currentPage = 1;
     });
     this.cargarBarrios();
   }
@@ -45,8 +48,21 @@ export class BarriosComponent implements OnInit {
 
   onFiltroChange(term: string): void {
     this.filtroBusqueda = term;
+    this.currentPage = 1;
     this.searchService.setSearch(term);
   }
+
+  get barriosFiltrados(): Barrio[] {
+    const term = this.filtroBusqueda.trim().toLowerCase();
+    return this.listaBarrios.filter(barrio => !term || (barrio.Nombre || '').toLowerCase().includes(term));
+  }
+
+  get barriosPaginados(): Barrio[] {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.barriosFiltrados.slice(start, start + this.pageSize);
+  }
+
+  cambiarPagina(page: number): void { this.currentPage = page; }
 
   abrirModalAlta(barrio?: Barrio): void {
     this.mensajeError = '';

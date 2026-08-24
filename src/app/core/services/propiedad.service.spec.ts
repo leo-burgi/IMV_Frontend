@@ -28,6 +28,18 @@ describe('PropiedadService', () => {
     req.flush([propiedad]);
   });
 
+  it('debe enviar página y filtros al endpoint paginado', () => {
+    service.getPropiedadesPaginadas(3, 15, 'Lavalle', 'MORA', 'activas', 'con').subscribe();
+    const req = httpMock.expectOne(request => request.url === `${apiUrl}/paginadas`);
+    expect(req.request.params.get('page')).toBe('3');
+    expect(req.request.params.get('pageSize')).toBe('15');
+    expect(req.request.params.get('search')).toBe('Lavalle');
+    expect(req.request.params.get('barrio')).toBe('MORA');
+    expect(req.request.params.get('estado')).toBe('activas');
+    expect(req.request.params.get('catastro')).toBe('con');
+    req.flush({ Page: 3, PageSize: 15, Total: 40, Items: [] });
+  });
+
   it('debe obtener el detalle mediante GET', () => {
     service.getPropiedad(1).subscribe(response => expect(response).toEqual(propiedad));
     const req = httpMock.expectOne(`${apiUrl}/1`);

@@ -104,21 +104,21 @@
       <input type="search" class="imv-table-search__input" placeholder="Buscar por propiedad, catastro, plan o persona..."
              [(ngModel)]="filtroBusqueda" (ngModelChange)="onFiltroChange($event)" />
     </div>
-    <select class="adjudicaciones-filter" [(ngModel)]="filtroPlan">
+    <select class="adjudicaciones-filter" [(ngModel)]="filtroPlan" (ngModelChange)="onCriterioChange()">
       <option [ngValue]="0">Todos los planes</option>
       <option *ngFor="let plan of catalogos.Planes" [ngValue]="plan.IdPlan">{{ plan.NombrePlan || 'Sin nombre informado' }} — {{ plan.OrigenPlan }}</option>
     </select>
-    <select class="adjudicaciones-filter" [(ngModel)]="filtroEstado">
+    <select class="adjudicaciones-filter" [(ngModel)]="filtroEstado" (ngModelChange)="onCriterioChange()">
       <option value="todas">Todas</option><option value="activas">Activas</option><option value="inactivas">Inactivas</option>
     </select>
-    <span class="imv-table-count">{{ filtradas.length }} registros</span>
+    <span class="imv-table-count">{{ total }} registros</span>
   </div>
 
   <div class="imv-table-wrapper">
     <table class="imv-table adjudicaciones-table">
-      <thead><tr><th>ID</th><th>Propiedad</th><th>Catastro</th><th>Plan</th><th>Titular principal</th><th>Cotitulares</th><th>Legajo</th><th>Fecha</th><th>Estado</th><th class="col-actions">Acciones</th></tr></thead>
+      <thead><tr><th>ID</th><th>Propiedad</th><th>Catastro</th><th>Plan</th><th>Titular principal</th><th>Cotitulares</th><th>N° EXPTE.</th><th>Fecha</th><th>Estado</th><th class="col-actions">Acciones</th></tr></thead>
       <tbody>
-        <tr *ngFor="let item of filtradas">
+        <tr *ngFor="let item of lista">
           <td><span class="imv-badge-id">{{ item.IdAdjudicacion }}</span></td>
           <td class="col-name">{{ item.Propiedad }}</td><td>{{ item.Catastro || 'Sin dato' }}</td>
           <td>{{ item.NombrePlan || 'Sin nombre informado' }}<small class="adjudicacion-secondary">{{ item.OrigenPlan }}</small></td>
@@ -127,7 +127,7 @@
             <span *ngIf="!item.Cotitulares?.length">Sin cotitular</span>
             <div class="cotitular-block" *ngFor="let cotitular of item.Cotitulares; let i = index">
               <small *ngIf="item.Cotitulares.length > 1">Cotitular {{ i + 1 }}</small>
-              <strong>{{ cotitular.NombreCompleto }}</strong>
+              <span class="cotitular-name">{{ cotitular.NombreCompleto }}</span>
               <span>DNI: {{ cotitular.DNI || 'Sin dato' }}</span>
             </div>
           </td><td>{{ item.NroLegajoFisico || 'Sin dato' }}</td>
@@ -139,8 +139,10 @@
           </div></td>
         </tr>
         <tr *ngIf="cargando"><td colspan="10"><div class="imv-table-empty"><i class="fas fa-spinner fa-spin"></i> Cargando adjudicaciones...</div></td></tr>
-        <tr *ngIf="!cargando && filtradas.length === 0"><td colspan="10"><div class="imv-table-empty"><i class="fas fa-key"></i> No hay adjudicaciones que coincidan con los filtros.</div></td></tr>
+        <tr *ngIf="!cargando && lista.length === 0"><td colspan="10"><div class="imv-table-empty"><i class="fas fa-key"></i> No hay adjudicaciones que coincidan con los filtros.</div></td></tr>
       </tbody>
     </table>
   </div>
+  <app-pagination [page]="currentPage" [pageSize]="pageSize" [total]="total"
+                  (pageChange)="cambiarPagina($event)"></app-pagination>
 </div>

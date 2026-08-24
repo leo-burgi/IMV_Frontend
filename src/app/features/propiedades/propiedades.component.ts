@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Propiedad } from '../../core/models/propiedad.model';
 import { ImvSearchService } from '../../core/services/imv-search.service';
 import { PropiedadService } from '../../core/services/propiedad.service';
+import { BarrioService } from '../../core/services/barrio.service';
 
 @Component({
   selector: 'app-propiedades',
@@ -19,46 +20,38 @@ export class PropiedadesComponent implements OnInit {
   mensajeError = '';
   detalleError = '';
   seleccionada: Propiedad | null = null;
+  barrios: string[] = [];
+  readonly pageSize = 15;
+  currentPage = 1;
+  total = 0;
 
   constructor(
     private propiedadService: PropiedadService,
-    private searchService: ImvSearchService
+    private searchService: ImvSearchService,
+    private barrioService: BarrioService
   ) { }
 
   ngOnInit(): void {
-    this.searchService.searchTerm$.subscribe(term => this.filtroBusqueda = term || '');
-    this.cargarPropiedades();
-  }
-
-  get barrios(): string[] {
-    return Array.from(new Set(this.lista.map(x => x.Barrio).filter(Boolean))).sort();
-  }
-
-  get filtradas(): Propiedad[] {
-    const termino = (this.filtroBusqueda || '').trim().toLowerCase();
-    return this.lista.filter(item => {
-      const activa = !item.FechaBaja;
-      const coincideEstado = this.filtroEstado === 'todas'
-        || (this.filtroEstado === 'activas' && activa)
-        || (this.filtroEstado === 'bajas' && !activa);
-      const conCatastro = !!(item.NroCatastro && item.NroCatastro.trim());
-      const coincideCatastro = this.filtroCatastro === 'todas'
-        || (this.filtroCatastro === 'con' && conCatastro)
-        || (this.filtroCatastro === 'sin' && !conCatastro);
-      const coincideBarrio = !this.filtroBarrio || item.Barrio === this.filtroBarrio;
-      const texto = [item.IdPropiedad, item.Calle, item.Altura, item.Barrio,
-        item.NroCatastro, item.Manzana, item.Lote].join(' ').toLowerCase();
-      return coincideEstado && coincideCatastro && coincideBarrio
-        && (!termino || texto.includes(termino));
+    this.searchService.searchTerm$.subscribe(term => {
+      const nuevo = term || '';
+      if (nuevo !== this.filtroBusqueda) {
+        this.filtroBusqueda = nuevo;
+        this.currentPage = 1;
+        this.cargarPropiedades();
+      }
     });
+    this.barrioService.getBarrios().subscribe(data => this.barrios = (data || []).map(x => x.Nombre).filter(Boolean).sort());
+    this.cargarPropiedades();
   }
 
   cargarPropiedades(): void {
     this.cargando = true;
     this.mensajeError = '';
-    this.propiedadService.getPropiedades().subscribe({
+    this.propiedadService.getPropiedadesPaginadas(this.currentPage, this.pageSize, this.filtroBusqueda, this.filtroBarrio, this.filtroEstado, this.filtroCatastro).subscribe({
       next: data => {
-        this.lista = data || [];
+        this.lista = data.Items || [];
+        this.total = data.Total;
+        this.currentPage = data.Page;
         this.cargando = false;
       },
       error: () => {
@@ -70,8 +63,13 @@ export class PropiedadesComponent implements OnInit {
 
   onFiltroChange(term: string): void {
     this.filtroBusqueda = term;
+    this.currentPage = 1;
     this.searchService.setSearch(term);
+    this.cargarPropiedades();
   }
+
+  onCriterioChange(): void { this.currentPage = 1; this.cargarPropiedades(); }
+  cambiarPagina(page: number): void { this.currentPage = page; this.cargarPropiedades(); }
 
   verDetalle(item: Propiedad): void {
     this.seleccionada = null;

@@ -1,3 +1,4 @@
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { of } from 'rxjs';
@@ -22,6 +23,7 @@ describe('PlanesComponent', () => {
     await TestBed.configureTestingModule({
       imports: [FormsModule],
       declarations: [PlanesComponent, ImvFilterPipe],
+      schemas: [NO_ERRORS_SCHEMA],
       providers: [
         { provide: PlanService, useValue: planService },
         {
@@ -60,5 +62,13 @@ describe('PlanesComponent', () => {
     fixture.detectChanges();
     expect(fixture.nativeElement.textContent).toContain('Sin nombre informado');
     expect(fixture.nativeElement.textContent).toContain('IMV');
+  });
+
+  it('debe paginar de a 15 y volver a página 1 al buscar', () => {
+    component.listaPlanes = Array.from({ length: 20 }, (_, i) => ({ IdPlan: i + 1, OrigenPlan: 'IMV', NombrePlan: `Plan ${i + 1}` }));
+    component.currentPage = 2;
+    expect(component.planesPaginados.length).toBe(5);
+    component.onFiltroChange('Plan 1');
+    expect(component.currentPage).toBe(1);
   });
 });

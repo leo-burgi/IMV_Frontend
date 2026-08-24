@@ -118,8 +118,7 @@
           </div>
           <div class="dash-bar-track">
             <div class="dash-bar-fill"
-                 [class.dash-bar-fill--b]="i === 1"
-                 [class.dash-bar-fill--c]="i === 2"
+                 [style.background]="colorBarrio(i)"
                  [style.width.%]="barrio.Porcentaje"></div>
           </div>
         </div>

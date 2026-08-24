@@ -355,7 +355,7 @@
   background: var(--imv-white);
   border-radius: 24px;
   box-shadow: var(--imv-card-shadow);
-  padding: 28px 32px;
+  padding: 18px 24px;
   gap: 24px;
 }
 
@@ -373,7 +373,7 @@
 }
 
 .imv-welcome__logo {
-  width: 120px;
+  width: 96px;
   opacity: 0.8;
   flex-shrink: 0;
 }
@@ -386,8 +386,8 @@
 }
 
 .imv-notice-item {
-  margin-bottom: 8px;
-  line-height: 1.5;
+  margin-bottom: 4px;
+  line-height: 1.35;
 }
 
 /* ═══════════════════════════════════════════════════════

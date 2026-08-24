@@ -25,6 +25,9 @@ export class AdjudicacionesComponent implements OnInit {
   mensajeError = '';
   mensajeExito = '';
   seleccionada: Adjudicacion | null = null;
+  readonly pageSize = 15;
+  currentPage = 1;
+  total = 0;
   formulario: AdjudicacionPayload = this.emptyForm();
 
   constructor(
@@ -33,23 +36,15 @@ export class AdjudicacionesComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.searchService.searchTerm$.subscribe(term => this.filtroBusqueda = term || '');
-    this.cargarDatos();
-  }
-
-  get filtradas(): Adjudicacion[] {
-    const termino = (this.filtroBusqueda || '').trim().toLowerCase();
-    return this.lista.filter(item => {
-      const coincidePlan = !this.filtroPlan || item.IdPlan === Number(this.filtroPlan);
-      const coincideEstado = this.filtroEstado === 'todas'
-        || (this.filtroEstado === 'activas' && item.Activa)
-        || (this.filtroEstado === 'inactivas' && !item.Activa);
-      const texto = [item.IdAdjudicacion, item.Propiedad, item.Catastro, item.NombrePlan,
-        item.OrigenPlan, item.TitularPrincipal, item.DniTitularPrincipal,
-        item.NroLegajoFisico, ...(item.Cotitulares || []).map(x => `${x.NombreCompleto} ${x.DNI || ''}`)]
-        .join(' ').toLowerCase();
-      return coincidePlan && coincideEstado && (!termino || texto.includes(termino));
+    this.searchService.searchTerm$.subscribe(term => {
+      const nuevo = term || '';
+      if (nuevo !== this.filtroBusqueda) {
+        this.filtroBusqueda = nuevo;
+        this.currentPage = 1;
+        if (this.catalogos.Planes.length) this.cargarListado();
+      }
     });
+    this.cargarDatos();
   }
 
   cargarDatos(): void {
@@ -67,10 +62,13 @@ export class AdjudicacionesComponent implements OnInit {
     });
   }
 
-  cargarListado(): void {
-    this.service.getAdjudicaciones().subscribe({
+  cargarListado(page: number = this.currentPage): void {
+    this.cargando = true;
+    this.service.getAdjudicacionesPaginadas(page, this.pageSize, this.filtroBusqueda, Number(this.filtroPlan), this.filtroEstado).subscribe({
       next: data => {
-        this.lista = data || [];
+        this.currentPage = data.Page;
+        this.total = data.Total;
+        this.lista = data.Items || [];
         this.cargando = false;
       },
       error: () => {
@@ -82,8 +80,13 @@ export class AdjudicacionesComponent implements OnInit {
 
   onFiltroChange(term: string): void {
     this.filtroBusqueda = term;
+    this.currentPage = 1;
     this.searchService.setSearch(term);
+    this.cargarListado();
   }
+
+  onCriterioChange(): void { this.currentPage = 1; this.cargarListado(); }
+  cambiarPagina(page: number): void { this.currentPage = page; this.cargarListado(page); }
 
   abrirAlta(): void {
     this.modo = 'alta';

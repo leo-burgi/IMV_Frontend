@@ -45,17 +45,17 @@
       <input type="search" class="imv-table-search__input" placeholder="Buscar por calle, altura, barrio, catastro, manzana o lote..."
              [(ngModel)]="filtroBusqueda" (ngModelChange)="onFiltroChange($event)" />
     </div>
-    <select [(ngModel)]="filtroBarrio"><option value="">Todos los barrios</option><option *ngFor="let barrio of barrios" [value]="barrio">{{ barrio }}</option></select>
-    <select [(ngModel)]="filtroEstado"><option value="todas">Todas</option><option value="activas">Activas</option><option value="bajas">Dadas de baja</option></select>
-    <select [(ngModel)]="filtroCatastro"><option value="todas">Con o sin catastro</option><option value="con">Con catastro</option><option value="sin">Sin catastro</option></select>
-    <span class="imv-table-count">{{ filtradas.length }} registros</span>
+    <select [(ngModel)]="filtroBarrio" (ngModelChange)="onCriterioChange()"><option value="">Todos los barrios</option><option *ngFor="let barrio of barrios" [value]="barrio">{{ barrio }}</option></select>
+    <select [(ngModel)]="filtroEstado" (ngModelChange)="onCriterioChange()"><option value="todas">Todas</option><option value="activas">Activas</option><option value="bajas">Dadas de baja</option></select>
+    <select [(ngModel)]="filtroCatastro" (ngModelChange)="onCriterioChange()"><option value="todas">Con o sin catastro</option><option value="con">Con catastro</option><option value="sin">Sin catastro</option></select>
+    <span class="imv-table-count">{{ total }} registros</span>
   </div>
 
   <div class="imv-table-wrapper">
     <table class="imv-table propiedades-table">
       <thead><tr><th>ID</th><th>Calle</th><th>Altura</th><th>Barrio</th><th>Catastro</th><th>Manzana</th><th>Lote</th><th>Estado</th><th class="col-actions">Acciones</th></tr></thead>
       <tbody>
-        <tr *ngFor="let item of filtradas">
+        <tr *ngFor="let item of lista">
           <td><span class="imv-badge-id">#{{ item.IdPropiedad }}</span></td>
           <td class="col-name">{{ item.Calle || 'Sin dato' }}</td>
           <td>{{ item.Altura || 'Sin dato' }}</td><td>{{ item.Barrio || 'Sin dato' }}</td>
@@ -64,8 +64,10 @@
           <td class="col-actions"><button class="imv-btn imv-btn--icon imv-btn--view" type="button" (click)="verDetalle(item)" title="Ver detalle"><i class="fas fa-eye"></i></button></td>
         </tr>
         <tr *ngIf="cargando"><td colspan="9"><div class="imv-table-empty"><i class="fas fa-spinner fa-spin"></i> Cargando propiedades...</div></td></tr>
-        <tr *ngIf="!cargando && filtradas.length === 0"><td colspan="9"><div class="imv-table-empty"><i class="fas fa-home"></i> No hay propiedades que coincidan con los filtros.</div></td></tr>
+        <tr *ngIf="!cargando && lista.length === 0"><td colspan="9"><div class="imv-table-empty"><i class="fas fa-home"></i> No hay propiedades que coincidan con los filtros.</div></td></tr>
       </tbody>
     </table>
   </div>
+  <app-pagination [page]="currentPage" [pageSize]="pageSize" [total]="total"
+                  (pageChange)="cambiarPagina($event)"></app-pagination>
 </div>

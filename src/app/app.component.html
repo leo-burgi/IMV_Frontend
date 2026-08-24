@@ -73,8 +73,6 @@
         <span class="imv-nav-label">Calles</span>
       </a>
 
-      <div class="imv-nav-divider"></div>
-
       <a class="imv-nav-item" [class.imv-nav-item--active]="seccionActiva === 'personas'"
          (click)="cambiarSeccion('personas')" title="Personas">
         <i class="fas fa-fw fa-user-tie imv-nav-icon"></i>
@@ -93,15 +91,15 @@
         <span class="imv-nav-label">Propiedades</span>
       </a>
 
-      <a class="imv-nav-item imv-nav-item--disabled" title="Próximamente">
-        <i class="fas fa-fw fa-handshake imv-nav-icon"></i>
-        <span class="imv-nav-label">Convenios</span>
-      </a>
-
       <a class="imv-nav-item" [class.imv-nav-item--active]="seccionActiva === 'notariales'"
          (click)="cambiarSeccion('notariales')" title="Notariales">
         <i class="fas fa-fw fa-file-signature imv-nav-icon"></i>
         <span class="imv-nav-label">Notariales</span>
+      </a>
+
+      <a class="imv-nav-item imv-nav-item--disabled" title="Próximamente">
+        <i class="fas fa-fw fa-handshake imv-nav-icon"></i>
+        <span class="imv-nav-label">Convenios</span>
       </a>
 
       <a class="imv-nav-item imv-nav-item--disabled" title="Próximamente">
