@@ -1,0 +1,197 @@
+<div class="imv-abm-header">
+  <div class="imv-abm-header__titles">
+    <h2 class="imv-page-title">Consulta integral</h2>
+    <p class="imv-page-sub">Información definitiva y antecedentes del lote legacy activo, en una única consulta de sólo lectura.</p>
+  </div>
+</div>
+
+<div class="consulta-notice">
+  <i class="fas fa-info-circle"></i>
+  <span>Las coincidencias candidatas y los antecedentes legacy nunca reemplazan la información definitiva.</span>
+</div>
+
+<form class="consulta-search" (submit)="buscar(1); $event.preventDefault()">
+  <div class="consulta-search__term">
+    <label for="consultaSearch">Buscar</label>
+    <div class="consulta-search__input-wrap">
+      <i class="fas fa-search"></i>
+      <input id="consultaSearch" name="consultaSearch" type="search" [(ngModel)]="search"
+             placeholder="DNI, persona, catastro, domicilio, manzana, lote o expediente" />
+    </div>
+  </div>
+  <div class="consulta-search__type">
+    <label for="consultaTipo">Tipo</label>
+    <select id="consultaTipo" name="consultaTipo" [(ngModel)]="tipo" (ngModelChange)="cambiarTipo()">
+      <option value="TODOS">Todos</option>
+      <option value="PERSONA">Persona / DNI</option>
+      <option value="INMUEBLE">Inmueble</option>
+      <option value="EXPEDIENTE">Expediente</option>
+    </select>
+  </div>
+  <button class="imv-btn imv-btn--primary consulta-search__button" type="submit" [disabled]="cargando || !search.trim()">
+    <i class="fas fa-spinner fa-spin" *ngIf="cargando"></i>
+    <i class="fas fa-search" *ngIf="!cargando"></i>
+    Consultar
+  </button>
+</form>
+
+<div class="imv-alert consulta-alert--error" *ngIf="mensajeError">{{ mensajeError }}</div>
+
+<div class="consulta-results-header" *ngIf="busquedaRealizada && !cargando">
+  <strong>{{ total }} resultados</strong>
+  <span>15 resultados por página</span>
+</div>
+
+<div class="consulta-empty" *ngIf="!busquedaRealizada && !cargando">
+  <i class="fas fa-search-location"></i>
+  <p>Ingresá un dato para reunir información de Personas, Adjudicaciones, Propiedades y staging.</p>
+</div>
+
+<div class="consulta-empty" *ngIf="busquedaRealizada && !cargando && total === 0">
+  <i class="fas fa-folder-open"></i>
+  <p>No se encontraron coincidencias para “{{ search }}”.</p>
+</div>
+
+<section class="consulta-results" *ngIf="resultados.length">
+  <article class="consulta-result" *ngFor="let item of resultados; trackBy: trackResultado">
+    <div class="consulta-result__summary">
+      <div class="consulta-result__main">
+        <div class="consulta-result__badges">
+          <span class="consulta-badge" [ngClass]="claseNivel(item.NivelConfianza)">{{ etiqueta(item.NivelConfianza) }}</span>
+          <span class="consulta-badge consulta-badge--estado" *ngIf="item.TipoResultado === 'LEGACY'">{{ etiquetaEstado(item.Estado) }}</span>
+        </div>
+        <h3>{{ item.Titulo || 'Sin identificación' }}</h3>
+        <p>{{ item.Subtitulo }}</p>
+        <div class="consulta-result__facts">
+          <span *ngIf="item.DNI"><strong>DNI:</strong> {{ item.DNI }}</span>
+          <span *ngIf="item.Catastro"><strong>Catastro:</strong> {{ item.Catastro }}</span>
+          <span *ngIf="item.Domicilio"><strong>Domicilio:</strong> {{ item.Domicilio }}</span>
+          <span *ngIf="item.HojaOrigen"><strong>Fuente:</strong> {{ item.HojaOrigen }} · fila {{ item.FilaOrigen }}</span>
+        </div>
+        <div class="consulta-result__reason" *ngIf="item.CodigoMotivo || item.DetalleMotivo">
+          <strong>{{ item.CodigoMotivo || 'Motivo pendiente' }}</strong>
+          <span>{{ item.DetalleMotivo }}</span>
+        </div>
+      </div>
+      <button class="imv-btn imv-btn--ghost" type="button" (click)="toggleDetalle(item)">
+        <i class="fas" [ngClass]="estaExpandido(item) ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+        {{ estaExpandido(item) ? 'Cerrar' : 'Ver detalle' }}
+      </button>
+    </div>
+
+    <div class="consulta-detail" *ngIf="estaExpandido(item)">
+      <div class="consulta-detail__loading" *ngIf="estaCargandoDetalle(item)">
+        <i class="fas fa-spinner fa-spin"></i> Cargando información relacionada...
+      </div>
+
+      <ng-container *ngIf="detalleDe(item) as detail">
+        <div class="consulta-warning" *ngFor="let warning of detail.Advertencias">
+          <i class="fas fa-exclamation-triangle"></i> {{ warning }}
+        </div>
+
+        <section class="consulta-section consulta-section--definitiva" *ngIf="detail.Persona || detail.Propiedad || detail.Adjudicaciones.length">
+          <div class="consulta-section__title">
+            <span class="consulta-badge consulta-badge--confirmado">Confirmado</span>
+            <h4>Información definitiva</h4>
+          </div>
+
+          <div class="consulta-grid" *ngIf="detail.Persona">
+            <div><span>Persona</span><strong>{{ detail.Persona.Apellido }}, {{ detail.Persona.Nombre }}</strong></div>
+            <div><span>DNI</span><strong>{{ detail.Persona.DNI || 'Sin dato' }}</strong></div>
+            <div><span>CUIT/CUIL</span><strong>{{ detail.Persona.CuilCuit || 'Sin dato' }}</strong></div>
+            <div><span>Contacto</span><strong>{{ detail.Persona.Telefono || detail.Persona.Email || 'Sin dato' }}</strong></div>
+          </div>
+
+          <div class="consulta-grid" *ngIf="detail.Propiedad">
+            <div><span>Propiedad</span><strong>{{ detail.Propiedad.Calle || 'Sin calle' }} {{ detail.Propiedad.Altura || '' }}</strong></div>
+            <div><span>Catastro</span><strong>{{ detail.Propiedad.Catastro || 'Sin dato' }}</strong></div>
+            <div><span>Barrio</span><strong>{{ detail.Propiedad.Barrio || 'Sin dato' }}</strong></div>
+            <div><span>Manzana / lote</span><strong>{{ detail.Propiedad.Manzana || 'Sin dato' }} / {{ detail.Propiedad.Lote || 'Sin dato' }}</strong></div>
+          </div>
+
+          <article class="consulta-adjudicacion" *ngFor="let adjudicacion of detail.Adjudicaciones">
+            <div class="consulta-adjudicacion__header">
+              <strong>Adjudicación #{{ adjudicacion.IdAdjudicacion }}</strong>
+              <span [class.consulta-status--inactive]="!adjudicacion.Activa">{{ adjudicacion.Activa ? 'Activa' : 'Inactiva' }}</span>
+            </div>
+            <div class="consulta-grid">
+              <div><span>Expediente</span><strong>{{ adjudicacion.NumeroExpediente || 'Sin dato' }}</strong></div>
+              <div><span>Fecha</span><strong>{{ (adjudicacion.FechaAdjudicacion | date:'dd/MM/yyyy') || 'Sin dato' }}</strong></div>
+              <div><span>Propiedad</span><strong>{{ adjudicacion.Propiedad.Calle }} {{ adjudicacion.Propiedad.Altura || '' }}</strong></div>
+              <div><span>Catastro</span><strong>{{ adjudicacion.Propiedad.Catastro || 'Sin dato' }}</strong></div>
+              <div><span>Plan</span><strong>{{ adjudicacion.Plan.Nombre || 'Sin nombre' }} · {{ adjudicacion.Plan.Origen }}</strong></div>
+              <div><span>Estado notarial actual</span><strong>{{ adjudicacion.EstadoNotarialActual?.Descripcion || 'Sin estado registrado' }}</strong></div>
+            </div>
+            <div class="consulta-titulares">
+              <div><strong>Titular principal:</strong> {{ adjudicacion.TitularPrincipal?.NombreCompleto || 'Sin dato' }} · DNI {{ adjudicacion.TitularPrincipal?.DNI || 'Sin dato' }}</div>
+              <div *ngFor="let cotitular of adjudicacion.Cotitulares"><strong>Cotitular:</strong> {{ cotitular.NombreCompleto }} · DNI {{ cotitular.DNI || 'Sin dato' }}</div>
+            </div>
+            <div class="consulta-links">
+              <button type="button" (click)="navegar('adjudicaciones')">Ir a Adjudicaciones</button>
+              <button type="button" (click)="navegar('propiedades')">Ir a Propiedades</button>
+              <button type="button" (click)="navegar('personas')">Ir a Personas</button>
+            </div>
+          </article>
+        </section>
+
+        <section class="consulta-section consulta-section--candidata" *ngIf="detail.CoincidenciaCandidata">
+          <div class="consulta-section__title">
+            <span class="consulta-badge consulta-badge--candidato">Coincidencia candidata</span>
+            <h4>Relaciones sugeridas por staging, no confirmadas</h4>
+          </div>
+          <p class="consulta-candidate-warning">Estos datos no deben interpretarse como una adjudicación ni como un vínculo definitivo.</p>
+          <div class="consulta-grid">
+            <div *ngIf="detail.CoincidenciaCandidata.PersonaTitular"><span>Posible titular</span><strong>{{ detail.CoincidenciaCandidata.PersonaTitular.Apellido }}, {{ detail.CoincidenciaCandidata.PersonaTitular.Nombre }} · DNI {{ detail.CoincidenciaCandidata.PersonaTitular.DNI }}</strong></div>
+            <div *ngIf="detail.CoincidenciaCandidata.PersonaCotitular"><span>Posible cotitular</span><strong>{{ detail.CoincidenciaCandidata.PersonaCotitular.Apellido }}, {{ detail.CoincidenciaCandidata.PersonaCotitular.Nombre }} · DNI {{ detail.CoincidenciaCandidata.PersonaCotitular.DNI }}</strong></div>
+            <div *ngIf="detail.CoincidenciaCandidata.Propiedad"><span>Posible propiedad</span><strong>{{ detail.CoincidenciaCandidata.Propiedad.Calle }} {{ detail.CoincidenciaCandidata.Propiedad.Altura || '' }} · Catastro {{ detail.CoincidenciaCandidata.Propiedad.Catastro || 'sin dato' }}</strong></div>
+            <div *ngIf="detail.CoincidenciaCandidata.Plan"><span>Posible plan</span><strong>{{ detail.CoincidenciaCandidata.Plan.Nombre || 'Sin nombre' }} · {{ detail.CoincidenciaCandidata.Plan.Origen }}</strong></div>
+          </div>
+        </section>
+
+        <section class="consulta-section consulta-section--legacy" *ngIf="detail.AntecedentesLegacy.length">
+          <div class="consulta-section__title">
+            <span class="consulta-badge consulta-badge--legacy">Antecedente legacy no validado</span>
+            <h4>Fuente histórica · lote activo</h4>
+          </div>
+
+          <article class="consulta-legacy" *ngFor="let legacy of detail.AntecedentesLegacy">
+            <div class="consulta-legacy__header">
+              <strong>Registro {{ legacy.IdRegistro }} · {{ legacy.HojaOrigen }} · fila {{ legacy.FilaOrigen }}</strong>
+              <span class="consulta-badge consulta-badge--estado">{{ etiquetaEstado(legacy.EstadoValidacion) }}</span>
+            </div>
+            <div class="consulta-reason">
+              <strong>{{ legacy.CodigoMotivo || 'Sin código de motivo' }}</strong>
+              <span>{{ legacy.DetalleMotivo || legacy.MotivosValidacion || 'Sin detalle adicional' }}</span>
+            </div>
+            <div class="consulta-grid consulta-grid--raw">
+              <div><span>Titular RAW</span><strong>{{ legacy.RawTitular || 'Sin dato' }}</strong></div>
+              <div><span>DNI RAW</span><strong>{{ legacy.RawDNI || 'Sin dato' }}</strong></div>
+              <div><span>Cotitular RAW</span><strong>{{ legacy.RawCotitular || 'Sin dato' }}</strong></div>
+              <div><span>DNI cotitular RAW</span><strong>{{ legacy.RawDNICotitular || 'Sin dato' }}</strong></div>
+              <div><span>Plan / programa RAW</span><strong>{{ legacy.RawPlan || 'Sin dato' }} / {{ legacy.RawPrograma || 'Sin dato' }}</strong></div>
+              <div><span>Catastro RAW</span><strong>{{ legacy.RawCatastro || 'Sin dato' }}</strong></div>
+              <div><span>Domicilio inmueble RAW</span><strong>{{ legacy.RawDomicilioInmueble || legacy.RawDomicilio || 'Sin dato' }}</strong></div>
+              <div><span>Barrio · manzana · lote RAW</span><strong>{{ legacy.RawBarrio || 'Sin dato' }} · {{ legacy.RawManzana || 'Sin dato' }} · {{ legacy.RawLote || 'Sin dato' }}</strong></div>
+              <div><span>Fecha RAW</span><strong>{{ legacy.RawFechaAdjudicacion || 'Sin dato' }}</strong></div>
+              <div><span>Clasificación de identidad</span><strong>{{ legacy.ClasificacionIdentidadTitular || 'Sin dato' }}</strong></div>
+              <div><span>Clasificación de catastro</span><strong>{{ legacy.ClasificacionCatastro || 'Sin dato' }}</strong></div>
+              <div><span>Verificación de inmueble</span><strong>{{ legacy.EstadoVerificacionInmueble || 'Sin dato' }}</strong></div>
+            </div>
+            <div class="consulta-raw-observation">
+              <span>Observación RAW literal</span>
+              <pre>{{ legacy.RawObservaciones || 'Sin observación' }}</pre>
+            </div>
+          </article>
+        </section>
+
+        <section class="consulta-section consulta-section--missing" *ngIf="detail.Faltantes.length">
+          <div class="consulta-section__title"><span class="consulta-badge consulta-badge--missing">Dato faltante</span><h4>Información relevante no disponible</h4></div>
+          <ul><li *ngFor="let missing of detail.Faltantes">{{ missing }}</li></ul>
+        </section>
+      </ng-container>
+    </div>
+  </article>
+</section>
+
+<app-pagination [page]="currentPage" [pageSize]="pageSize" [total]="total"
+                (pageChange)="cambiarPagina($event)"></app-pagination>

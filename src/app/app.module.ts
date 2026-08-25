@@ -16,6 +16,7 @@ import { AdjudicacionesComponent } from './features/adjudicaciones/adjudicacione
 import { CalidadDatosPanelComponent } from './features/inicio/calidad-datos-panel.component';
 import { PropiedadesComponent } from './features/propiedades/propiedades.component';
 import { PaginationComponent } from './shared/pagination/pagination.component';
+import { ConsultaIntegralComponent } from './features/consulta-integral/consulta-integral.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { PaginationComponent } from './shared/pagination/pagination.component';
     AdjudicacionesComponent,
     CalidadDatosPanelComponent,
     PropiedadesComponent,
-    PaginationComponent
+    PaginationComponent,
+    ConsultaIntegralComponent
   ],
   imports: [
     BrowserModule,

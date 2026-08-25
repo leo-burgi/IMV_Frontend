@@ -53,6 +53,9 @@ export class AppComponent {
     if (texto.includes('persona')) {
       this.cambiarSeccion('personas'); return;
     }
+    if (texto.includes('consulta')) {
+      this.cambiarSeccion('consulta-integral'); return;
+    }
     if (texto.includes('adjudic')) {
       this.cambiarSeccion('adjudicaciones'); return;
     }
@@ -63,7 +66,7 @@ export class AppComponent {
       this.cambiarSeccion('notariales'); return;
     }
 
-    if (['planes', 'barrios', 'calles', 'personas', 'adjudicaciones', 'propiedades', 'notariales'].includes(this.seccionActiva)) {
+    if (['planes', 'barrios', 'calles', 'personas', 'adjudicaciones', 'propiedades', 'notariales', 'consulta-integral'].includes(this.seccionActiva)) {
       return;
     }
 
