@@ -17,13 +17,16 @@ export class PlanesComponent implements OnInit {
   cargando = false;
   mensajeError = '';
   mensajeExito = '';
-  planForm: Partial<Plan> = { NombrePlan: '', Programa: '' };
+  readonly pageSize = 15;
+  currentPage = 1;
+  planForm: Partial<Plan> = { OrigenPlan: '', NombrePlan: '' };
 
   constructor(private planService: PlanService, private searchService: ImvSearchService) { }
 
   ngOnInit(): void {
     this.searchService.searchTerm$.subscribe((term) => {
       this.filtroBusqueda = term || '';
+      this.currentPage = 1;
     });
     this.cargarPlanes();
   }
@@ -45,14 +48,28 @@ export class PlanesComponent implements OnInit {
 
   onFiltroChange(term: string): void {
     this.filtroBusqueda = term;
+    this.currentPage = 1;
     this.searchService.setSearch(term);
   }
+
+  get planesFiltrados(): Plan[] {
+    const term = this.filtroBusqueda.trim().toLowerCase();
+    return this.listaPlanes.filter(plan => !term ||
+      `${plan.NombrePlan || ''} ${plan.OrigenPlan || ''}`.toLowerCase().includes(term));
+  }
+
+  get planesPaginados(): Plan[] {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.planesFiltrados.slice(start, start + this.pageSize);
+  }
+
+  cambiarPagina(page: number): void { this.currentPage = page; }
 
   abrirModalAlta(plan?: Plan): void {
     this.mensajeError = '';
     this.mensajeExito = '';
     this.modoEdicion = !!plan;
-    this.planForm = plan ? { ...plan } : { NombrePlan: '', Programa: '' };
+    this.planForm = plan ? { ...plan } : { OrigenPlan: '', NombrePlan: '' };
     this.mostrarModalAlta = true;
   }
 
@@ -61,12 +78,17 @@ export class PlanesComponent implements OnInit {
     this.guardando = false;
     this.mensajeError = '';
     this.modoEdicion = false;
-    this.planForm = { NombrePlan: '', Programa: '' };
+    this.planForm = { OrigenPlan: '', NombrePlan: '' };
   }
 
   guardarPlan(): void {
+    const origen = this.planForm.OrigenPlan?.trim();
     const nombre = this.planForm.NombrePlan?.trim();
-    const programa = this.planForm.Programa?.trim();
+
+    if (!origen) {
+      this.mensajeError = 'El origen del plan es obligatorio.';
+      return;
+    }
 
     if (!nombre) {
       this.mensajeError = 'El nombre del plan es obligatorio.';
@@ -77,8 +99,8 @@ export class PlanesComponent implements OnInit {
     this.mensajeError = '';
 
     const datosPlan: Plan = {
-      NombrePlan: nombre,
-      Programa: programa || undefined
+      OrigenPlan: origen,
+      NombrePlan: nombre
     };
     const request = this.modoEdicion && this.planForm.IdPlan
       ? this.planService.updatePlan({
@@ -94,7 +116,7 @@ export class PlanesComponent implements OnInit {
         this.guardando = false;
         this.mensajeExito = this.modoEdicion ? 'El plan se actualizó correctamente.' : 'El plan se cargó correctamente.';
         this.modoEdicion = false;
-        this.planForm = { NombrePlan: '', Programa: '' };
+        this.planForm = { OrigenPlan: '', NombrePlan: '' };
       },
       error: error => {
         this.guardando = false;
@@ -106,7 +128,7 @@ export class PlanesComponent implements OnInit {
   }
 
   verDetalle(plan: Plan): void {
-    alert('Vas a ver el detalle del plan: ' + plan.NombrePlan);
+    alert('Vas a ver el detalle del plan: ' + (plan.NombrePlan || 'Sin nombre informado'));
   }
 
   editarPlan(plan: Plan): void {

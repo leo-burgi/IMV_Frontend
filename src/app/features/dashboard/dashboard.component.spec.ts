@@ -50,4 +50,10 @@ describe('DashboardComponent', () => {
     expect(component.estiloGraficoEscrituras).toContain('60%');
     expect(component.descripcionGraficoEscrituras).toContain('Finalizada: 40%');
   });
+
+  it('debe aplicar una progresión de cinco colores al Top 5', () => {
+    const colores = [0, 1, 2, 3, 4].map(i => component.colorBarrio(i));
+    expect(new Set(colores).size).toBe(5);
+    expect(colores).toEqual(component.coloresBarrios);
+  });
 });

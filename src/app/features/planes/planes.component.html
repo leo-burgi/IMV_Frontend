@@ -28,13 +28,13 @@
 
     <div class="imv-modal__body">
       <div class="imv-form-row">
-        <label for="nombrePlan">Nombre del plan</label>
-        <input id="nombrePlan" type="text" name="nombrePlan" [(ngModel)]="planForm.NombrePlan" required />
+        <label for="origenPlan">Origen / entidad organizadora</label>
+        <input id="origenPlan" type="text" name="origenPlan" [(ngModel)]="planForm.OrigenPlan" required />
       </div>
 
       <div class="imv-form-row">
-        <label for="programaPlan">Programa</label>
-        <input id="programaPlan" type="text" name="programaPlan" [(ngModel)]="planForm.Programa" />
+        <label for="nombrePlan">Nombre del plan</label>
+        <input id="nombrePlan" type="text" name="nombrePlan" [(ngModel)]="planForm.NombrePlan" required />
       </div>
 
       <p class="imv-form-error" *ngIf="mensajeError">{{ mensajeError }}</p>
@@ -42,7 +42,7 @@
 
     <div class="imv-modal__footer">
       <button class="imv-btn imv-btn--ghost" type="button" (click)="cerrarModalAlta()">Cancelar</button>
-      <button class="imv-btn imv-btn--primary" type="button" (click)="guardarPlan()" [disabled]="guardando || !planForm.NombrePlan?.trim()">
+      <button class="imv-btn imv-btn--primary" type="button" (click)="guardarPlan()" [disabled]="guardando || !planForm.OrigenPlan?.trim() || !planForm.NombrePlan?.trim()">
         <i class="fas fa-spinner fa-spin" *ngIf="guardando"></i>
         {{ modoEdicion ? 'Guardar cambios' : 'Guardar plan' }}
       </button>
@@ -60,14 +60,14 @@
       <input
         type="search"
         class="imv-table-search__input"
-        placeholder="Buscar por nombre o programa..."
+        placeholder="Buscar por nombre u origen..."
         [(ngModel)]="filtroBusqueda"
         (ngModelChange)="onFiltroChange($event)"
       />
     </div>
     
     <span class="imv-table-count">
-      {{ (listaPlanes | imvFilter:filtroBusqueda:['NombrePlan','Programa']).length }} registros
+      {{ planesFiltrados.length }} registros
     </span>
   </div>
 
@@ -77,20 +77,20 @@
       <thead>
         <tr>
           <th>ID</th>
+          <th>Nombre del plan</th>
           <th>Origen</th>
-          <th>Programa</th>
           <th class="col-actions">Acciones</th>
         </tr>
       </thead>
       <tbody>
 
         <!-- Filas de datos -->
-        <tr *ngFor="let plan of listaPlanes | imvFilter:filtroBusqueda:['NombrePlan','Programa']">
+        <tr *ngFor="let plan of planesPaginados">
           <td>
             <span class="imv-badge-id">#{{ plan.IdPlan }}</span>
           </td>
-          <td class="col-name">{{ plan.NombrePlan }}</td>
-          <td>{{ plan.Programa }}</td>
+          <td class="col-name">{{ plan.NombrePlan || 'Sin nombre informado' }}</td>
+          <td>{{ plan.OrigenPlan }}</td>
           <td class="col-actions">
             <div class="imv-table-actions">
               <button class="imv-btn imv-btn--icon imv-btn--view"
@@ -125,7 +125,7 @@
 
         <!-- Estado: sin resultados de búsqueda -->
         <tr *ngIf="listaPlanes.length > 0 &&
-                   (listaPlanes | imvFilter:filtroBusqueda:['NombrePlan','Programa']).length === 0">
+                   planesFiltrados.length === 0">
           <td colspan="4">
             <div class="imv-table-empty">
               <i class="fas fa-search"></i>
@@ -137,5 +137,8 @@
       </tbody>
     </table>
   </div>
+
+  <app-pagination [page]="currentPage" [pageSize]="pageSize" [total]="planesFiltrados.length"
+                  (pageChange)="cambiarPagina($event)"></app-pagination>
 
 </div>

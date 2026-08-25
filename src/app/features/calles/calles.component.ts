@@ -17,6 +17,8 @@ export class CallesComponent implements OnInit {
   cargando = false;
   mensajeError = '';
   mensajeExito = '';
+  readonly pageSize = 15;
+  currentPage = 1;
 
   calleForm: Partial<Calle> = {
     Nombre: '',
@@ -31,6 +33,7 @@ export class CallesComponent implements OnInit {
   ngOnInit(): void {
     this.searchService.searchTerm$.subscribe((term) => {
       this.filtroBusqueda = term || '';
+      this.currentPage = 1;
     });
 
     this.cargarCalles();
@@ -53,8 +56,22 @@ export class CallesComponent implements OnInit {
 
   onFiltroChange(term: string): void {
     this.filtroBusqueda = term;
+    this.currentPage = 1;
     this.searchService.setSearch(term);
   }
+
+  get callesFiltradas(): Calle[] {
+    const term = this.filtroBusqueda.trim().toLowerCase();
+    return this.listarCalles.filter(calle => !term ||
+      `${calle.Nombre || ''} ${calle.NombreReducido || ''}`.toLowerCase().includes(term));
+  }
+
+  get callesPaginadas(): Calle[] {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.callesFiltradas.slice(start, start + this.pageSize);
+  }
+
+  cambiarPagina(page: number): void { this.currentPage = page; }
 
   abrirModalAlta(calle?: Calle): void {
     this.mensajeError = '';

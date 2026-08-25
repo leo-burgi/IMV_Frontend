@@ -73,28 +73,33 @@
         <span class="imv-nav-label">Calles</span>
       </a>
 
-      <div class="imv-nav-divider"></div>
-
       <a class="imv-nav-item" [class.imv-nav-item--active]="seccionActiva === 'personas'"
          (click)="cambiarSeccion('personas')" title="Personas">
         <i class="fas fa-fw fa-user-tie imv-nav-icon"></i>
         <span class="imv-nav-label">Personas</span>
       </a>
 
-      <a class="imv-nav-item imv-nav-item--disabled" title="Próximamente">
+      <a class="imv-nav-item" [class.imv-nav-item--active]="seccionActiva === 'adjudicaciones'"
+         (click)="cambiarSeccion('adjudicaciones')" title="Adjudicaciones">
         <i class="fas fa-fw fa-key imv-nav-icon"></i>
         <span class="imv-nav-label">Adjudicaciones</span>
       </a>
 
-      <a class="imv-nav-item imv-nav-item--disabled" title="Próximamente">
-        <i class="fas fa-fw fa-handshake imv-nav-icon"></i>
-        <span class="imv-nav-label">Convenios</span>
+      <a class="imv-nav-item" [class.imv-nav-item--active]="seccionActiva === 'propiedades'"
+         (click)="cambiarSeccion('propiedades')" title="Propiedades">
+        <i class="fas fa-fw fa-home imv-nav-icon"></i>
+        <span class="imv-nav-label">Propiedades</span>
       </a>
 
       <a class="imv-nav-item" [class.imv-nav-item--active]="seccionActiva === 'notariales'"
          (click)="cambiarSeccion('notariales')" title="Notariales">
         <i class="fas fa-fw fa-file-signature imv-nav-icon"></i>
         <span class="imv-nav-label">Notariales</span>
+      </a>
+
+      <a class="imv-nav-item imv-nav-item--disabled" title="Próximamente">
+        <i class="fas fa-fw fa-handshake imv-nav-icon"></i>
+        <span class="imv-nav-label">Convenios</span>
       </a>
 
       <a class="imv-nav-item imv-nav-item--disabled" title="Próximamente">
@@ -131,6 +136,10 @@
         </div>
         <img src="assets/img/rafaela-logo.png" alt="Rafaela" class="imv-welcome__logo" />
       </div>
+
+      <app-calidad-datos-panel
+        (verAdjudicaciones)="cambiarSeccion('adjudicaciones')">
+      </app-calidad-datos-panel>
     </div>
 
     <!-- Dashboard -->
@@ -170,6 +179,14 @@
 
     <div *ngIf="seccionActiva === 'personas'" class="imv-page">
       <div class="imv-card"><app-personas></app-personas></div>
+    </div>
+
+    <div *ngIf="seccionActiva === 'adjudicaciones'" class="imv-page">
+      <div class="imv-card"><app-adjudicaciones></app-adjudicaciones></div>
+    </div>
+
+    <div *ngIf="seccionActiva === 'propiedades'" class="imv-page">
+      <div class="imv-card"><app-propiedades></app-propiedades></div>
     </div>
 
     <div *ngIf="seccionActiva === 'notariales'" class="imv-page">

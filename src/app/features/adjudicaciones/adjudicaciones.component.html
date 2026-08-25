@@ -1,0 +1,148 @@
+<div class="imv-abm-header">
+  <div class="imv-abm-header__titles">
+    <h2 class="imv-page-title">Adjudicaciones</h2>
+    <p class="imv-page-sub">Gestión de inmuebles, planes y personas adjudicatarias</p>
+  </div>
+  <button class="imv-btn imv-btn--primary" type="button" (click)="abrirAlta()">
+    <i class="fas fa-plus"></i> Nueva adjudicación
+  </button>
+</div>
+
+<div class="imv-alert imv-alert--success" *ngIf="mensajeExito">{{ mensajeExito }}</div>
+<div class="adjudicaciones-error" *ngIf="mensajeError && !mostrarModal">
+  <i class="fas fa-exclamation-triangle"></i> {{ mensajeError }}
+</div>
+
+<div class="imv-modal-backdrop" *ngIf="mostrarModal">
+  <div class="imv-modal adjudicaciones-modal" role="dialog" aria-modal="true" aria-labelledby="adjudicacionTitle">
+    <div class="imv-modal__header">
+      <h3 id="adjudicacionTitle">
+        {{ modo === 'detalle' ? 'Detalle de adjudicación' : (modo === 'edicion' ? 'Editar adjudicación' : 'Nueva adjudicación') }}
+      </h3>
+      <button class="imv-btn imv-btn--ghost imv-btn--icon" type="button" (click)="cerrarModal()"><i class="fas fa-times"></i></button>
+    </div>
+
+    <div class="imv-modal__body" *ngIf="modo === 'detalle' && seleccionada">
+      <div class="adjudicacion-detail-grid">
+        <div><span>ID</span><strong>{{ seleccionada.IdAdjudicacion }}</strong></div>
+        <div><span>Estado</span><strong>{{ seleccionada.Activa ? 'Activa' : 'Inactiva' }}</strong></div>
+        <div><span>Propiedad</span><strong>{{ seleccionada.Propiedad }}</strong></div>
+        <div><span>Catastro</span><strong>{{ seleccionada.Catastro || 'Sin dato' }}</strong></div>
+        <div><span>Plan</span><strong>{{ seleccionada.NombrePlan || 'Sin nombre informado' }}</strong><small>{{ seleccionada.OrigenPlan }}</small></div>
+        <div><span>Legajo</span><strong>{{ seleccionada.NroLegajoFisico || 'Sin dato' }}</strong></div>
+        <div><span>Titular principal</span><strong>{{ seleccionada.TitularPrincipal }}</strong></div>
+        <div><span>DNI</span><strong>{{ seleccionada.DniTitularPrincipal || 'Sin dato' }}</strong></div>
+        <div class="adjudicacion-detail-cotitulares"><span>Cotitulares</span>
+          <strong *ngIf="!seleccionada.Cotitulares?.length">Sin cotitular</strong>
+          <div class="cotitular-block" *ngFor="let cotitular of seleccionada.Cotitulares; let i = index">
+            <small *ngIf="seleccionada.Cotitulares.length > 1">Cotitular {{ i + 1 }}</small>
+            <strong>{{ cotitular.NombreCompleto }}</strong>
+            <span>DNI: {{ cotitular.DNI || 'Sin dato' }}</span>
+          </div>
+        </div>
+        <div><span>Fecha</span><strong>{{ seleccionada.FechaAdjudicacion ? (seleccionada.FechaAdjudicacion | date:'dd/MM/yyyy') : 'Sin dato' }}</strong></div>
+      </div>
+    </div>
+
+    <div class="imv-modal__body adjudicacion-form-grid" *ngIf="modo !== 'detalle'">
+      <div class="imv-form-row adjudicacion-form-wide">
+        <label for="propiedad">Propiedad</label>
+        <select id="propiedad" [(ngModel)]="formulario.IdPropiedad">
+          <option [ngValue]="0">Seleccionar Propiedad</option>
+          <option *ngFor="let propiedad of catalogos.Propiedades" [ngValue]="propiedad.IdPropiedad">
+            {{ propiedad.Descripcion }} · Catastro {{ propiedad.Catastro || 'sin dato' }}
+          </option>
+        </select>
+      </div>
+      <div class="imv-form-row">
+        <label for="plan">Plan</label>
+        <select id="plan" [(ngModel)]="formulario.IdPlan">
+          <option [ngValue]="0">Seleccionar Plan</option>
+          <option *ngFor="let plan of catalogos.Planes" [ngValue]="plan.IdPlan">{{ plan.NombrePlan || 'Sin nombre informado' }} — {{ plan.OrigenPlan }}</option>
+        </select>
+      </div>
+      <div class="imv-form-row">
+        <label for="titular">Titular principal</label>
+        <select id="titular" [(ngModel)]="formulario.IdTitularPrincipal">
+          <option [ngValue]="0">Seleccionar titular</option>
+          <option *ngFor="let persona of catalogos.Personas" [ngValue]="persona.IdPersona">{{ persona.NombreCompleto }} · {{ persona.DNI }}</option>
+        </select>
+      </div>
+      <div class="imv-form-row adjudicacion-form-wide">
+        <label for="cotitulares">Cotitulares <small>(opcional, usar Ctrl para seleccionar varios)</small></label>
+        <select id="cotitulares" multiple [(ngModel)]="formulario.IdCotitulares" size="4">
+          <option *ngFor="let persona of catalogos.Personas" [ngValue]="persona.IdPersona">{{ persona.NombreCompleto }} · {{ persona.DNI }}</option>
+        </select>
+      </div>
+      <div class="imv-form-row">
+        <label for="legajo">N.º de legajo físico</label>
+        <input id="legajo" maxlength="50" [(ngModel)]="formulario.NroLegajoFisico" />
+      </div>
+      <div class="imv-form-row">
+        <label for="fecha">Fecha de adjudicación <small>(opcional)</small></label>
+        <input id="fecha" type="date" [(ngModel)]="formulario.FechaAdjudicacion" />
+      </div>
+      <div class="imv-form-row adjudicacion-checkbox">
+        <label><input type="checkbox" [(ngModel)]="formulario.Activa" /> Adjudicación activa</label>
+      </div>
+      <p class="imv-form-error adjudicacion-form-wide" *ngIf="mensajeError">{{ mensajeError }}</p>
+    </div>
+
+    <div class="imv-modal__footer">
+      <button class="imv-btn imv-btn--ghost" type="button" (click)="cerrarModal()">{{ modo === 'detalle' ? 'Cerrar' : 'Cancelar' }}</button>
+      <button *ngIf="modo !== 'detalle'" class="imv-btn imv-btn--primary" type="button" (click)="guardar()" [disabled]="guardando">
+        <i class="fas fa-spinner fa-spin" *ngIf="guardando"></i> {{ modo === 'edicion' ? 'Guardar cambios' : 'Guardar adjudicación' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="imv-card">
+  <div class="imv-table-toolbar adjudicaciones-toolbar">
+    <div class="imv-table-search">
+      <i class="fas fa-search imv-table-search__icon"></i>
+      <input type="search" class="imv-table-search__input" placeholder="Buscar por propiedad, catastro, plan o persona..."
+             [(ngModel)]="filtroBusqueda" (ngModelChange)="onFiltroChange($event)" />
+    </div>
+    <select class="adjudicaciones-filter" [(ngModel)]="filtroPlan" (ngModelChange)="onCriterioChange()">
+      <option [ngValue]="0">Todos los planes</option>
+      <option *ngFor="let plan of catalogos.Planes" [ngValue]="plan.IdPlan">{{ plan.NombrePlan || 'Sin nombre informado' }} — {{ plan.OrigenPlan }}</option>
+    </select>
+    <select class="adjudicaciones-filter" [(ngModel)]="filtroEstado" (ngModelChange)="onCriterioChange()">
+      <option value="todas">Todas</option><option value="activas">Activas</option><option value="inactivas">Inactivas</option>
+    </select>
+    <span class="imv-table-count">{{ total }} registros</span>
+  </div>
+
+  <div class="imv-table-wrapper">
+    <table class="imv-table adjudicaciones-table">
+      <thead><tr><th>ID</th><th>Propiedad</th><th>Catastro</th><th>Plan</th><th>Titular principal</th><th>Cotitulares</th><th>N° EXPTE.</th><th>Fecha</th><th>Estado</th><th class="col-actions">Acciones</th></tr></thead>
+      <tbody>
+        <tr *ngFor="let item of lista">
+          <td><span class="imv-badge-id">{{ item.IdAdjudicacion }}</span></td>
+          <td class="col-name">{{ item.Propiedad }}</td><td>{{ item.Catastro || 'Sin dato' }}</td>
+          <td>{{ item.NombrePlan || 'Sin nombre informado' }}<small class="adjudicacion-secondary">{{ item.OrigenPlan }}</small></td>
+          <td>{{ item.TitularPrincipal }}<small class="adjudicacion-secondary">DNI {{ item.DniTitularPrincipal || 'sin dato' }}</small></td>
+          <td>
+            <span *ngIf="!item.Cotitulares?.length">Sin cotitular</span>
+            <div class="cotitular-block" *ngFor="let cotitular of item.Cotitulares; let i = index">
+              <small *ngIf="item.Cotitulares.length > 1">Cotitular {{ i + 1 }}</small>
+              <span class="cotitular-name">{{ cotitular.NombreCompleto }}</span>
+              <span>DNI: {{ cotitular.DNI || 'Sin dato' }}</span>
+            </div>
+          </td><td>{{ item.NroLegajoFisico || 'Sin dato' }}</td>
+          <td>{{ item.FechaAdjudicacion ? (item.FechaAdjudicacion | date:'dd/MM/yyyy') : 'Sin dato' }}</td>
+          <td><span class="adjudicacion-status" [class.adjudicacion-status--inactive]="!item.Activa">{{ item.Activa ? 'Activa' : 'Inactiva' }}</span></td>
+          <td class="col-actions"><div class="imv-table-actions">
+            <button class="imv-btn imv-btn--icon imv-btn--view" type="button" (click)="abrirDetalle(item)" title="Ver"><i class="fas fa-eye"></i></button>
+            <button class="imv-btn imv-btn--icon imv-btn--edit" type="button" (click)="abrirEdicion(item)" title="Editar"><i class="fas fa-edit"></i></button>
+          </div></td>
+        </tr>
+        <tr *ngIf="cargando"><td colspan="10"><div class="imv-table-empty"><i class="fas fa-spinner fa-spin"></i> Cargando adjudicaciones...</div></td></tr>
+        <tr *ngIf="!cargando && lista.length === 0"><td colspan="10"><div class="imv-table-empty"><i class="fas fa-key"></i> No hay adjudicaciones que coincidan con los filtros.</div></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <app-pagination [page]="currentPage" [pageSize]="pageSize" [total]="total"
+                  (pageChange)="cambiarPagina($event)"></app-pagination>
+</div>

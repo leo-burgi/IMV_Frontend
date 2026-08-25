@@ -1,3 +1,4 @@
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { of } from 'rxjs';
@@ -22,6 +23,7 @@ describe('PlanesComponent', () => {
     await TestBed.configureTestingModule({
       imports: [FormsModule],
       declarations: [PlanesComponent, ImvFilterPipe],
+      schemas: [NO_ERRORS_SCHEMA],
       providers: [
         { provide: PlanService, useValue: planService },
         {
@@ -41,17 +43,32 @@ describe('PlanesComponent', () => {
     expect(planService.getPlanes).toHaveBeenCalled();
   });
 
-  it('debe incluir IdPlan al editar y permitir Programa vacío', () => {
-    const plan: Plan = { IdPlan: 5, NombrePlan: 'Original', Programa: 'Anterior' };
-    planService.updatePlan.and.returnValue(of({ IdPlan: 5, NombrePlan: 'Editado' }));
+  it('debe incluir IdPlan, origen y nombre normalizados al editar', () => {
+    const plan: Plan = { IdPlan: 5, OrigenPlan: 'IMV', NombrePlan: 'Original' };
+    planService.updatePlan.and.returnValue(of({ IdPlan: 5, OrigenPlan: 'PROVINCIAL', NombrePlan: 'Editado' }));
     component.abrirModalAlta(plan);
+    component.planForm.OrigenPlan = ' PROVINCIAL ';
     component.planForm.NombrePlan = ' Editado ';
-    component.planForm.Programa = '   ';
     component.guardarPlan();
     expect(planService.updatePlan).toHaveBeenCalledWith({
       IdPlan: 5,
-      NombrePlan: 'Editado',
-      Programa: undefined
+      OrigenPlan: 'PROVINCIAL',
+      NombrePlan: 'Editado'
     });
+  });
+
+  it('debe conservar visibles los planes históricos sin nombre', () => {
+    component.listaPlanes = [{ IdPlan: 113, OrigenPlan: 'IMV', NombrePlan: null }];
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain('Sin nombre informado');
+    expect(fixture.nativeElement.textContent).toContain('IMV');
+  });
+
+  it('debe paginar de a 15 y volver a página 1 al buscar', () => {
+    component.listaPlanes = Array.from({ length: 20 }, (_, i) => ({ IdPlan: i + 1, OrigenPlan: 'IMV', NombrePlan: `Plan ${i + 1}` }));
+    component.currentPage = 2;
+    expect(component.planesPaginados.length).toBe(5);
+    component.onFiltroChange('Plan 1');
+    expect(component.currentPage).toBe(1);
   });
 });

@@ -1,0 +1,72 @@
+<section class="quality-card" [ngClass]="'quality-card--' + claseNivelDeuda()">
+  <div class="quality-loading" *ngIf="cargando">
+    <i class="fas fa-spinner fa-spin"></i>
+    Consultando el estado de la información de adjudicaciones...
+  </div>
+
+  <div class="quality-error" *ngIf="!cargando && mensajeError">
+    <span><i class="fas fa-exclamation-triangle"></i> {{ mensajeError }}</span>
+    <button type="button" (click)="cargar()">Reintentar</button>
+  </div>
+
+  <ng-container *ngIf="!cargando && calidadDatos as calidad">
+    <div class="quality-complete" *ngIf="calidad.MigracionCompleta; else deudaPendiente">
+      <i class="fas fa-check-circle"></i>
+      <div>
+        <h3>Estado de migración de datos</h3>
+        <p>La totalidad de los {{ calidad.TotalLegacy | number }} registros fue incorporada.</p>
+      </div>
+    </div>
+
+    <ng-template #deudaPendiente>
+      <div class="quality-header">
+        <div>
+          <h3>Estado de migración de datos</h3>
+        </div>
+        <span class="quality-level">Deuda {{ calidad.NivelDeuda | lowercase }}</span>
+      </div>
+
+      <div class="quality-main-progress">
+        <div class="quality-row-label">
+          <strong>Registros incorporados</strong>
+          <span>{{ calidad.TotalMigradas | number }} de {{ calidad.TotalLegacy | number }} ({{ calidad.PorcentajeMigrado | number:'1.1-1' }}%)</span>
+        </div>
+        <div class="quality-track quality-track--main">
+          <span [style.width.%]="calidad.PorcentajeMigrado"></span>
+        </div>
+      </div>
+
+      <div class="quality-grid">
+        <div class="quality-item">
+          <div class="quality-row-label"><span>Sin catastro</span><strong>Faltan {{ calidad.SinCatastro | number }} registros ({{ calidad.PorcentajeSinCatastro | number:'1.1-1' }}%)</strong></div>
+          <div class="quality-track"><span [style.width.%]="calidad.PorcentajeSinCatastro"></span></div>
+        </div>
+        <div class="quality-item">
+          <div class="quality-row-label"><span>Inmueble pendiente de identificar</span><strong>Faltan {{ calidad.PropiedadPendiente | number }} registros ({{ calidad.PorcentajePropiedadPendiente | number:'1.1-1' }}%)</strong></div>
+          <div class="quality-track"><span [style.width.%]="calidad.PorcentajePropiedadPendiente"></span></div>
+        </div>
+        <div class="quality-item">
+          <div class="quality-row-label"><span>Registros sin plan identificado</span><strong>Faltan {{ calidad.PlanPendiente | number }} registros por asociar a un plan ({{ calidad.PorcentajePlanPendiente | number:'1.1-1' }}%)</strong></div>
+          <div class="quality-track"><span [style.width.%]="calidad.PorcentajePlanPendiente"></span></div>
+        </div>
+        <div class="quality-item">
+          <div class="quality-row-label"><span>Titular pendiente de identificar</span><strong>Faltan {{ calidad.TitularPendiente | number }} titulares por identificar ({{ calidad.PorcentajeTitularPendiente | number:'1.1-1' }}%)</strong></div>
+          <div class="quality-track"><span [style.width.%]="calidad.PorcentajeTitularPendiente"></span></div>
+        </div>
+        <div class="quality-item" *ngIf="calidad.CotitularPendiente > 0">
+          <div class="quality-row-label"><span>Cotitular pendiente de identificar</span><strong>Faltan {{ calidad.CotitularPendiente | number }} cotitulares por identificar ({{ calidad.PorcentajeCotitularPendiente | number:'1.1-1' }}%)</strong></div>
+          <div class="quality-track"><span [style.width.%]="calidad.PorcentajeCotitularPendiente"></span></div>
+        </div>
+        <div class="quality-item quality-item--conflict">
+          <div class="quality-row-label"><span>Antecedentes que requieren revisión</span><strong>Faltan {{ calidad.ConflictosHistoricos | number }} revisiones ({{ calidad.PorcentajeConflictosHistoricos | number:'1.1-1' }}%)</strong></div>
+          <div class="quality-track"><span [style.width.%]="calidad.PorcentajeConflictosHistoricos"></span></div>
+        </div>
+      </div>
+
+      <div class="quality-footer">
+        <span><strong>{{ calidad.Conflictos | number }}</strong> registros presentan alguna situación contradictoria.</span>
+        <button type="button" (click)="verAdjudicaciones.emit()">Ver adjudicaciones</button>
+      </div>
+    </ng-template>
+  </ng-container>
+</section>

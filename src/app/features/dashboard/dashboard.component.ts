@@ -15,6 +15,7 @@ export class DashboardComponent implements OnInit {
     '#185fa5', '#2e7d4f', '#d97706', '#7c3aed',
     '#0f6e56', '#c24156', '#64748b', '#378add'
   ];
+  readonly coloresBarrios: string[] = ['#185fa5', '#2f76b8', '#4f8dc9', '#72a5da', '#9abfe7'];
 
  
   // Esto va a disparar un string (el nombre de la sección) hacia afuera.
@@ -45,6 +46,10 @@ export class DashboardComponent implements OnInit {
 
   colorEstado(indice: number): string {
     return this.coloresEstados[indice % this.coloresEstados.length];
+  }
+
+  colorBarrio(indice: number): string {
+    return this.coloresBarrios[Math.min(indice, this.coloresBarrios.length - 1)];
   }
 
   get estiloGraficoEscrituras(): string {
