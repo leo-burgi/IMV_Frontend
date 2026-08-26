@@ -81,6 +81,24 @@ describe('ConsultaIntegralComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('Texto RAW; sin alterar / 01');
   });
 
+  it('debe mostrar una única advertencia legacy al final del detalle', () => {
+    const item = resultado('PERSONA', 'DEFINITIVO');
+    item.IdPersona = 1;
+    const response = detalle('PERSONA', 'DEFINITIVO');
+    response.Advertencias = ['Advertencia anterior 1', 'Advertencia anterior 2'];
+    service.getPersona.and.returnValue(of(response));
+    component.resultados = [item];
+    component.total = 1;
+    component.busquedaRealizada = true;
+    component.toggleDetalle(item);
+    fixture.detectChanges();
+
+    const warnings = fixture.nativeElement.querySelectorAll('.consulta-warning');
+    expect(warnings.length).toBe(1);
+    expect(warnings[0].textContent).toContain('Los datos legacy que se muestran deben ser verificados y confirmados');
+    expect(warnings[0]).toBe(warnings[0].parentElement.lastElementChild);
+  });
+
   function resultado(tipo: 'PERSONA' | 'PROPIEDAD' | 'LEGACY', nivel: any): ConsultaIntegralResultado {
     return {
       TipoResultado: tipo, NivelConfianza: nivel, Titulo: tipo, Estado: 'PENDIENTE_VERIFICACION',
