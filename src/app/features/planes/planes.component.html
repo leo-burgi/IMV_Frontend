@@ -60,7 +60,7 @@
       <input
         type="search"
         class="imv-table-search__input"
-        placeholder="Buscar por nombre u origen..."
+        placeholder="Buscar por nombre, origen o barrio..."
         [(ngModel)]="filtroBusqueda"
         (ngModelChange)="onFiltroChange($event)"
       />
@@ -79,6 +79,7 @@
           <th>ID</th>
           <th>Nombre del plan</th>
           <th>Origen</th>
+          <th>Barrio</th>
           <th class="col-actions">Acciones</th>
         </tr>
       </thead>
@@ -91,6 +92,9 @@
           </td>
           <td class="col-name">{{ plan.NombrePlan || 'Sin nombre informado' }}</td>
           <td>{{ plan.OrigenPlan }}</td>
+          <td [title]="plan.Barrios?.length > 1 ? plan.Barrios.join(', ') : (plan.Barrio || 'Sin dato')">
+            {{ plan.Barrio || 'Sin dato' }}
+          </td>
           <td class="col-actions">
             <div class="imv-table-actions">
               <button class="imv-btn imv-btn--icon imv-btn--view"
@@ -109,7 +113,7 @@
 
         <!-- Estado: cargando -->
         <tr *ngIf="cargando">
-          <td colspan="4">
+          <td colspan="5">
             <div class="imv-table-empty">
               <i class="fas fa-spinner fa-spin"></i>
               Cargando planes desde el servidor IMV...
@@ -118,7 +122,7 @@
         </tr>
 
         <tr *ngIf="!cargando && listaPlanes.length === 0">
-          <td colspan="4">
+          <td colspan="5">
             <div class="imv-table-empty">No hay planes registrados.</div>
           </td>
         </tr>
@@ -126,7 +130,7 @@
         <!-- Estado: sin resultados de búsqueda -->
         <tr *ngIf="listaPlanes.length > 0 &&
                    planesFiltrados.length === 0">
-          <td colspan="4">
+          <td colspan="5">
             <div class="imv-table-empty">
               <i class="fas fa-search"></i>
               No se encontraron planes para "{{ filtroBusqueda }}"

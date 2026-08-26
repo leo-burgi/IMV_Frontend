@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import {
   Adjudicacion, AdjudicacionCatalogos, AdjudicacionPayload
 } from '../../core/models/adjudicacion.model';
@@ -13,6 +13,7 @@ type ModalMode = 'alta' | 'edicion' | 'detalle';
   styleUrls: ['../../shared/imv-table.css', './adjudicaciones.component.css']
 })
 export class AdjudicacionesComponent implements OnInit {
+  @Input() idAdjudicacionSeleccionada?: number;
   lista: Adjudicacion[] = [];
   catalogos: AdjudicacionCatalogos = { Propiedades: [], Planes: [], Personas: [] };
   filtroBusqueda = '';
@@ -53,6 +54,12 @@ export class AdjudicacionesComponent implements OnInit {
     this.service.getCatalogos().subscribe({
       next: catalogos => {
         this.catalogos = catalogos;
+        if (this.idAdjudicacionSeleccionada) {
+          this.filtroBusqueda = String(this.idAdjudicacionSeleccionada);
+          this.filtroPlan = 0;
+          this.filtroEstado = 'todas';
+          this.currentPage = 1;
+        }
         this.cargarListado();
       },
       error: () => {
@@ -70,6 +77,7 @@ export class AdjudicacionesComponent implements OnInit {
         this.total = data.Total;
         this.lista = data.Items || [];
         this.cargando = false;
+        this.abrirAdjudicacionContextual();
       },
       error: () => {
         this.cargando = false;
@@ -170,6 +178,18 @@ export class AdjudicacionesComponent implements OnInit {
     this.mensajeError = '';
     this.mensajeExito = '';
     this.mostrarModal = true;
+  }
+
+  private abrirAdjudicacionContextual(): void {
+    if (!this.idAdjudicacionSeleccionada) return;
+    const adjudicacion = this.lista.find(item => item.IdAdjudicacion === this.idAdjudicacionSeleccionada);
+    if (!adjudicacion) {
+      this.mensajeError = 'No se encontró la adjudicación seleccionada.';
+      return;
+    }
+
+    this.idAdjudicacionSeleccionada = undefined;
+    this.abrirDetalle(adjudicacion);
   }
 
   private emptyForm(): AdjudicacionPayload {

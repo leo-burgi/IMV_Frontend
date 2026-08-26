@@ -106,6 +106,18 @@ describe('PersonasComponent', () => {
     expect(text.match(/Sin dato/g).length).toBeGreaterThanOrEqual(2);
   });
 
+  it('debe abrir directamente la Persona seleccionada desde Consulta integral', () => {
+    const personas = crearPersonas(20);
+    component.idPersonaSeleccionada = 18;
+    personaService.getPersonas.and.returnValue(of(personas));
+
+    component.cargarPersonas();
+
+    expect(component.currentPage).toBe(2);
+    expect(component.mostrarModalAlta).toBeTrue();
+    expect(component.personaForm.IdPersona).toBe(18);
+  });
+
   function crearPersonas(cantidad: number): Persona[] {
     return Array.from({ length: cantidad }, (_, index) => ({
       IdPersona: index + 1,

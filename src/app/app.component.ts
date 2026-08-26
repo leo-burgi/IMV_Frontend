@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ConsultaDestino, ConsultaIntegralEstado, ConsultaIntegralNavegacion } from './core/models/consulta-integral.model';
 import { ImvSearchService } from './core/services/imv-search.service';
 
 @Component({
@@ -10,6 +11,8 @@ export class AppComponent {
 
   // estado inicial
   seccionActiva: string = 'bienvenida';
+  consultaIntegralEstado?: ConsultaIntegralEstado;
+  destinoContextual?: { seccion: ConsultaDestino; id: number };
 
   // sidebar colapsable
   sidebarCollapsed: boolean = false;
@@ -27,7 +30,20 @@ export class AppComponent {
   }
 
   cambiarSeccion(seccion: string) {
+    this.destinoContextual = undefined;
     this.seccionActiva = seccion;
+  }
+
+  navegarDesdeConsulta(navegacion: ConsultaIntegralNavegacion): void {
+    this.consultaIntegralEstado = navegacion.estado;
+    this.destinoContextual = { seccion: navegacion.seccion, id: navegacion.id };
+    this.seccionActiva = navegacion.seccion;
+  }
+
+  idDestino(seccion: ConsultaDestino): number | undefined {
+    return this.destinoContextual && this.destinoContextual.seccion === seccion
+      ? this.destinoContextual.id
+      : undefined;
   }
 
   // buscador

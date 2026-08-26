@@ -159,7 +159,8 @@
     <!-- Planes -->
     <div *ngIf="seccionActiva === 'consulta-integral'" class="imv-page">
       <div class="imv-card">
-        <app-consulta-integral (solicitarNavegacion)="cambiarSeccion($event)"></app-consulta-integral>
+        <app-consulta-integral [estadoInicial]="consultaIntegralEstado"
+          (solicitarNavegacion)="navegarDesdeConsulta($event)"></app-consulta-integral>
       </div>
     </div>
 
@@ -168,7 +169,7 @@
       <div class="imv-section-header">
       </div>
       <div class="imv-card">
-        <app-planes></app-planes>
+        <app-planes [idPlanSeleccionado]="idDestino('planes')"></app-planes>
       </div>
     </div>
 
@@ -191,15 +192,15 @@
     </div>
 
     <div *ngIf="seccionActiva === 'personas'" class="imv-page">
-      <div class="imv-card"><app-personas></app-personas></div>
+      <div class="imv-card"><app-personas [idPersonaSeleccionada]="idDestino('personas')"></app-personas></div>
     </div>
 
     <div *ngIf="seccionActiva === 'adjudicaciones'" class="imv-page">
-      <div class="imv-card"><app-adjudicaciones></app-adjudicaciones></div>
+      <div class="imv-card"><app-adjudicaciones [idAdjudicacionSeleccionada]="idDestino('adjudicaciones')"></app-adjudicaciones></div>
     </div>
 
     <div *ngIf="seccionActiva === 'propiedades'" class="imv-page">
-      <div class="imv-card"><app-propiedades></app-propiedades></div>
+      <div class="imv-card"><app-propiedades [idPropiedadSeleccionada]="idDestino('propiedades')"></app-propiedades></div>
     </div>
 
     <div *ngIf="seccionActiva === 'notariales'" class="imv-page">

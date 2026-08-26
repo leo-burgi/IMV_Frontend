@@ -81,6 +81,52 @@ describe('ConsultaIntegralComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('Texto RAW; sin alterar / 01');
   });
 
+  it('debe mostrar una única advertencia legacy al final del detalle', () => {
+    const item = resultado('PERSONA', 'DEFINITIVO');
+    item.IdPersona = 1;
+    const response = detalle('PERSONA', 'DEFINITIVO');
+    response.Advertencias = ['Advertencia anterior 1', 'Advertencia anterior 2'];
+    service.getPersona.and.returnValue(of(response));
+    component.resultados = [item];
+    component.total = 1;
+    component.busquedaRealizada = true;
+    component.toggleDetalle(item);
+    fixture.detectChanges();
+
+    const warnings = fixture.nativeElement.querySelectorAll('.consulta-warning');
+    expect(warnings.length).toBe(1);
+    expect(warnings[0].textContent).toContain('Los datos legacy que se muestran deben ser verificados y confirmados');
+    expect(warnings[0]).toBe(warnings[0].parentElement.lastElementChild);
+  });
+
+  it('debe emitir navegación contextual a Persona, Adjudicación y Propiedad conservando la búsqueda', () => {
+    const emitidos: any[] = [];
+    component.search = 'Pérez';
+    component.tipo = 'PERSONA';
+    component.currentPage = 3;
+    component.solicitarNavegacion.subscribe(evento => emitidos.push(evento));
+
+    component.navegar('personas', 4);
+    component.navegar('adjudicaciones', 8);
+    component.navegar('propiedades', 12);
+
+    expect(emitidos.map(evento => [evento.seccion, evento.id])).toEqual([
+      ['personas', 4], ['adjudicaciones', 8], ['propiedades', 12]
+    ]);
+    expect(emitidos[0].estado).toEqual({ search: 'Pérez', tipo: 'PERSONA', page: 3 });
+  });
+
+  it('debe restaurar la búsqueda, el tipo y la página al volver', () => {
+    service.search.calls.reset();
+    component.estadoInicial = { search: 'San José', tipo: 'INMUEBLE', page: 2 };
+
+    component.ngOnInit();
+
+    expect(component.search).toBe('San José');
+    expect(component.tipo).toBe('INMUEBLE');
+    expect(service.search).toHaveBeenCalledWith('San José', 'INMUEBLE', 2, 15);
+  });
+
   function resultado(tipo: 'PERSONA' | 'PROPIEDAD' | 'LEGACY', nivel: any): ConsultaIntegralResultado {
     return {
       TipoResultado: tipo, NivelConfianza: nivel, Titulo: tipo, Estado: 'PENDIENTE_VERIFICACION',

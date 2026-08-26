@@ -52,4 +52,18 @@ describe('PropiedadesComponent', () => {
     expect(service.getPropiedad).toHaveBeenCalledWith(1);
     expect(component.seleccionada).toEqual(propiedad);
   });
+
+  it('debe localizar y abrir la Propiedad seleccionada desde Consulta integral', () => {
+    const propiedad = { IdPropiedad: 12, IdBarrio: 1, Barrio: 'MORA', IdCalle: 1, Calle: 'LAVALLE' };
+    component.idPropiedadSeleccionada = 12;
+    component.filtroBusqueda = '12';
+    service.getPropiedadesPaginadas.and.returnValue(of({ Page: 1, PageSize: 15, Total: 1, Items: [propiedad] }));
+    service.getPropiedad.and.returnValue(of(propiedad));
+
+    component.cargarPropiedades();
+
+    expect(service.getPropiedadesPaginadas).toHaveBeenCalledWith(1, 15, '12', '', 'todas', 'todas');
+    expect(service.getPropiedad).toHaveBeenCalledWith(12);
+    expect(component.seleccionada?.IdPropiedad).toBe(12);
+  });
 });

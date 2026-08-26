@@ -1,13 +1,8 @@
 <div class="imv-abm-header">
   <div class="imv-abm-header__titles">
     <h2 class="imv-page-title">Consulta integral</h2>
-    <p class="imv-page-sub">Información definitiva y antecedentes del lote legacy activo, en una única consulta de sólo lectura.</p>
+    <p class="imv-page-sub">Buscá personas o inmuebles y consultá en un solo lugar sus adjudicaciones, propiedades, planes y antecedentes históricos.</p>
   </div>
-</div>
-
-<div class="consulta-notice">
-  <i class="fas fa-info-circle"></i>
-  <span>Las coincidencias candidatas y los antecedentes legacy nunca reemplazan la información definitiva.</span>
 </div>
 
 <form class="consulta-search" (submit)="buscar(1); $event.preventDefault()">
@@ -85,10 +80,6 @@
       </div>
 
       <ng-container *ngIf="detalleDe(item) as detail">
-        <div class="consulta-warning" *ngFor="let warning of detail.Advertencias">
-          <i class="fas fa-exclamation-triangle"></i> {{ warning }}
-        </div>
-
         <section class="consulta-section consulta-section--definitiva" *ngIf="detail.Persona || detail.Propiedad || detail.Adjudicaciones.length">
           <div class="consulta-section__title">
             <span class="consulta-badge consulta-badge--confirmado">Confirmado</span>
@@ -101,12 +92,18 @@
             <div><span>CUIT/CUIL</span><strong>{{ detail.Persona.CuilCuit || 'Sin dato' }}</strong></div>
             <div><span>Contacto</span><strong>{{ detail.Persona.Telefono || detail.Persona.Email || 'Sin dato' }}</strong></div>
           </div>
+          <div class="consulta-links" *ngIf="detail.Persona">
+            <button type="button" (click)="navegar('personas', detail.Persona.IdPersona)">Ver persona</button>
+          </div>
 
           <div class="consulta-grid" *ngIf="detail.Propiedad">
             <div><span>Propiedad</span><strong>{{ detail.Propiedad.Calle || 'Sin calle' }} {{ detail.Propiedad.Altura || '' }}</strong></div>
             <div><span>Catastro</span><strong>{{ detail.Propiedad.Catastro || 'Sin dato' }}</strong></div>
             <div><span>Barrio</span><strong>{{ detail.Propiedad.Barrio || 'Sin dato' }}</strong></div>
             <div><span>Manzana / lote</span><strong>{{ detail.Propiedad.Manzana || 'Sin dato' }} / {{ detail.Propiedad.Lote || 'Sin dato' }}</strong></div>
+          </div>
+          <div class="consulta-links" *ngIf="detail.Propiedad">
+            <button type="button" (click)="navegar('propiedades', detail.Propiedad.IdPropiedad)">Ver propiedad</button>
           </div>
 
           <article class="consulta-adjudicacion" *ngFor="let adjudicacion of detail.Adjudicaciones">
@@ -127,9 +124,10 @@
               <div *ngFor="let cotitular of adjudicacion.Cotitulares"><strong>Cotitular:</strong> {{ cotitular.NombreCompleto }} · DNI {{ cotitular.DNI || 'Sin dato' }}</div>
             </div>
             <div class="consulta-links">
-              <button type="button" (click)="navegar('adjudicaciones')">Ir a Adjudicaciones</button>
-              <button type="button" (click)="navegar('propiedades')">Ir a Propiedades</button>
-              <button type="button" (click)="navegar('personas')">Ir a Personas</button>
+              <button type="button" (click)="navegar('adjudicaciones', adjudicacion.IdAdjudicacion)">Ver adjudicación</button>
+              <button type="button" (click)="navegar('propiedades', adjudicacion.Propiedad.IdPropiedad)">Ver propiedad</button>
+              <button type="button" (click)="navegar('personas', adjudicacion.TitularPrincipal?.IdPersona)">Ver titular</button>
+              <button type="button" (click)="navegar('planes', adjudicacion.Plan.IdPlan)">Ver plan</button>
             </div>
           </article>
         </section>
@@ -139,7 +137,6 @@
             <span class="consulta-badge consulta-badge--candidato">Coincidencia candidata</span>
             <h4>Relaciones sugeridas por staging, no confirmadas</h4>
           </div>
-          <p class="consulta-candidate-warning">Estos datos no deben interpretarse como una adjudicación ni como un vínculo definitivo.</p>
           <div class="consulta-grid">
             <div *ngIf="detail.CoincidenciaCandidata.PersonaTitular"><span>Posible titular</span><strong>{{ detail.CoincidenciaCandidata.PersonaTitular.Apellido }}, {{ detail.CoincidenciaCandidata.PersonaTitular.Nombre }} · DNI {{ detail.CoincidenciaCandidata.PersonaTitular.DNI }}</strong></div>
             <div *ngIf="detail.CoincidenciaCandidata.PersonaCotitular"><span>Posible cotitular</span><strong>{{ detail.CoincidenciaCandidata.PersonaCotitular.Apellido }}, {{ detail.CoincidenciaCandidata.PersonaCotitular.Nombre }} · DNI {{ detail.CoincidenciaCandidata.PersonaCotitular.DNI }}</strong></div>
@@ -188,6 +185,11 @@
           <div class="consulta-section__title"><span class="consulta-badge consulta-badge--missing">Dato faltante</span><h4>Información relevante no disponible</h4></div>
           <ul><li *ngFor="let missing of detail.Faltantes">{{ missing }}</li></ul>
         </section>
+
+        <div class="consulta-warning" role="note">
+          <i class="fas fa-exclamation-triangle"></i>
+          <span>Los datos legacy que se muestran deben ser verificados y confirmados en cada sección. Son extractos de registros anteriores y pueden no constituir información definitiva.</span>
+        </div>
       </ng-container>
     </div>
   </article>
