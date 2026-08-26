@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Propiedad } from '../../core/models/propiedad.model';
 import { ImvSearchService } from '../../core/services/imv-search.service';
 import { PropiedadService } from '../../core/services/propiedad.service';
@@ -10,6 +10,7 @@ import { BarrioService } from '../../core/services/barrio.service';
   styleUrls: ['../../shared/imv-table.css', './propiedades.component.css']
 })
 export class PropiedadesComponent implements OnInit {
+  @Input() idPropiedadSeleccionada?: number;
   lista: Propiedad[] = [];
   filtroBusqueda = '';
   filtroBarrio = '';
@@ -32,7 +33,15 @@ export class PropiedadesComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    if (this.idPropiedadSeleccionada) {
+      this.filtroBusqueda = String(this.idPropiedadSeleccionada);
+      this.filtroBarrio = '';
+      this.filtroEstado = 'todas';
+      this.filtroCatastro = 'todas';
+      this.currentPage = 1;
+    }
     this.searchService.searchTerm$.subscribe(term => {
+      if (this.idPropiedadSeleccionada) return;
       const nuevo = term || '';
       if (nuevo !== this.filtroBusqueda) {
         this.filtroBusqueda = nuevo;
@@ -53,6 +62,7 @@ export class PropiedadesComponent implements OnInit {
         this.total = data.Total;
         this.currentPage = data.Page;
         this.cargando = false;
+        this.abrirPropiedadContextual();
       },
       error: () => {
         this.cargando = false;
@@ -91,5 +101,17 @@ export class PropiedadesComponent implements OnInit {
     this.seleccionada = null;
     this.cargandoDetalle = false;
     this.detalleError = '';
+  }
+
+  private abrirPropiedadContextual(): void {
+    if (!this.idPropiedadSeleccionada) return;
+    const propiedad = this.lista.find(item => item.IdPropiedad === this.idPropiedadSeleccionada);
+    if (!propiedad) {
+      this.mensajeError = 'No se encontró la propiedad seleccionada.';
+      return;
+    }
+
+    this.idPropiedadSeleccionada = undefined;
+    this.verDetalle(propiedad);
   }
 }

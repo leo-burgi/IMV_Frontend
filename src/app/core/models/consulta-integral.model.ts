@@ -3,6 +3,19 @@ import { PagedResult } from './pagination.model';
 export type ConsultaTipo = 'TODOS' | 'PERSONA' | 'INMUEBLE' | 'EXPEDIENTE';
 export type ConsultaResultadoTipo = 'PERSONA' | 'PROPIEDAD' | 'LEGACY';
 export type ConsultaNivel = 'DEFINITIVO' | 'ANTECEDENTE_LEGACY_NO_VALIDADO' | 'COINCIDENCIA_CANDIDATA';
+export type ConsultaDestino = 'personas' | 'adjudicaciones' | 'propiedades' | 'planes';
+
+export interface ConsultaIntegralEstado {
+  search: string;
+  tipo: ConsultaTipo;
+  page: number;
+}
+
+export interface ConsultaIntegralNavegacion {
+  seccion: ConsultaDestino;
+  id: number;
+  estado: ConsultaIntegralEstado;
+}
 
 export interface ConsultaIntegralResultado {
   TipoResultado: ConsultaResultadoTipo;

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { PlanService } from 'src/app/core/services/plan.service';
 import { Plan } from 'src/app/core/models/plan.model';
 import { ImvSearchService } from 'src/app/core/services/imv-search.service';
@@ -9,6 +9,7 @@ import { ImvSearchService } from 'src/app/core/services/imv-search.service';
   styleUrls: ['../../shared/imv-table.css']
 })
 export class PlanesComponent implements OnInit {
+  @Input() idPlanSeleccionado?: number;
   listaPlanes: Plan[] = [];
   filtroBusqueda = '';
   mostrarModalAlta = false;
@@ -38,6 +39,7 @@ export class PlanesComponent implements OnInit {
       next: (data) => {
         this.listaPlanes = data || [];
         this.cargando = false;
+        this.abrirPlanContextual();
       },
       error: () => {
         this.cargando = false;
@@ -55,7 +57,8 @@ export class PlanesComponent implements OnInit {
   get planesFiltrados(): Plan[] {
     const term = this.filtroBusqueda.trim().toLowerCase();
     return this.listaPlanes.filter(plan => !term ||
-      `${plan.NombrePlan || ''} ${plan.OrigenPlan || ''}`.toLowerCase().includes(term));
+      `${plan.NombrePlan || ''} ${plan.OrigenPlan || ''} ${plan.Barrio || ''} ${(plan.Barrios || []).join(' ')}`
+        .toLowerCase().includes(term));
   }
 
   get planesPaginados(): Plan[] {
@@ -133,5 +136,20 @@ export class PlanesComponent implements OnInit {
 
   editarPlan(plan: Plan): void {
     this.abrirModalAlta(plan);
+  }
+
+  private abrirPlanContextual(): void {
+    if (!this.idPlanSeleccionado) return;
+    const index = this.listaPlanes.findIndex(plan => plan.IdPlan === this.idPlanSeleccionado);
+    if (index < 0) {
+      this.mensajeError = 'No se encontró el plan seleccionado.';
+      return;
+    }
+
+    this.filtroBusqueda = '';
+    this.currentPage = Math.floor(index / this.pageSize) + 1;
+    const plan = this.listaPlanes[index];
+    this.idPlanSeleccionado = undefined;
+    this.editarPlan(plan);
   }
 }

@@ -71,4 +71,33 @@ describe('PlanesComponent', () => {
     component.onFiltroChange('Plan 1');
     expect(component.currentPage).toBe(1);
   });
+
+  it('debe mostrar Barrio único, Varios con detalle y Sin dato', () => {
+    component.listaPlanes = [
+      { IdPlan: 1, OrigenPlan: 'IMV', NombrePlan: 'Plan uno', Barrio: 'San José', Barrios: ['San José'] },
+      { IdPlan: 2, OrigenPlan: 'IMV', NombrePlan: 'Plan varios', Barrio: 'Varios', Barrios: ['Mora', 'San José'] },
+      { IdPlan: 3, OrigenPlan: 'IMV', NombrePlan: 'Plan sin barrio', Barrio: 'Sin dato', Barrios: [] }
+    ];
+    fixture.detectChanges();
+
+    const rows = fixture.nativeElement.querySelectorAll('tbody tr');
+    expect(rows[0].textContent).toContain('San José');
+    expect(rows[1].textContent).toContain('Varios');
+    expect(rows[1].querySelector('td[title]').getAttribute('title')).toBe('Mora, San José');
+    expect(rows[2].textContent).toContain('Sin dato');
+  });
+
+  it('debe abrir el Plan seleccionado desde Consulta integral', () => {
+    const planes: Plan[] = Array.from({ length: 20 }, (_, index) => ({
+      IdPlan: index + 1, OrigenPlan: 'IMV', NombrePlan: `Plan ${index + 1}`
+    }));
+    component.idPlanSeleccionado = 17;
+    planService.getPlanes.and.returnValue(of(planes));
+
+    component.cargarPlanes();
+
+    expect(component.currentPage).toBe(2);
+    expect(component.mostrarModalAlta).toBeTrue();
+    expect(component.planForm.IdPlan).toBe(17);
+  });
 });

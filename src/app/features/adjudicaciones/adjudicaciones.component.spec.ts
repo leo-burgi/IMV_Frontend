@@ -55,4 +55,21 @@ describe('AdjudicacionesComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('DNI: 12345678');
     expect(fixture.nativeElement.textContent).toContain('DNI: Sin dato');
   });
+
+  it('debe localizar y abrir la Adjudicación seleccionada desde Consulta integral', () => {
+    const adjudicacion = {
+      IdAdjudicacion: 8, IdPropiedad: 1, Propiedad: 'Belgrano 100', IdPlan: 1,
+      NombrePlan: 'Plan Norte', OrigenPlan: 'IMV', TitularPrincipal: 'Pérez, Ana',
+      IdTitularPrincipal: 4, Cotitulares: [], Activa: true
+    };
+    component.idAdjudicacionSeleccionada = 8;
+    service.getAdjudicacionesPaginadas.and.returnValue(of({ Page: 1, PageSize: 15, Total: 1, Items: [adjudicacion] }));
+
+    component.cargarDatos();
+
+    expect(service.getAdjudicacionesPaginadas).toHaveBeenCalledWith(1, 15, '8', 0, 'todas');
+    expect(component.mostrarModal).toBeTrue();
+    expect(component.modo).toBe('detalle');
+    expect(component.seleccionada?.IdAdjudicacion).toBe(8);
+  });
 });

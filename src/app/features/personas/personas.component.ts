@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Persona } from '../../core/models/persona.model';
 import { ImvSearchService } from '../../core/services/imv-search.service';
 import { PersonaService } from '../../core/services/persona.service';
@@ -9,6 +9,7 @@ import { PersonaService } from '../../core/services/persona.service';
   styleUrls: ['../../shared/imv-table.css']
 })
 export class PersonasComponent implements OnInit {
+  @Input() idPersonaSeleccionada?: number;
   listaPersonas: Persona[] = [];
   filtroBusqueda = '';
   mostrarModalAlta = false;
@@ -41,6 +42,7 @@ export class PersonasComponent implements OnInit {
       next: data => {
         this.listaPersonas = data || [];
         this.cargando = false;
+        this.abrirPersonaContextual();
       },
       error: () => {
         this.cargando = false;
@@ -141,6 +143,21 @@ export class PersonasComponent implements OnInit {
 
   editarPersona(persona: Persona): void {
     this.abrirModalAlta(persona);
+  }
+
+  private abrirPersonaContextual(): void {
+    if (!this.idPersonaSeleccionada) return;
+    const index = this.listaPersonas.findIndex(persona => persona.IdPersona === this.idPersonaSeleccionada);
+    if (index < 0) {
+      this.mensajeError = 'No se encontró la persona seleccionada.';
+      return;
+    }
+
+    this.filtroBusqueda = '';
+    this.currentPage = Math.floor(index / this.pageSize) + 1;
+    const persona = this.listaPersonas[index];
+    this.idPersonaSeleccionada = undefined;
+    this.editarPersona(persona);
   }
 
   private emptyForm(): Partial<Persona> {

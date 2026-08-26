@@ -92,12 +92,18 @@
             <div><span>CUIT/CUIL</span><strong>{{ detail.Persona.CuilCuit || 'Sin dato' }}</strong></div>
             <div><span>Contacto</span><strong>{{ detail.Persona.Telefono || detail.Persona.Email || 'Sin dato' }}</strong></div>
           </div>
+          <div class="consulta-links" *ngIf="detail.Persona">
+            <button type="button" (click)="navegar('personas', detail.Persona.IdPersona)">Ver persona</button>
+          </div>
 
           <div class="consulta-grid" *ngIf="detail.Propiedad">
             <div><span>Propiedad</span><strong>{{ detail.Propiedad.Calle || 'Sin calle' }} {{ detail.Propiedad.Altura || '' }}</strong></div>
             <div><span>Catastro</span><strong>{{ detail.Propiedad.Catastro || 'Sin dato' }}</strong></div>
             <div><span>Barrio</span><strong>{{ detail.Propiedad.Barrio || 'Sin dato' }}</strong></div>
             <div><span>Manzana / lote</span><strong>{{ detail.Propiedad.Manzana || 'Sin dato' }} / {{ detail.Propiedad.Lote || 'Sin dato' }}</strong></div>
+          </div>
+          <div class="consulta-links" *ngIf="detail.Propiedad">
+            <button type="button" (click)="navegar('propiedades', detail.Propiedad.IdPropiedad)">Ver propiedad</button>
           </div>
 
           <article class="consulta-adjudicacion" *ngFor="let adjudicacion of detail.Adjudicaciones">
@@ -118,9 +124,10 @@
               <div *ngFor="let cotitular of adjudicacion.Cotitulares"><strong>Cotitular:</strong> {{ cotitular.NombreCompleto }} · DNI {{ cotitular.DNI || 'Sin dato' }}</div>
             </div>
             <div class="consulta-links">
-              <button type="button" (click)="navegar('adjudicaciones')">Ir a Adjudicaciones</button>
-              <button type="button" (click)="navegar('propiedades')">Ir a Propiedades</button>
-              <button type="button" (click)="navegar('personas')">Ir a Personas</button>
+              <button type="button" (click)="navegar('adjudicaciones', adjudicacion.IdAdjudicacion)">Ver adjudicación</button>
+              <button type="button" (click)="navegar('propiedades', adjudicacion.Propiedad.IdPropiedad)">Ver propiedad</button>
+              <button type="button" (click)="navegar('personas', adjudicacion.TitularPrincipal?.IdPersona)">Ver titular</button>
+              <button type="button" (click)="navegar('planes', adjudicacion.Plan.IdPlan)">Ver plan</button>
             </div>
           </article>
         </section>

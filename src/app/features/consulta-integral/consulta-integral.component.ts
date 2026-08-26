@@ -1,6 +1,9 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
+  ConsultaDestino,
+  ConsultaIntegralEstado,
   ConsultaIntegralDetalle,
+  ConsultaIntegralNavegacion,
   ConsultaIntegralResultado,
   ConsultaNivel,
   ConsultaTipo
@@ -12,8 +15,9 @@ import { ConsultaIntegralService } from '../../core/services/consulta-integral.s
   templateUrl: './consulta-integral.component.html',
   styleUrls: ['../../shared/imv-table.css', './consulta-integral.component.css']
 })
-export class ConsultaIntegralComponent {
-  @Output() solicitarNavegacion = new EventEmitter<string>();
+export class ConsultaIntegralComponent implements OnInit {
+  @Input() estadoInicial?: ConsultaIntegralEstado;
+  @Output() solicitarNavegacion = new EventEmitter<ConsultaIntegralNavegacion>();
 
   search = '';
   tipo: ConsultaTipo = 'TODOS';
@@ -29,6 +33,13 @@ export class ConsultaIntegralComponent {
   expandido = '';
 
   constructor(private service: ConsultaIntegralService) { }
+
+  ngOnInit(): void {
+    if (!this.estadoInicial || !this.estadoInicial.search) return;
+    this.search = this.estadoInicial.search;
+    this.tipo = this.estadoInicial.tipo;
+    this.buscar(this.estadoInicial.page);
+  }
 
   buscar(page: number = 1): void {
     const term = this.search.trim();
@@ -126,7 +137,14 @@ export class ConsultaIntegralComponent {
     return estado || 'Sin estado';
   }
 
-  navegar(seccion: string): void { this.solicitarNavegacion.emit(seccion); }
+  navegar(seccion: ConsultaDestino, id?: number): void {
+    if (!id) return;
+    this.solicitarNavegacion.emit({
+      seccion,
+      id,
+      estado: { search: this.search, tipo: this.tipo, page: this.currentPage }
+    });
+  }
 
   trackResultado(_index: number, item: ConsultaIntegralResultado): string {
     return `${item.TipoResultado}-${item.IdPersona || item.IdPropiedad || item.IdRegistroLegacy}`;
