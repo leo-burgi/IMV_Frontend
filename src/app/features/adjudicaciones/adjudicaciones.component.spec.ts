@@ -26,6 +26,7 @@ describe('AdjudicacionesComponent', () => {
     }).compileComponents();
     fixture = TestBed.createComponent(AdjudicacionesComponent);
     component = fixture.componentInstance;
+    fixture.detectChanges();
   });
 
   it('debe crear el módulo', () => expect(component).toBeTruthy());

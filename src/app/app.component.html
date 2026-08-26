@@ -55,6 +55,12 @@
         <span class="imv-nav-label">Dashboard</span>
       </a>
 
+      <a class="imv-nav-item" [class.imv-nav-item--active]="seccionActiva === 'consulta-integral'"
+         (click)="cambiarSeccion('consulta-integral')" title="Consulta integral">
+        <i class="fas fa-fw fa-search-location imv-nav-icon"></i>
+        <span class="imv-nav-label">Consulta integral</span>
+      </a>
+
       <a class="imv-nav-item" [class.imv-nav-item--active]="seccionActiva === 'planes'"
          (click)="cambiarSeccion('planes')" title="Planes">
         <i class="fas fa-fw fa-clipboard-list imv-nav-icon"></i>
@@ -148,6 +154,13 @@
         <app-dashboard (solicitarNavegacion)="cambiarSeccion($event)"></app-dashboard>
       </div>
       
+    </div>
+
+    <!-- Planes -->
+    <div *ngIf="seccionActiva === 'consulta-integral'" class="imv-page">
+      <div class="imv-card">
+        <app-consulta-integral (solicitarNavegacion)="cambiarSeccion($event)"></app-consulta-integral>
+      </div>
     </div>
 
     <!-- Planes -->
