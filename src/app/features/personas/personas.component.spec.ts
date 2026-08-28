@@ -1,7 +1,7 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { of } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { Persona } from '../../core/models/persona.model';
 import { ConsultaIntegralService } from '../../core/services/consulta-integral.service';
 import { ImvSearchService } from '../../core/services/imv-search.service';
@@ -137,6 +137,33 @@ describe('PersonasComponent', () => {
     expect(component.mostrarFicha).toBeTrue();
     expect(component.mostrarModalAlta).toBeFalse();
     expect(consultaIntegralService.getPersona).toHaveBeenCalledWith(1);
+  });
+
+  it('debe ignorar respuestas de una ficha cerrada o reemplazada', () => {
+    const primeraSolicitud = new Subject<any>();
+    const segundaSolicitud = new Subject<any>();
+    consultaIntegralService.getPersona.and.returnValues(
+      primeraSolicitud.asObservable(),
+      segundaSolicitud.asObservable()
+    );
+    const primeraPersona = crearPersonas(2)[0];
+    const segundaPersona = crearPersonas(2)[1];
+
+    component.verPersona(primeraPersona);
+    component.cerrarFicha();
+    component.verPersona(segundaPersona);
+
+    primeraSolicitud.next(detallePersona(1));
+    primeraSolicitud.error(new Error('Respuesta tardía'));
+
+    expect(component.mostrarFicha).toBeTrue();
+    expect(component.personaSeleccionada?.IdPersona).toBe(2);
+    expect(component.personaDetalle).toBeUndefined();
+
+    segundaSolicitud.next(detallePersona(2));
+
+    expect(component.personaDetalle?.Persona?.IdPersona).toBe(2);
+    expect(component.cargandoFicha).toBeFalse();
   });
 
   function crearPersonas(cantidad: number): Persona[] {

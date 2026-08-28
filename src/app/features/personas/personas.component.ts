@@ -1,4 +1,5 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { ConsultaDestinoContextual, ConsultaIntegralDetalle } from '../../core/models/consulta-integral.model';
 import { Persona } from '../../core/models/persona.model';
 import { ConsultaIntegralService } from '../../core/services/consulta-integral.service';
@@ -10,7 +11,7 @@ import { PersonaService } from '../../core/services/persona.service';
   templateUrl: './personas.component.html',
   styleUrls: ['../../shared/imv-table.css', '../../shared/imv-detail.css']
 })
-export class PersonasComponent implements OnInit {
+export class PersonasComponent implements OnInit, OnDestroy {
   @Input() idPersonaSeleccionada?: number;
   @Output() solicitarNavegacion = new EventEmitter<ConsultaDestinoContextual>();
   listaPersonas: Persona[] = [];
@@ -20,6 +21,7 @@ export class PersonasComponent implements OnInit {
   cargandoFicha = false;
   personaDetalle?: ConsultaIntegralDetalle;
   personaSeleccionada?: Persona;
+  private solicitudFicha?: Subscription;
   modoEdicion = false;
   guardando = false;
   cargando = false;
@@ -41,6 +43,10 @@ export class PersonasComponent implements OnInit {
       this.currentPage = 1;
     });
     this.cargarPersonas();
+  }
+
+  ngOnDestroy(): void {
+    this.cancelarSolicitudFicha();
   }
 
   cargarPersonas(): void {
@@ -155,17 +161,21 @@ export class PersonasComponent implements OnInit {
 
   verPersona(persona: Persona): void {
     if (!persona.IdPersona) return;
+    const idPersona = persona.IdPersona;
+    this.cancelarSolicitudFicha();
     this.personaSeleccionada = persona;
     this.personaDetalle = undefined;
     this.mostrarFicha = true;
     this.cargandoFicha = true;
     this.mensajeError = '';
-    this.consultaIntegralService.getPersona(persona.IdPersona).subscribe({
+    this.solicitudFicha = this.consultaIntegralService.getPersona(idPersona).subscribe({
       next: detalle => {
+        if (!this.esFichaActiva(idPersona)) return;
         this.personaDetalle = detalle;
         this.cargandoFicha = false;
       },
       error: () => {
+        if (!this.esFichaActiva(idPersona)) return;
         this.cargandoFicha = false;
         this.mostrarFicha = false;
         this.mensajeError = 'No se pudo cargar la ficha integral de la persona.';
@@ -174,6 +184,7 @@ export class PersonasComponent implements OnInit {
   }
 
   cerrarFicha(): void {
+    this.cancelarSolicitudFicha();
     this.mostrarFicha = false;
     this.cargandoFicha = false;
     this.personaDetalle = undefined;
@@ -204,6 +215,19 @@ export class PersonasComponent implements OnInit {
     const persona = this.listaPersonas[index];
     this.idPersonaSeleccionada = undefined;
     this.verPersona(persona);
+  }
+
+  private esFichaActiva(idPersona: number): boolean {
+    return this.mostrarFicha
+      && !!this.personaSeleccionada
+      && this.personaSeleccionada.IdPersona === idPersona;
+  }
+
+  private cancelarSolicitudFicha(): void {
+    if (this.solicitudFicha) {
+      this.solicitudFicha.unsubscribe();
+      this.solicitudFicha = undefined;
+    }
   }
 
   private emptyForm(): Partial<Persona> {
