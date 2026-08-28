@@ -6,12 +6,14 @@ import { ImvSearchService } from 'src/app/core/services/imv-search.service';
 @Component({
   selector: 'app-barrios',
   templateUrl: './barrios.component.html',
-  styleUrls: ['../../shared/imv-table.css']
+  styleUrls: ['../../shared/imv-table.css', '../../shared/imv-detail.css']
 })
 export class BarriosComponent implements OnInit {
   listaBarrios: Barrio[] = [];
   filtroBusqueda = '';
   mostrarModalAlta = false;
+  mostrarDetalle = false;
+  barrioDetalle?: Barrio;
   modoEdicion = false;
   guardando = false;
   cargando = false;
@@ -115,7 +117,13 @@ export class BarriosComponent implements OnInit {
   }
 
   verDetalle(barrio: Barrio): void {
-    alert('Vas a ver el detalle del barrio: ' + barrio.Nombre);
+    this.barrioDetalle = barrio;
+    this.mostrarDetalle = true;
+  }
+
+  cerrarDetalle(): void {
+    this.mostrarDetalle = false;
+    this.barrioDetalle = undefined;
   }
 
   editarBarrio(barrio: Barrio): void {

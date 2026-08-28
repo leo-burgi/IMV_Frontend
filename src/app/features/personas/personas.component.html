@@ -10,6 +10,26 @@
 
 <div class="imv-alert imv-alert--success" *ngIf="mensajeExito">{{ mensajeExito }}</div>
 
+<div class="imv-alert consulta-alert--error" *ngIf="mensajeError && !mostrarModalAlta">{{ mensajeError }}</div>
+
+<div class="imv-modal-backdrop" *ngIf="mostrarFicha">
+  <div class="imv-modal imv-modal--wide" role="dialog" aria-modal="true" aria-labelledby="personaFichaTitle">
+    <div class="imv-modal__header">
+      <h3 id="personaFichaTitle">Ficha integral de persona</h3>
+      <button class="imv-btn imv-btn--ghost imv-btn--icon" type="button" (click)="cerrarFicha()" title="Cerrar"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="imv-modal__body">
+      <div class="imv-table-empty" *ngIf="cargandoFicha"><i class="fas fa-spinner fa-spin"></i> Cargando ficha integral...</div>
+      <app-persona-ficha *ngIf="personaDetalle" [detalle]="personaDetalle"
+        (solicitarNavegacion)="navegarDesdeFicha($event)"></app-persona-ficha>
+    </div>
+    <div class="imv-modal__footer">
+      <button class="imv-btn imv-btn--ghost" type="button" (click)="cerrarFicha()">Cerrar</button>
+      <button class="imv-btn imv-btn--edit" type="button" (click)="editarDesdeFicha()" [disabled]="cargandoFicha"><i class="fas fa-edit"></i> Editar persona</button>
+    </div>
+  </div>
+</div>
+
 <div class="imv-modal-backdrop" *ngIf="mostrarModalAlta">
   <div class="imv-modal" role="dialog" aria-modal="true" aria-labelledby="personaTitle">
     <div class="imv-modal__header">
@@ -55,7 +75,12 @@
           <td class="col-name">{{ persona.Apellido }}, {{ persona.Nombre }}</td>
           <td>{{ persona.DNI || 'Sin dato' }}</td>
           <td>{{ persona.CuilCuit || 'Sin dato' }}</td><td>{{ persona.Telefono || persona.Email || 'Sin dato' }}</td>
-          <td class="col-actions"><button class="imv-btn imv-btn--icon imv-btn--edit" type="button" (click)="editarPersona(persona)" title="Editar"><i class="fas fa-edit"></i></button></td>
+          <td class="col-actions">
+            <div class="imv-table-actions">
+              <button class="imv-btn imv-btn--icon imv-btn--view" type="button" (click)="verPersona(persona)" title="Ver detalle"><i class="fas fa-eye"></i></button>
+              <button class="imv-btn imv-btn--icon imv-btn--edit" type="button" (click)="editarPersona(persona)" title="Editar"><i class="fas fa-edit"></i></button>
+            </div>
+          </td>
         </tr>
         <tr *ngIf="cargando"><td colspan="5"><div class="imv-table-empty"><i class="fas fa-spinner fa-spin"></i> Cargando personas...</div></td></tr>
         <tr *ngIf="!cargando && listaPersonas.length === 0"><td colspan="5"><div class="imv-table-empty">No hay personas registradas.</div></td></tr>

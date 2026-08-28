@@ -97,7 +97,18 @@ describe('PlanesComponent', () => {
     component.cargarPlanes();
 
     expect(component.currentPage).toBe(2);
-    expect(component.mostrarModalAlta).toBeTrue();
-    expect(component.planForm.IdPlan).toBe(17);
+    expect(component.mostrarDetalle).toBeTrue();
+    expect(component.mostrarModalAlta).toBeFalse();
+    expect(component.planDetalle?.IdPlan).toBe(17);
+  });
+
+  it('debe separar la ficha de consulta del formulario de edición', () => {
+    const plan: Plan = { IdPlan: 5, OrigenPlan: 'IMV', NombrePlan: 'Plan', Barrio: 'Varios', Barrios: ['Norte', 'Sur'] };
+
+    component.verDetalle(plan);
+
+    expect(component.mostrarDetalle).toBeTrue();
+    expect(component.mostrarModalAlta).toBeFalse();
+    expect(component.planDetalle).toBe(plan);
   });
 });

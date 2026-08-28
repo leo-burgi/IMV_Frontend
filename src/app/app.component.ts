@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ConsultaDestino, ConsultaIntegralEstado, ConsultaIntegralNavegacion } from './core/models/consulta-integral.model';
+import { ConsultaDestino, ConsultaDestinoContextual, ConsultaIntegralEstado, ConsultaIntegralNavegacion } from './core/models/consulta-integral.model';
 import { ImvSearchService } from './core/services/imv-search.service';
 
 @Component({
@@ -38,6 +38,11 @@ export class AppComponent {
     this.consultaIntegralEstado = navegacion.estado;
     this.destinoContextual = { seccion: navegacion.seccion, id: navegacion.id };
     this.seccionActiva = navegacion.seccion;
+  }
+
+  navegarContextual(destino: ConsultaDestinoContextual): void {
+    this.destinoContextual = destino;
+    this.seccionActiva = destino.seccion;
   }
 
   idDestino(seccion: ConsultaDestino): number | undefined {
