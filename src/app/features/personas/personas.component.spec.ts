@@ -1,8 +1,9 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { of } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { Persona } from '../../core/models/persona.model';
+import { ConsultaIntegralService } from '../../core/services/consulta-integral.service';
 import { ImvSearchService } from '../../core/services/imv-search.service';
 import { PersonaService } from '../../core/services/persona.service';
 import { PersonasComponent } from './personas.component';
@@ -11,6 +12,7 @@ describe('PersonasComponent', () => {
   let fixture: ComponentFixture<PersonasComponent>;
   let component: PersonasComponent;
   let personaService: jasmine.SpyObj<PersonaService>;
+  let consultaIntegralService: jasmine.SpyObj<ConsultaIntegralService>;
 
   beforeEach(async () => {
     personaService = jasmine.createSpyObj<PersonaService>(
@@ -18,6 +20,8 @@ describe('PersonasComponent', () => {
       ['getPersonas', 'createPersona', 'updatePersona']
     );
     personaService.getPersonas.and.returnValue(of([]));
+    consultaIntegralService = jasmine.createSpyObj<ConsultaIntegralService>('ConsultaIntegralService', ['getPersona']);
+    consultaIntegralService.getPersona.and.returnValue(of(detallePersona(1)));
 
     await TestBed.configureTestingModule({
       imports: [FormsModule],
@@ -25,6 +29,7 @@ describe('PersonasComponent', () => {
       schemas: [NO_ERRORS_SCHEMA],
       providers: [
         { provide: PersonaService, useValue: personaService },
+        { provide: ConsultaIntegralService, useValue: consultaIntegralService },
         { provide: ImvSearchService, useValue: { searchTerm$: of(''), setSearch: jasmine.createSpy('setSearch') } }
       ]
     }).compileComponents();
@@ -114,8 +119,51 @@ describe('PersonasComponent', () => {
     component.cargarPersonas();
 
     expect(component.currentPage).toBe(2);
-    expect(component.mostrarModalAlta).toBeTrue();
-    expect(component.personaForm.IdPersona).toBe(18);
+    expect(component.mostrarFicha).toBeTrue();
+    expect(component.mostrarModalAlta).toBeFalse();
+    expect(consultaIntegralService.getPersona).toHaveBeenCalledWith(18);
+  });
+
+  it('debe mostrar Ver y abrir la ficha integral sin activar edición', () => {
+    const persona = crearPersonas(1)[0];
+    component.listaPersonas = [persona];
+    consultaIntegralService.getPersona.and.returnValue(of(detallePersona(1)));
+    fixture.detectChanges();
+
+    const ver = fixture.nativeElement.querySelector('.imv-btn--view');
+    expect(ver).toBeTruthy();
+    ver.click();
+
+    expect(component.mostrarFicha).toBeTrue();
+    expect(component.mostrarModalAlta).toBeFalse();
+    expect(consultaIntegralService.getPersona).toHaveBeenCalledWith(1);
+  });
+
+  it('debe ignorar respuestas de una ficha cerrada o reemplazada', () => {
+    const primeraSolicitud = new Subject<any>();
+    const segundaSolicitud = new Subject<any>();
+    consultaIntegralService.getPersona.and.returnValues(
+      primeraSolicitud.asObservable(),
+      segundaSolicitud.asObservable()
+    );
+    const primeraPersona = crearPersonas(2)[0];
+    const segundaPersona = crearPersonas(2)[1];
+
+    component.verPersona(primeraPersona);
+    component.cerrarFicha();
+    component.verPersona(segundaPersona);
+
+    primeraSolicitud.next(detallePersona(1));
+    primeraSolicitud.error(new Error('Respuesta tardía'));
+
+    expect(component.mostrarFicha).toBeTrue();
+    expect(component.personaSeleccionada?.IdPersona).toBe(2);
+    expect(component.personaDetalle).toBeUndefined();
+
+    segundaSolicitud.next(detallePersona(2));
+
+    expect(component.personaDetalle?.Persona?.IdPersona).toBe(2);
+    expect(component.cargandoFicha).toBeFalse();
   });
 
   function crearPersonas(cantidad: number): Persona[] {
@@ -125,5 +173,13 @@ describe('PersonasComponent', () => {
       Apellido: `Apellido ${index + 1}`,
       Nombre: `Nombre ${index + 1}`
     }));
+  }
+
+  function detallePersona(id: number): any {
+    return {
+      TipoResultado: 'PERSONA', NivelConfianza: 'DEFINITIVO',
+      Persona: { IdPersona: id, DNI: '12345678', Apellido: 'Pérez', Nombre: 'Ana' },
+      Adjudicaciones: [], AntecedentesLegacy: [], Faltantes: [], Advertencias: []
+    };
   }
 });

@@ -1,0 +1,114 @@
+<ng-container *ngIf="detalle && detalle.Persona as persona">
+  <section class="consulta-section consulta-section--definitiva persona-ficha__section">
+    <div class="consulta-section__title">
+      <span class="consulta-badge consulta-badge--confirmado">Confirmado</span>
+      <h4>Datos personales</h4>
+    </div>
+    <div class="consulta-grid">
+      <div><span>Apellido</span><strong>{{ persona.Apellido || 'Sin dato' }}</strong></div>
+      <div><span>Nombre</span><strong>{{ persona.Nombre || 'Sin dato' }}</strong></div>
+      <div><span>DNI</span><strong>{{ persona.DNI || 'Sin dato' }}</strong></div>
+      <div><span>CUIT/CUIL</span><strong>{{ persona.CuilCuit || 'Sin dato' }}</strong></div>
+    </div>
+  </section>
+
+  <section class="consulta-section consulta-section--definitiva">
+    <div class="consulta-section__title"><h4>Contacto</h4></div>
+    <div class="consulta-grid">
+      <div><span>Teléfono</span><strong>{{ persona.Telefono || 'Sin dato' }}</strong></div>
+      <div><span>Email</span><strong>{{ persona.Email || 'Sin dato' }}</strong></div>
+    </div>
+  </section>
+
+  <section class="consulta-section consulta-section--definitiva">
+    <div class="consulta-section__title"><h4>Situación habitacional</h4></div>
+    <div class="persona-ficha__empty" *ngIf="!detalle.Adjudicaciones.length">
+      No hay adjudicaciones definitivas relacionadas con esta persona.
+    </div>
+
+    <article class="consulta-adjudicacion" *ngFor="let adjudicacion of detalle.Adjudicaciones">
+      <div class="consulta-adjudicacion__header">
+        <strong>Adjudicación · {{ condicion(adjudicacion) }}</strong>
+        <span [class.consulta-status--inactive]="!adjudicacion.Activa">{{ adjudicacion.Activa ? 'Activa' : 'Inactiva' }}</span>
+      </div>
+      <div class="consulta-grid">
+        <div><span>N° expediente</span><strong>{{ adjudicacion.NumeroExpediente || 'Sin dato' }}</strong></div>
+        <div><span>Fecha de adjudicación</span><strong>{{ (adjudicacion.FechaAdjudicacion | date:'dd/MM/yyyy') || 'Sin dato' }}</strong></div>
+        <div><span>Propiedad</span><strong>{{ adjudicacion.Propiedad.Calle || 'Sin calle' }} {{ adjudicacion.Propiedad.Altura || '' }}</strong></div>
+        <div><span>Catastro</span><strong>{{ adjudicacion.Propiedad.Catastro || 'Sin dato' }}</strong></div>
+        <div><span>Barrio</span><strong>{{ adjudicacion.Propiedad.Barrio || 'Sin dato' }}</strong></div>
+        <div><span>Manzana / lote</span><strong>{{ adjudicacion.Propiedad.Manzana || 'Sin dato' }} / {{ adjudicacion.Propiedad.Lote || 'Sin dato' }}</strong></div>
+        <div><span>Plan</span><strong>{{ adjudicacion.Plan.Nombre || 'Sin dato' }}</strong></div>
+        <div><span>Origen del plan</span><strong>{{ adjudicacion.Plan.Origen || 'Sin dato' }}</strong></div>
+        <div><span>Estado notarial actual</span><strong>{{ adjudicacion.EstadoNotarialActual?.Descripcion || 'Sin estado registrado' }}</strong></div>
+      </div>
+      <div class="consulta-titulares">
+        <div><strong>Titular principal:</strong> {{ adjudicacion.TitularPrincipal?.NombreCompleto || 'Sin dato' }} · DNI {{ adjudicacion.TitularPrincipal?.DNI || 'Sin dato' }}</div>
+        <div *ngIf="!adjudicacion.Cotitulares.length"><strong>Cotitulares:</strong> Sin cotitulares registrados</div>
+        <div *ngFor="let cotitular of adjudicacion.Cotitulares"><strong>Cotitular:</strong> {{ cotitular.NombreCompleto }} · DNI {{ cotitular.DNI || 'Sin dato' }}</div>
+      </div>
+      <div class="consulta-links">
+        <button type="button" (click)="navegar('adjudicaciones', adjudicacion.IdAdjudicacion)">Ver adjudicación</button>
+        <button type="button" (click)="navegar('propiedades', adjudicacion.Propiedad.IdPropiedad)">Ver propiedad</button>
+        <button type="button" (click)="navegar('planes', adjudicacion.Plan.IdPlan)">Ver plan</button>
+      </div>
+    </article>
+  </section>
+
+  <section class="consulta-section consulta-section--candidata" *ngIf="detalle.CoincidenciaCandidata">
+    <div class="consulta-section__title">
+      <span class="consulta-badge consulta-badge--candidato">Coincidencia candidata</span>
+      <h4>Información pendiente de validación</h4>
+    </div>
+    <div class="consulta-grid">
+      <div *ngIf="detalle.CoincidenciaCandidata.PersonaTitular"><span>Posible titular</span><strong>{{ detalle.CoincidenciaCandidata.PersonaTitular.Apellido }}, {{ detalle.CoincidenciaCandidata.PersonaTitular.Nombre }}</strong></div>
+      <div *ngIf="detalle.CoincidenciaCandidata.PersonaCotitular"><span>Posible cotitular</span><strong>{{ detalle.CoincidenciaCandidata.PersonaCotitular.Apellido }}, {{ detalle.CoincidenciaCandidata.PersonaCotitular.Nombre }}</strong></div>
+      <div *ngIf="detalle.CoincidenciaCandidata.Propiedad"><span>Posible propiedad</span><strong>{{ detalle.CoincidenciaCandidata.Propiedad.Calle || 'Sin calle' }} {{ detalle.CoincidenciaCandidata.Propiedad.Altura || '' }}</strong></div>
+      <div *ngIf="detalle.CoincidenciaCandidata.Plan"><span>Posible plan</span><strong>{{ detalle.CoincidenciaCandidata.Plan.Nombre || 'Sin dato' }}</strong></div>
+    </div>
+  </section>
+
+  <section class="consulta-section consulta-section--legacy" *ngIf="detalle.AntecedentesLegacy.length">
+    <div class="consulta-section__title">
+      <span class="consulta-badge consulta-badge--legacy">Antecedente histórico</span>
+      <h4>Antecedentes históricos</h4>
+    </div>
+    <article class="consulta-legacy" *ngFor="let antecedente of detalle.AntecedentesLegacy">
+      <div class="consulta-legacy__header">
+        <strong>{{ antecedente.HojaOrigen }} · fila {{ antecedente.FilaOrigen }}</strong>
+        <div class="persona-ficha__badges">
+          <span class="consulta-badge" [ngClass]="claseAntecedente(antecedente)">{{ etiquetaAntecedente(antecedente) }}</span>
+          <span class="consulta-badge consulta-badge--estado">{{ etiquetaEstado(antecedente.EstadoValidacion) }}</span>
+        </div>
+      </div>
+      <div class="consulta-reason">
+        <strong>{{ antecedente.CodigoMotivo || 'Pendiente de revisión' }}</strong>
+        <span>{{ antecedente.DetalleMotivo || antecedente.MotivosValidacion || 'Sin detalle adicional' }}</span>
+      </div>
+      <div class="consulta-grid consulta-grid--raw">
+        <div><span>Titular informado</span><strong>{{ antecedente.RawTitular || 'Sin dato' }}</strong></div>
+        <div><span>DNI informado</span><strong>{{ antecedente.RawDNI || 'Sin dato' }}</strong></div>
+        <div><span>Cotitular informado</span><strong>{{ antecedente.RawCotitular || 'Sin dato' }}</strong></div>
+        <div><span>Plan / programa informado</span><strong>{{ antecedente.RawPlan || 'Sin dato' }} / {{ antecedente.RawPrograma || 'Sin dato' }}</strong></div>
+        <div><span>Catastro informado</span><strong>{{ antecedente.RawCatastro || 'Sin dato' }}</strong></div>
+        <div><span>Domicilio del inmueble informado</span><strong>{{ antecedente.RawDomicilioInmueble || antecedente.RawDomicilio || 'Sin dato' }}</strong></div>
+        <div><span>Barrio · manzana · lote</span><strong>{{ antecedente.RawBarrio || 'Sin dato' }} · {{ antecedente.RawManzana || 'Sin dato' }} · {{ antecedente.RawLote || 'Sin dato' }}</strong></div>
+        <div><span>Fecha informada</span><strong>{{ antecedente.RawFechaAdjudicacion || 'Sin dato' }}</strong></div>
+      </div>
+      <div class="consulta-raw-observation">
+        <span>Observación original</span>
+        <pre>{{ antecedente.RawObservaciones || 'Sin observación' }}</pre>
+      </div>
+    </article>
+  </section>
+
+  <section class="consulta-section consulta-section--missing" *ngIf="detalle.Faltantes.length">
+    <div class="consulta-section__title"><span class="consulta-badge consulta-badge--missing">Dato faltante</span><h4>Información relevante no disponible</h4></div>
+    <ul><li *ngFor="let faltante of detalle.Faltantes">{{ faltante }}</li></ul>
+  </section>
+
+  <div class="consulta-warning" role="note" *ngIf="detalle.AntecedentesLegacy.length">
+    <i class="fas fa-exclamation-triangle"></i>
+    <span>Los antecedentes históricos deben ser verificados y confirmados en cada sección. Son extractos de registros anteriores y pueden no constituir información definitiva.</span>
+  </div>
+</ng-container>

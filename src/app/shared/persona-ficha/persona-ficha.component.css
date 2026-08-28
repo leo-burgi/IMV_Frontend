@@ -1,0 +1,4 @@
+:host { display: block; }
+.persona-ficha__section { margin-top: 0; }
+.persona-ficha__empty { padding: 18px; border-radius: 8px; background: #f8fafc; color: var(--imv-text-secondary); font-size: 13px; text-align: center; }
+.persona-ficha__badges { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }

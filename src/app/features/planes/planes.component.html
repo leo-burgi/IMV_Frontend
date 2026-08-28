@@ -17,6 +17,29 @@
 
 <div class="imv-alert imv-alert--success" *ngIf="mensajeExito">{{ mensajeExito }}</div>
 
+<div class="imv-modal-backdrop" *ngIf="mostrarDetalle && planDetalle as plan">
+  <div class="imv-modal imv-modal--detail" role="dialog" aria-modal="true" aria-labelledby="detallePlanTitle">
+    <div class="imv-modal__header">
+      <h3 id="detallePlanTitle">Ficha de consulta del plan</h3>
+      <button class="imv-btn imv-btn--ghost imv-btn--icon" type="button" (click)="cerrarDetalle()" title="Cerrar"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="imv-modal__body">
+      <div class="imv-detail-grid">
+        <div class="imv-detail-field"><span>Nombre del plan</span><strong>{{ plan.NombrePlan || 'Sin dato' }}</strong></div>
+        <div class="imv-detail-field"><span>Origen</span><strong>{{ plan.OrigenPlan || 'Sin dato' }}</strong></div>
+        <div class="imv-detail-field"><span>Barrio</span><strong>{{ plan.Barrio || 'Sin dato' }}</strong></div>
+        <div class="imv-detail-field imv-detail-field--wide" *ngIf="plan.Barrios?.length">
+          <span>Barrios relacionados</span><strong>{{ plan.Barrios?.join(', ') || 'Sin dato' }}</strong>
+        </div>
+      </div>
+    </div>
+    <div class="imv-modal__footer">
+      <button class="imv-btn imv-btn--ghost" type="button" (click)="cerrarDetalle()">Cerrar</button>
+      <button class="imv-btn imv-btn--edit" type="button" (click)="cerrarDetalle(); editarPlan(plan)"><i class="fas fa-edit"></i> Editar</button>
+    </div>
+  </div>
+</div>
+
 <div class="imv-modal-backdrop" *ngIf="mostrarModalAlta">
   <div class="imv-modal" role="dialog" aria-modal="true" aria-labelledby="modalNuevoPlanTitle">
     <div class="imv-modal__header">

@@ -67,4 +67,12 @@ describe('CallesComponent', () => {
       NombreReducido: 'Original'
     });
   });
+
+  it('debe abrir una ficha de consulta sin activar la edición', () => {
+    const calle: Calle = { IdCalle: 12, Nombre: 'San Martín', NombreReducido: 'S. Martín' };
+    component.verDetalle(calle);
+    expect(component.mostrarDetalle).toBeTrue();
+    expect(component.mostrarModalAlta).toBeFalse();
+    expect(component.calleDetalle).toBe(calle);
+  });
 });

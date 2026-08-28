@@ -54,4 +54,12 @@ describe('BarriosComponent', () => {
       Nombre: 'Editado'
     });
   });
+
+  it('debe abrir una ficha de consulta sin activar la edición', () => {
+    const barrio: Barrio = { IdBarrio: 8, Nombre: 'Barrio Norte' };
+    component.verDetalle(barrio);
+    expect(component.mostrarDetalle).toBeTrue();
+    expect(component.mostrarModalAlta).toBeFalse();
+    expect(component.barrioDetalle).toBe(barrio);
+  });
 });

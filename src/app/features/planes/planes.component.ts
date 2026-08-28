@@ -6,13 +6,15 @@ import { ImvSearchService } from 'src/app/core/services/imv-search.service';
 @Component({
   selector: 'app-planes',
   templateUrl: './planes.component.html',
-  styleUrls: ['../../shared/imv-table.css']
+  styleUrls: ['../../shared/imv-table.css', '../../shared/imv-detail.css']
 })
 export class PlanesComponent implements OnInit {
   @Input() idPlanSeleccionado?: number;
   listaPlanes: Plan[] = [];
   filtroBusqueda = '';
   mostrarModalAlta = false;
+  mostrarDetalle = false;
+  planDetalle?: Plan;
   modoEdicion = false;
   guardando = false;
   cargando = false;
@@ -131,7 +133,13 @@ export class PlanesComponent implements OnInit {
   }
 
   verDetalle(plan: Plan): void {
-    alert('Vas a ver el detalle del plan: ' + (plan.NombrePlan || 'Sin nombre informado'));
+    this.planDetalle = plan;
+    this.mostrarDetalle = true;
+  }
+
+  cerrarDetalle(): void {
+    this.mostrarDetalle = false;
+    this.planDetalle = undefined;
   }
 
   editarPlan(plan: Plan): void {
@@ -150,6 +158,6 @@ export class PlanesComponent implements OnInit {
     this.currentPage = Math.floor(index / this.pageSize) + 1;
     const plan = this.listaPlanes[index];
     this.idPlanSeleccionado = undefined;
-    this.editarPlan(plan);
+    this.verDetalle(plan);
   }
 }

@@ -1,0 +1,8 @@
+.imv-modal--detail { width: min(100%, 720px); }
+.imv-modal--wide { width: min(100%, 1080px); max-height: calc(100vh - 40px); display: flex; flex-direction: column; }
+.imv-modal--wide .imv-modal__body { overflow-y: auto; }
+.imv-detail-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+.imv-detail-field { display: flex; flex-direction: column; gap: 4px; padding: 12px; border-radius: 9px; background: var(--imv-bg, #f0f2f7); }
+.imv-detail-field--wide { grid-column: 1 / -1; }
+.imv-detail-field span { color: var(--imv-text-muted, #9ca3af); font-size: 11px; font-weight: 600; text-transform: uppercase; }
+.imv-detail-field strong { color: var(--imv-text-primary, #1a1a2e); font-size: 14px; overflow-wrap: anywhere; }

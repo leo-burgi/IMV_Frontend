@@ -17,6 +17,24 @@
 
 <div class="imv-alert imv-alert--success" *ngIf="mensajeExito">{{ mensajeExito }}</div>
 
+<div class="imv-modal-backdrop" *ngIf="mostrarDetalle && barrioDetalle as barrio">
+  <div class="imv-modal imv-modal--detail" role="dialog" aria-modal="true" aria-labelledby="detalleBarrioTitle">
+    <div class="imv-modal__header">
+      <h3 id="detalleBarrioTitle">Ficha de consulta del barrio</h3>
+      <button class="imv-btn imv-btn--ghost imv-btn--icon" type="button" (click)="cerrarDetalle()" title="Cerrar"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="imv-modal__body">
+      <div class="imv-detail-grid">
+        <div class="imv-detail-field"><span>Nombre del barrio</span><strong>{{ barrio.Nombre || 'Sin dato' }}</strong></div>
+      </div>
+    </div>
+    <div class="imv-modal__footer">
+      <button class="imv-btn imv-btn--ghost" type="button" (click)="cerrarDetalle()">Cerrar</button>
+      <button class="imv-btn imv-btn--edit" type="button" (click)="cerrarDetalle(); editarBarrio(barrio)"><i class="fas fa-edit"></i> Editar</button>
+    </div>
+  </div>
+</div>
+
 <div class="imv-modal-backdrop" *ngIf="mostrarModalAlta">
   <div class="imv-modal" role="dialog" aria-modal="true" aria-labelledby="modalNuevoBarrioTitle">
     <div class="imv-modal__header">

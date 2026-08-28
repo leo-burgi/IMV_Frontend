@@ -39,7 +39,7 @@
 
 <div class="consulta-empty" *ngIf="!busquedaRealizada && !cargando">
   <i class="fas fa-search-location"></i>
-  <p>Ingresá un dato para reunir información de Personas, Adjudicaciones, Propiedades y staging.</p>
+  <p>Ingresá un dato para reunir información de Personas, Adjudicaciones, Propiedades y antecedentes históricos.</p>
 </div>
 
 <div class="consulta-empty" *ngIf="busquedaRealizada && !cargando && total === 0">
@@ -80,7 +80,10 @@
       </div>
 
       <ng-container *ngIf="detalleDe(item) as detail">
-        <section class="consulta-section consulta-section--definitiva" *ngIf="detail.Persona || detail.Propiedad || detail.Adjudicaciones.length">
+        <app-persona-ficha *ngIf="detail.Persona" [detalle]="detail"
+          (solicitarNavegacion)="navegar($event.seccion, $event.id)"></app-persona-ficha>
+
+        <section class="consulta-section consulta-section--definitiva" *ngIf="!detail.Persona && (detail.Propiedad || detail.Adjudicaciones.length)">
           <div class="consulta-section__title">
             <span class="consulta-badge consulta-badge--confirmado">Confirmado</span>
             <h4>Información definitiva</h4>
@@ -132,10 +135,10 @@
           </article>
         </section>
 
-        <section class="consulta-section consulta-section--candidata" *ngIf="detail.CoincidenciaCandidata">
+        <section class="consulta-section consulta-section--candidata" *ngIf="!detail.Persona && detail.CoincidenciaCandidata">
           <div class="consulta-section__title">
             <span class="consulta-badge consulta-badge--candidato">Coincidencia candidata</span>
-            <h4>Relaciones sugeridas por staging, no confirmadas</h4>
+            <h4>Relaciones sugeridas pendientes de confirmación</h4>
           </div>
           <div class="consulta-grid">
             <div *ngIf="detail.CoincidenciaCandidata.PersonaTitular"><span>Posible titular</span><strong>{{ detail.CoincidenciaCandidata.PersonaTitular.Apellido }}, {{ detail.CoincidenciaCandidata.PersonaTitular.Nombre }} · DNI {{ detail.CoincidenciaCandidata.PersonaTitular.DNI }}</strong></div>
@@ -145,7 +148,7 @@
           </div>
         </section>
 
-        <section class="consulta-section consulta-section--legacy" *ngIf="detail.AntecedentesLegacy.length">
+        <section class="consulta-section consulta-section--legacy" *ngIf="!detail.Persona && detail.AntecedentesLegacy.length">
           <div class="consulta-section__title">
             <span class="consulta-badge consulta-badge--legacy">Antecedente legacy no validado</span>
             <h4>Fuente histórica · lote activo</h4>
@@ -153,7 +156,7 @@
 
           <article class="consulta-legacy" *ngFor="let legacy of detail.AntecedentesLegacy">
             <div class="consulta-legacy__header">
-              <strong>Registro {{ legacy.IdRegistro }} · {{ legacy.HojaOrigen }} · fila {{ legacy.FilaOrigen }}</strong>
+              <strong>{{ legacy.HojaOrigen }} · fila {{ legacy.FilaOrigen }}</strong>
               <span class="consulta-badge consulta-badge--estado">{{ etiquetaEstado(legacy.EstadoValidacion) }}</span>
             </div>
             <div class="consulta-reason">
@@ -181,12 +184,12 @@
           </article>
         </section>
 
-        <section class="consulta-section consulta-section--missing" *ngIf="detail.Faltantes.length">
+        <section class="consulta-section consulta-section--missing" *ngIf="!detail.Persona && detail.Faltantes.length">
           <div class="consulta-section__title"><span class="consulta-badge consulta-badge--missing">Dato faltante</span><h4>Información relevante no disponible</h4></div>
           <ul><li *ngFor="let missing of detail.Faltantes">{{ missing }}</li></ul>
         </section>
 
-        <div class="consulta-warning" role="note">
+        <div class="consulta-warning" role="note" *ngIf="!detail.Persona">
           <i class="fas fa-exclamation-triangle"></i>
           <span>Los datos legacy que se muestran deben ser verificados y confirmados en cada sección. Son extractos de registros anteriores y pueden no constituir información definitiva.</span>
         </div>

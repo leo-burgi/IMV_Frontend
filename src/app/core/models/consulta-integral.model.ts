@@ -17,6 +17,11 @@ export interface ConsultaIntegralNavegacion {
   estado: ConsultaIntegralEstado;
 }
 
+export interface ConsultaDestinoContextual {
+  seccion: ConsultaDestino;
+  id: number;
+}
+
 export interface ConsultaIntegralResultado {
   TipoResultado: ConsultaResultadoTipo;
   NivelConfianza: ConsultaNivel;

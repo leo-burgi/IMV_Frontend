@@ -17,6 +17,7 @@ import { CalidadDatosPanelComponent } from './features/inicio/calidad-datos-pane
 import { PropiedadesComponent } from './features/propiedades/propiedades.component';
 import { PaginationComponent } from './shared/pagination/pagination.component';
 import { ConsultaIntegralComponent } from './features/consulta-integral/consulta-integral.component';
+import { PersonaFichaComponent } from './shared/persona-ficha/persona-ficha.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { ConsultaIntegralComponent } from './features/consulta-integral/consulta
     CalidadDatosPanelComponent,
     PropiedadesComponent,
     PaginationComponent,
-    ConsultaIntegralComponent
+    ConsultaIntegralComponent,
+    PersonaFichaComponent
   ],
   imports: [
     BrowserModule,

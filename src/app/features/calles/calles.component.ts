@@ -6,12 +6,14 @@ import { ImvSearchService } from 'src/app/core/services/imv-search.service';
 @Component({
   selector: 'app-calles',
   templateUrl: './calles.component.html',
-  styleUrls: ['../../shared/imv-table.css']
+  styleUrls: ['../../shared/imv-table.css', '../../shared/imv-detail.css']
 })
 export class CallesComponent implements OnInit {
   listarCalles: Calle[] = [];
   filtroBusqueda: string = '';
   mostrarModalAlta = false;
+  mostrarDetalle = false;
+  calleDetalle?: Calle;
   modoEdicion = false;
   guardando = false;
   cargando = false;
@@ -146,8 +148,13 @@ export class CallesComponent implements OnInit {
   }
 
   verDetalle(calle: Calle): void {
-    console.log('Calle seleccionada:', calle);
-    alert('Vas a ver el detalle de la calle: ' + calle.Nombre);
+    this.calleDetalle = calle;
+    this.mostrarDetalle = true;
+  }
+
+  cerrarDetalle(): void {
+    this.mostrarDetalle = false;
+    this.calleDetalle = undefined;
   }
 
   editarCalle(calle: Calle): void {
