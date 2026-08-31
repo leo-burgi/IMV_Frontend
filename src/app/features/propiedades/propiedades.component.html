@@ -9,7 +9,7 @@
 <div class="propiedades-message propiedades-message--error" *ngIf="mensajeError"><i class="fas fa-exclamation-triangle"></i> {{ mensajeError }}</div>
 
 <div class="imv-modal-backdrop" *ngIf="detalle || cargandoDetalle || detalleError">
-  <div class="imv-modal propiedades-modal propiedades-modal--detail" role="dialog" aria-modal="true" aria-labelledby="propiedadDetalleTitle">
+  <div class="imv-modal imv-modal--wide propiedades-modal propiedades-modal--detail" role="dialog" aria-modal="true" aria-labelledby="propiedadDetalleTitle">
     <div class="imv-modal__header">
       <h3 id="propiedadDetalleTitle">Ficha de propiedad</h3>
       <button class="imv-btn imv-btn--ghost imv-btn--icon" type="button" (click)="cerrarDetalle()" title="Cerrar"><i class="fas fa-times"></i></button>
@@ -31,7 +31,7 @@
 </div>
 
 <div class="imv-modal-backdrop" *ngIf="mostrarEdicion && propiedadForm">
-  <div class="imv-modal propiedades-modal" role="dialog" aria-modal="true" aria-labelledby="propiedadEditarTitle">
+  <div class="imv-modal imv-modal--wide propiedades-modal" role="dialog" aria-modal="true" aria-labelledby="propiedadEditarTitle">
     <div class="imv-modal__header">
       <h3 id="propiedadEditarTitle">Editar propiedad</h3>
       <button class="imv-btn imv-btn--ghost imv-btn--icon" type="button" [disabled]="guardando" (click)="cerrarEdicion()" title="Cerrar"><i class="fas fa-times"></i></button>
