@@ -87,6 +87,7 @@ export interface ConsultaEstadoNotarial {
   Descripcion: string;
   FechaCambio: string;
   Observaciones?: string;
+  Usuario?: string;
 }
 
 export interface ConsultaAdjudicacion {
@@ -99,6 +100,7 @@ export interface ConsultaAdjudicacion {
   TitularPrincipal?: ConsultaTitular;
   Cotitulares: ConsultaTitular[];
   EstadoNotarialActual?: ConsultaEstadoNotarial;
+  HistorialEstados?: ConsultaEstadoNotarial[];
 }
 
 export interface ConsultaAntecedenteLegacy {

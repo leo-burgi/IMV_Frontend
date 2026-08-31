@@ -10,6 +10,7 @@
   font-size: 13px;
 }
 .adjudicaciones-modal { width: min(100%, 760px); }
+.adjudicaciones-estado-modal { width: min(100%, 560px); }
 .adjudicacion-form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
 .adjudicacion-form-wide { grid-column: 1 / -1; }
 .adjudicacion-checkbox label { display: flex; align-items: center; gap: 8px; }
@@ -29,7 +30,21 @@
 .cotitular-block small, .cotitular-block span { color: var(--imv-text-muted); font-size: 11px; }
 .cotitular-name { color: var(--imv-text-primary) !important; font-size: 12px !important; font-weight: 400; }
 .adjudicacion-detail-cotitulares { grid-column: 1 / -1; }
+.adjudicacion-history { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--imv-border); }
+.adjudicacion-history h4 { margin: 0 0 10px; font-size: 14px; }
+.adjudicacion-history > p { color: var(--imv-text-secondary); font-size: 13px; }
+.adjudicacion-history article { display: grid; grid-template-columns: minmax(180px, 1fr) minmax(140px, .7fr); gap: 6px 14px; padding: 10px 0; border-bottom: 1px solid var(--imv-border); font-size: 12px; }
+.adjudicacion-history article:last-child { border-bottom: 0; }
+.adjudicacion-history article div { display: flex; flex-direction: column; gap: 2px; }
+.adjudicacion-history article span { color: var(--imv-text-secondary); }
+.adjudicacion-history article small { grid-column: 1 / -1; color: var(--imv-text-secondary); }
+.adjudicacion-current-state { display: flex; flex-direction: column; gap: 4px; padding: 12px; border-radius: 8px; background: var(--imv-bg); }
+.adjudicacion-current-state span { color: var(--imv-text-muted); font-size: 11px; }
+.adjudicacion-confirmation { margin: 0; padding: 10px; border-radius: 8px; background: #f8fafc; color: var(--imv-text-secondary); font-size: 12px; }
+.imv-form-row textarea { box-sizing: border-box; width: 100%; padding: 9px 10px; border: 1px solid var(--imv-border); border-radius: 8px; resize: vertical; font: inherit; }
 @media (max-width: 700px) {
   .adjudicacion-form-grid, .adjudicacion-detail-grid { grid-template-columns: 1fr; }
   .adjudicacion-form-wide { grid-column: auto; }
+  .adjudicacion-history article { grid-template-columns: 1fr; }
+  .adjudicacion-history article small { grid-column: auto; }
 }

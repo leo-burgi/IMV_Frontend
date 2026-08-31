@@ -4,6 +4,19 @@ export interface AdjudicacionPersona {
   NombreCompleto: string;
 }
 
+export interface EstadoNotarial {
+  IdEstado: number;
+  Descripcion: string;
+  FechaCambio: string;
+  Observaciones?: string;
+  Usuario?: string;
+}
+
+export interface HistorialEstado extends EstadoNotarial {
+  IdHistorial: number;
+  IdAdjudicacion: number;
+}
+
 export interface Adjudicacion {
   IdAdjudicacion: number;
   IdPropiedad: number;
@@ -19,6 +32,8 @@ export interface Adjudicacion {
   NroLegajoFisico?: string;
   FechaAdjudicacion?: string;
   Activa: boolean;
+  EstadoNotarialActual?: EstadoNotarial;
+  HistorialEstados?: HistorialEstado[];
 }
 
 export interface AdjudicacionPayload {
@@ -50,8 +65,19 @@ export interface PersonaOpcion {
   NombreCompleto: string;
 }
 
+export interface EstadoNotarialOpcion {
+  IdEstado: number;
+  Descripcion: string;
+}
+
 export interface AdjudicacionCatalogos {
   Propiedades: PropiedadOpcion[];
   Planes: PlanOpcion[];
   Personas: PersonaOpcion[];
+  EstadosNotariales: EstadoNotarialOpcion[];
+}
+
+export interface CambioEstadoNotarialPayload {
+  IdEstado: number;
+  Observaciones?: string;
 }

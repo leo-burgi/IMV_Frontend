@@ -34,7 +34,12 @@ describe('PropiedadFichaComponent', () => {
       Propiedad: detalle.Propiedad!,
       Plan: { IdPlan: 3, Nombre: 'Plan Norte', Origen: 'IMV' },
       TitularPrincipal: { IdPersona: 4, DNI: '12345678', NombreCompleto: 'Pérez, Ana', EsTitularPrincipal: true },
-      Cotitulares: [{ IdPersona: 5, NombreCompleto: 'Gómez, Luis', EsTitularPrincipal: false }]
+      Cotitulares: [{ IdPersona: 5, NombreCompleto: 'Gómez, Luis', EsTitularPrincipal: false }],
+      EstadoNotarialActual: { IdEstado: 2, Descripcion: 'Escriturado', FechaCambio: '2026-08-31T10:00:00' },
+      HistorialEstados: [
+        { IdEstado: 2, Descripcion: 'Escriturado', FechaCambio: '2026-08-31T10:00:00', Usuario: 'operador' },
+        { IdEstado: 1, Descripcion: 'Iniciado', FechaCambio: '2026-08-30T09:00:00', Usuario: 'operador' }
+      ]
     }];
     detalle.AntecedentesLegacy = [{
       IdRegistro: 20, IdLote: 12, HojaOrigen: 'Hoja 1', FilaOrigen: 8,
@@ -50,6 +55,8 @@ describe('PropiedadFichaComponent', () => {
     expect(text).toContain('Coincidencia candidata');
     expect(text).toContain('PLAN_NO_RESUELTO');
     expect(text).toContain('Texto original');
+    expect(text).toContain('Historial notarial');
+    expect(text).toContain('Escriturado');
   });
 
   it('debe obtener y mostrar el historial auditado de la propiedad', () => {

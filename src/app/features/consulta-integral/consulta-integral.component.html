@@ -105,6 +105,15 @@
               <div><span>Plan</span><strong>{{ adjudicacion.Plan.Nombre || 'Sin nombre' }} · {{ adjudicacion.Plan.Origen }}</strong></div>
               <div><span>Estado notarial actual</span><strong>{{ adjudicacion.EstadoNotarialActual?.Descripcion || 'Sin estado registrado' }}</strong></div>
             </div>
+            <div class="consulta-estado-history" *ngIf="adjudicacion.HistorialEstados?.length">
+              <strong>Historial notarial</strong>
+              <div *ngFor="let estado of adjudicacion.HistorialEstados">
+                <span>{{ estado.FechaCambio | date:'dd/MM/yyyy HH:mm' }}</span>
+                <b>{{ estado.Descripcion }}</b>
+                <span>{{ estado.Usuario || 'Sin usuario registrado' }}</span>
+                <small *ngIf="estado.Observaciones">{{ estado.Observaciones }}</small>
+              </div>
+            </div>
             <div class="consulta-titulares">
               <div><strong>Titular principal:</strong> {{ adjudicacion.TitularPrincipal?.NombreCompleto || 'Sin dato' }} · DNI {{ adjudicacion.TitularPrincipal?.DNI || 'Sin dato' }}</div>
               <div *ngFor="let cotitular of adjudicacion.Cotitulares"><strong>Cotitular:</strong> {{ cotitular.NombreCompleto }} · DNI {{ cotitular.DNI || 'Sin dato' }}</div>

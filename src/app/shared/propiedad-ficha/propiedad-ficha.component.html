@@ -45,6 +45,16 @@
         <div><span>Titular principal</span><strong>{{ adjudicacion.TitularPrincipal?.NombreCompleto || 'Sin dato' }}</strong></div>
         <div><span>DNI titular</span><strong>{{ adjudicacion.TitularPrincipal?.DNI || 'Sin dato' }}</strong></div>
         <div><span>Cotitulares</span><strong>{{ adjudicacion.Cotitulares.length ? adjudicacion.Cotitulares.length : 'Sin cotitulares' }}</strong></div>
+        <div><span>Estado notarial actual</span><strong>{{ adjudicacion.EstadoNotarialActual?.Descripcion || 'Sin estado registrado' }}</strong></div>
+      </div>
+      <div class="consulta-estado-history" *ngIf="adjudicacion.HistorialEstados?.length">
+        <strong>Historial notarial</strong>
+        <div *ngFor="let estado of adjudicacion.HistorialEstados">
+          <span>{{ estado.FechaCambio | date:'dd/MM/yyyy HH:mm' }}</span>
+          <b>{{ estado.Descripcion }}</b>
+          <span>{{ estado.Usuario || 'Sin usuario registrado' }}</span>
+          <small *ngIf="estado.Observaciones">{{ estado.Observaciones }}</small>
+        </div>
       </div>
       <div class="consulta-titulares" *ngFor="let cotitular of adjudicacion.Cotitulares">
         <div><strong>Cotitular:</strong> {{ cotitular.NombreCompleto }} · DNI {{ cotitular.DNI || 'Sin dato' }}</div>
