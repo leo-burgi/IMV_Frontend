@@ -164,11 +164,11 @@
 
   <div class="imv-table-wrapper">
     <table class="imv-table adjudicaciones-table">
-      <thead><tr><th>ID</th><th>Propiedad</th><th>Catastro</th><th>Plan</th><th>Titular principal</th><th>Cotitulares</th><th>N° EXPTE.</th><th>Fecha</th><th>Adjudicación</th><th>Estado notarial</th><th class="col-actions">Acciones</th></tr></thead>
+      <thead><tr><th class="adjudicaciones-col-id">ID</th><th>Propiedad</th><th class="adjudicaciones-col-catastro">Catastro</th><th>Plan</th><th>Titular principal</th><th>Cotitulares</th><th class="adjudicaciones-col-expediente">N° EXPTE.</th><th class="adjudicaciones-col-fecha">Fecha</th><th>Adjudicación</th><th>Estado notarial</th><th class="col-actions adjudicaciones-col-acciones">Acciones</th></tr></thead>
       <tbody>
         <tr *ngFor="let item of lista">
-          <td><span class="imv-badge-id">{{ item.IdAdjudicacion }}</span></td>
-          <td class="col-name">{{ item.Propiedad }}</td><td>{{ item.Catastro || 'Sin dato' }}</td>
+          <td class="adjudicaciones-col-id"><span class="imv-badge-id">{{ item.IdAdjudicacion }}</span></td>
+          <td class="col-name">{{ item.Propiedad }}</td><td class="adjudicaciones-col-catastro">{{ item.Catastro || 'Sin dato' }}</td>
           <td>{{ item.NombrePlan || 'Sin nombre informado' }}<small class="adjudicacion-secondary">{{ item.OrigenPlan }}</small></td>
           <td>{{ item.TitularPrincipal }}<small class="adjudicacion-secondary">DNI {{ item.DniTitularPrincipal || 'sin dato' }}</small></td>
           <td>
@@ -178,11 +178,11 @@
               <span class="cotitular-name">{{ cotitular.NombreCompleto }}</span>
               <span>DNI: {{ cotitular.DNI || 'Sin dato' }}</span>
             </div>
-          </td><td>{{ item.NroLegajoFisico || 'Sin dato' }}</td>
-          <td>{{ item.FechaAdjudicacion ? (item.FechaAdjudicacion | date:'dd/MM/yyyy') : 'Sin dato' }}</td>
+          </td><td class="adjudicaciones-col-expediente">{{ item.NroLegajoFisico || 'Sin dato' }}</td>
+          <td class="adjudicaciones-col-fecha">{{ item.FechaAdjudicacion ? (item.FechaAdjudicacion | date:'dd/MM/yyyy') : 'Sin dato' }}</td>
           <td><span class="adjudicacion-status" [class.adjudicacion-status--inactive]="!item.Activa">{{ item.Activa ? 'Activa' : 'Inactiva' }}</span></td>
           <td>{{ item.EstadoNotarialActual?.Descripcion || 'Sin estado registrado' }}</td>
-          <td class="col-actions"><div class="imv-table-actions">
+          <td class="col-actions adjudicaciones-col-acciones"><div class="imv-table-actions">
             <button class="imv-btn imv-btn--icon imv-btn--view" type="button" (click)="abrirDetalle(item)" title="Ver"><i class="fas fa-eye"></i></button>
             <button class="imv-btn imv-btn--icon imv-btn--edit" type="button" (click)="abrirEdicion(item)" title="Editar"><i class="fas fa-edit"></i></button>
             <button class="imv-btn imv-btn--icon" type="button" (click)="abrirCambioEstado(item)" title="Cambiar estado"><i class="fas fa-exchange-alt"></i></button>
