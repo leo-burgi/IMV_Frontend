@@ -1,40 +1,59 @@
 <div class="imv-abm-header">
   <div class="imv-abm-header__titles">
     <h2 class="imv-page-title">Propiedades</h2>
-    <p class="imv-page-sub">Consulta de inmuebles registrados, sin modificación de datos</p>
+    <p class="imv-page-sub">Consulta y actualización administrativa de los inmuebles registrados</p>
   </div>
 </div>
 
-<div class="propiedades-error" *ngIf="mensajeError"><i class="fas fa-exclamation-triangle"></i> {{ mensajeError }}</div>
+<div class="propiedades-message propiedades-message--success" *ngIf="mensajeExito"><i class="fas fa-check-circle"></i> {{ mensajeExito }}</div>
+<div class="propiedades-message propiedades-message--error" *ngIf="mensajeError"><i class="fas fa-exclamation-triangle"></i> {{ mensajeError }}</div>
 
-<div class="imv-modal-backdrop" *ngIf="seleccionada || cargandoDetalle || detalleError">
-  <div class="imv-modal propiedades-modal" role="dialog" aria-modal="true" aria-labelledby="propiedadDetalleTitle">
+<div class="imv-modal-backdrop" *ngIf="detalle || cargandoDetalle || detalleError">
+  <div class="imv-modal propiedades-modal propiedades-modal--detail" role="dialog" aria-modal="true" aria-labelledby="propiedadDetalleTitle">
     <div class="imv-modal__header">
-      <h3 id="propiedadDetalleTitle">Detalle de propiedad</h3>
-      <button class="imv-btn imv-btn--ghost imv-btn--icon" type="button" (click)="cerrarDetalle()"><i class="fas fa-times"></i></button>
+      <h3 id="propiedadDetalleTitle">Ficha de propiedad</h3>
+      <button class="imv-btn imv-btn--ghost imv-btn--icon" type="button" (click)="cerrarDetalle()" title="Cerrar"><i class="fas fa-times"></i></button>
     </div>
     <div class="imv-modal__body">
-      <div class="imv-table-empty" *ngIf="cargandoDetalle"><i class="fas fa-spinner fa-spin"></i> Cargando detalle...</div>
+      <div class="imv-table-empty" *ngIf="cargandoDetalle"><i class="fas fa-spinner fa-spin"></i> Cargando ficha...</div>
       <p class="imv-form-error" *ngIf="detalleError">{{ detalleError }}</p>
-      <div class="propiedad-detail-grid" *ngIf="seleccionada">
-        <div><span>ID</span><strong>{{ seleccionada.IdPropiedad }}</strong></div>
-        <div><span>Estado</span><strong>{{ seleccionada.FechaBaja ? 'Dada de baja' : 'Activa' }}</strong></div>
-        <div><span>Calle</span><strong>{{ seleccionada.Calle || 'Sin dato' }}</strong></div>
-        <div><span>Altura</span><strong>{{ seleccionada.Altura || 'Sin dato' }}</strong></div>
-        <div><span>Barrio</span><strong>{{ seleccionada.Barrio || 'Sin dato' }}</strong></div>
-        <div><span>Catastro</span><strong>{{ seleccionada.NroCatastro || 'Sin dato' }}</strong></div>
-        <div><span>Manzana</span><strong>{{ seleccionada.Manzana || 'Sin dato' }}</strong></div>
-        <div><span>Lote</span><strong>{{ seleccionada.Lote || 'Sin dato' }}</strong></div>
-        <div class="propiedad-detail-wide"><span>Observaciones</span><strong>{{ seleccionada.ObservacionesPropiedad || 'Sin dato' }}</strong></div>
-        <h4 class="propiedad-detail-wide">Información técnica y auditoría</h4>
-        <div><span>IdBarrio</span><strong>{{ seleccionada.IdBarrio }}</strong></div>
-        <div><span>IdCalle</span><strong>{{ seleccionada.IdCalle }}</strong></div>
-        <div><span>Alta</span><strong>{{ seleccionada.UsuarioAlta || 'Sin dato' }} · {{ seleccionada.FechaAlta ? (seleccionada.FechaAlta | date:'dd/MM/yyyy') : 'Sin fecha' }}</strong></div>
-        <div><span>Modificación</span><strong>{{ seleccionada.UsuarioModif || 'Sin dato' }} · {{ seleccionada.FechaModif ? (seleccionada.FechaModif | date:'dd/MM/yyyy') : 'Sin fecha' }}</strong></div>
-        <div><span>Baja</span><strong>{{ seleccionada.UsuarioBaja || 'Sin dato' }} · {{ seleccionada.FechaBaja ? (seleccionada.FechaBaja | date:'dd/MM/yyyy') : 'Sin fecha' }}</strong></div>
+      <app-propiedad-ficha *ngIf="detalle" [detalle]="detalle"
+        (solicitarNavegacion)="navegarDesdeFicha($event)"></app-propiedad-ficha>
+    </div>
+    <div class="imv-modal__footer">
+      <button class="imv-btn imv-btn--ghost" type="button" (click)="cerrarDetalle()">Cerrar</button>
+      <button class="imv-btn imv-btn--primary" type="button" *ngIf="detalle?.Propiedad && !detalle?.Propiedad?.FechaBaja"
+        [disabled]="!detalle?.Propiedad?.IdBarrio || !detalle?.Propiedad?.IdCalle" (click)="editarDesdeFicha()">
+        <i class="fas fa-edit"></i> Editar
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="imv-modal-backdrop" *ngIf="mostrarEdicion && propiedadForm">
+  <div class="imv-modal propiedades-modal" role="dialog" aria-modal="true" aria-labelledby="propiedadEditarTitle">
+    <div class="imv-modal__header">
+      <h3 id="propiedadEditarTitle">Editar propiedad</h3>
+      <button class="imv-btn imv-btn--ghost imv-btn--icon" type="button" [disabled]="guardando" (click)="cerrarEdicion()" title="Cerrar"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="imv-modal__body propiedades-form">
+      <p>Actualizá únicamente datos administrativos confirmados. Los cambios quedarán registrados en el historial.</p>
+      <div class="propiedades-form__grid">
+        <label><span>Barrio *</span><select [(ngModel)]="propiedadForm.IdBarrio" [disabled]="guardando"><option [ngValue]="undefined">Seleccionar</option><option *ngFor="let barrio of barrios" [ngValue]="barrio.IdBarrio">{{ barrio.Nombre }}</option></select></label>
+        <label><span>Calle *</span><select [(ngModel)]="propiedadForm.IdCalle" [disabled]="guardando"><option [ngValue]="undefined">Seleccionar</option><option *ngFor="let calle of calles" [ngValue]="calle.IdCalle">{{ calle.Nombre }}</option></select></label>
+        <label><span>Altura</span><input maxlength="20" [(ngModel)]="propiedadForm.Altura" [disabled]="guardando" /></label>
+        <label><span>Catastro</span><input maxlength="50" [(ngModel)]="propiedadForm.NroCatastro" [disabled]="guardando" /></label>
+        <label><span>Manzana</span><input maxlength="20" [(ngModel)]="propiedadForm.Manzana" [disabled]="guardando" /></label>
+        <label><span>Lote</span><input maxlength="20" [(ngModel)]="propiedadForm.Lote" [disabled]="guardando" /></label>
+        <label class="propiedades-form__wide"><span>Observaciones</span><textarea rows="4" [(ngModel)]="propiedadForm.ObservacionesPropiedad" [disabled]="guardando"></textarea></label>
       </div>
     </div>
-    <div class="imv-modal__footer"><button class="imv-btn imv-btn--ghost" type="button" (click)="cerrarDetalle()">Cerrar</button></div>
+    <div class="imv-modal__footer">
+      <button class="imv-btn imv-btn--ghost" type="button" [disabled]="guardando" (click)="cerrarEdicion()">Cancelar</button>
+      <button class="imv-btn imv-btn--primary" type="button" [disabled]="guardando" (click)="guardarPropiedad()">
+        <i class="fas" [ngClass]="guardando ? 'fa-spinner fa-spin' : 'fa-save'"></i> {{ guardando ? 'Guardando...' : 'Guardar cambios' }}
+      </button>
+    </div>
   </div>
 </div>
 
@@ -45,7 +64,7 @@
       <input type="search" class="imv-table-search__input" placeholder="Buscar por calle, altura, barrio, catastro, manzana o lote..."
              [(ngModel)]="filtroBusqueda" (ngModelChange)="onFiltroChange($event)" />
     </div>
-    <select [(ngModel)]="filtroBarrio" (ngModelChange)="onCriterioChange()"><option value="">Todos los barrios</option><option *ngFor="let barrio of barrios" [value]="barrio">{{ barrio }}</option></select>
+    <select [(ngModel)]="filtroBarrio" (ngModelChange)="onCriterioChange()"><option value="">Todos los barrios</option><option *ngFor="let barrio of barrios" [value]="barrio.Nombre">{{ barrio.Nombre }}</option></select>
     <select [(ngModel)]="filtroEstado" (ngModelChange)="onCriterioChange()"><option value="todas">Todas</option><option value="activas">Activas</option><option value="bajas">Dadas de baja</option></select>
     <select [(ngModel)]="filtroCatastro" (ngModelChange)="onCriterioChange()"><option value="todas">Con o sin catastro</option><option value="con">Con catastro</option><option value="sin">Sin catastro</option></select>
     <span class="imv-table-count">{{ total }} registros</span>
@@ -61,7 +80,10 @@
           <td>{{ item.Altura || 'Sin dato' }}</td><td>{{ item.Barrio || 'Sin dato' }}</td>
           <td>{{ item.NroCatastro || 'Sin dato' }}</td><td>{{ item.Manzana || 'Sin dato' }}</td><td>{{ item.Lote || 'Sin dato' }}</td>
           <td><span class="propiedad-status" [class.propiedad-status--inactive]="item.FechaBaja">{{ item.FechaBaja ? 'Dada de baja' : 'Activa' }}</span></td>
-          <td class="col-actions"><button class="imv-btn imv-btn--icon imv-btn--view" type="button" (click)="verDetalle(item)" title="Ver detalle"><i class="fas fa-eye"></i></button></td>
+          <td class="col-actions">
+            <button class="imv-btn imv-btn--icon imv-btn--view" type="button" (click)="verDetalle(item)" title="Ver"><i class="fas fa-eye"></i></button>
+            <button class="imv-btn imv-btn--icon" type="button" *ngIf="!item.FechaBaja" (click)="editarPropiedad(item)" title="Editar"><i class="fas fa-edit"></i></button>
+          </td>
         </tr>
         <tr *ngIf="cargando"><td colspan="9"><div class="imv-table-empty"><i class="fas fa-spinner fa-spin"></i> Cargando propiedades...</div></td></tr>
         <tr *ngIf="!cargando && lista.length === 0"><td colspan="9"><div class="imv-table-empty"><i class="fas fa-home"></i> No hay propiedades que coincidan con los filtros.</div></td></tr>

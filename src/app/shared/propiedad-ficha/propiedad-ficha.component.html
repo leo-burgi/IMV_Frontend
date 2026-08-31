@@ -1,0 +1,85 @@
+<ng-container *ngIf="detalle && detalle.Propiedad as propiedad">
+  <section class="consulta-section consulta-section--definitiva propiedad-ficha__first">
+    <div class="consulta-section__title">
+      <span class="consulta-badge consulta-badge--confirmado">Información definitiva</span>
+      <h4>Identificación de la propiedad</h4>
+    </div>
+    <div class="consulta-grid">
+      <div><span>Catastro</span><strong>{{ propiedad.Catastro || 'Sin dato' }}</strong></div>
+      <div><span>Calle</span><strong>{{ propiedad.Calle || 'Sin dato' }}</strong></div>
+      <div><span>Altura</span><strong>{{ propiedad.Altura || 'Sin dato' }}</strong></div>
+      <div><span>Barrio</span><strong>{{ propiedad.Barrio || 'Sin dato' }}</strong></div>
+      <div><span>Manzana</span><strong>{{ propiedad.Manzana || 'Sin dato' }}</strong></div>
+      <div><span>Lote</span><strong>{{ propiedad.Lote || 'Sin dato' }}</strong></div>
+      <div><span>Estado</span><strong>{{ propiedad.FechaBaja ? 'Dada de baja' : 'Activa' }}</strong></div>
+      <div><span>Última modificación</span><strong>{{ propiedad.UsuarioUltimaModificacion || 'Sin dato' }} · {{ propiedad.FechaUltimaModificacion ? (propiedad.FechaUltimaModificacion | date:'dd/MM/yyyy') : 'Sin fecha' }}</strong></div>
+      <div class="propiedad-ficha__wide"><span>Observaciones</span><strong>{{ propiedad.Observaciones || 'Sin dato' }}</strong></div>
+    </div>
+    <div class="consulta-links">
+      <button type="button" (click)="verHistorial()">{{ historialVisible ? 'Ocultar historial' : 'Ver historial' }}</button>
+    </div>
+    <div class="propiedad-ficha__history" *ngIf="cargandoHistorial"><i class="fas fa-spinner fa-spin"></i> Cargando historial...</div>
+    <div class="propiedad-ficha__history propiedad-ficha__history--error" *ngIf="historialError">{{ historialError }}</div>
+    <div class="propiedad-ficha__history" *ngIf="historialVisible">
+      <div *ngIf="!historial.length">No hay modificaciones auditadas para esta propiedad.</div>
+      <article *ngFor="let cambio of historial">
+        <strong>{{ cambio.Campo }}</strong>
+        <span>{{ cambio.ValorAnterior || 'Sin dato' }} → {{ cambio.ValorNuevo || 'Sin dato' }}</span>
+        <small>{{ cambio.Usuario }} · {{ cambio.FechaHora | date:'dd/MM/yyyy HH:mm' }}</small>
+      </article>
+    </div>
+  </section>
+
+  <section class="consulta-section consulta-section--definitiva">
+    <div class="consulta-section__title"><h4>Situación habitacional</h4></div>
+    <div class="propiedad-ficha__empty" *ngIf="!detalle.Adjudicaciones.length">No hay adjudicaciones definitivas relacionadas con esta propiedad.</div>
+    <article class="consulta-adjudicacion" *ngFor="let adjudicacion of detalle.Adjudicaciones">
+      <div class="consulta-adjudicacion__header">
+        <strong>Adjudicación</strong>
+        <span [class.consulta-status--inactive]="!adjudicacion.Activa">{{ adjudicacion.Activa ? 'Activa' : 'Inactiva' }}</span>
+      </div>
+      <div class="consulta-grid">
+        <div><span>N° expediente</span><strong>{{ adjudicacion.NumeroExpediente || 'Sin dato' }}</strong></div>
+        <div><span>Plan</span><strong>{{ adjudicacion.Plan.Nombre || 'Sin dato' }}</strong></div>
+        <div><span>Origen del plan</span><strong>{{ adjudicacion.Plan.Origen || 'Sin dato' }}</strong></div>
+        <div><span>Titular principal</span><strong>{{ adjudicacion.TitularPrincipal?.NombreCompleto || 'Sin dato' }}</strong></div>
+        <div><span>DNI titular</span><strong>{{ adjudicacion.TitularPrincipal?.DNI || 'Sin dato' }}</strong></div>
+        <div><span>Cotitulares</span><strong>{{ adjudicacion.Cotitulares.length ? adjudicacion.Cotitulares.length : 'Sin cotitulares' }}</strong></div>
+      </div>
+      <div class="consulta-titulares" *ngFor="let cotitular of adjudicacion.Cotitulares">
+        <div><strong>Cotitular:</strong> {{ cotitular.NombreCompleto }} · DNI {{ cotitular.DNI || 'Sin dato' }}</div>
+      </div>
+      <div class="consulta-links">
+        <button type="button" (click)="navegar('adjudicaciones', adjudicacion.IdAdjudicacion)">Ver adjudicación</button>
+        <button type="button" (click)="navegar('personas', adjudicacion.TitularPrincipal?.IdPersona)">Ver titular</button>
+        <button type="button" (click)="navegar('planes', adjudicacion.Plan.IdPlan)">Ver plan</button>
+      </div>
+    </article>
+  </section>
+
+  <section class="consulta-section consulta-section--legacy" *ngIf="detalle.AntecedentesLegacy.length">
+    <div class="consulta-section__title"><span class="consulta-badge consulta-badge--legacy">Información histórica</span><h4>Antecedentes</h4></div>
+    <article class="consulta-legacy" *ngFor="let antecedente of detalle.AntecedentesLegacy">
+      <div class="consulta-legacy__header">
+        <strong>{{ antecedente.HojaOrigen }} · fila {{ antecedente.FilaOrigen }}</strong>
+        <div class="propiedad-ficha__badges">
+          <span class="consulta-badge" [ngClass]="claseAntecedente(antecedente)">{{ etiquetaAntecedente(antecedente) }}</span>
+          <span class="consulta-badge consulta-badge--estado">{{ etiquetaEstado(antecedente.EstadoValidacion) }}</span>
+        </div>
+      </div>
+      <div class="consulta-reason"><strong>{{ antecedente.CodigoMotivo || 'Pendiente de revisión' }}</strong><span>{{ antecedente.DetalleMotivo || antecedente.MotivosValidacion || 'Sin detalle adicional' }}</span></div>
+      <div class="consulta-grid consulta-grid--raw">
+        <div><span>Catastro informado</span><strong>{{ antecedente.RawCatastro || 'Sin dato' }}</strong></div>
+        <div><span>Domicilio informado</span><strong>{{ antecedente.RawDomicilioInmueble || antecedente.RawDomicilio || 'Sin dato' }}</strong></div>
+        <div><span>Barrio · manzana · lote</span><strong>{{ antecedente.RawBarrio || 'Sin dato' }} · {{ antecedente.RawManzana || 'Sin dato' }} · {{ antecedente.RawLote || 'Sin dato' }}</strong></div>
+      </div>
+      <div class="consulta-raw-observation"><span>Observación original</span><pre>{{ antecedente.RawObservaciones || 'Sin observación' }}</pre></div>
+    </article>
+    <div class="consulta-warning" role="note"><i class="fas fa-exclamation-triangle"></i><span>Los antecedentes deben ser verificados. No constituyen información definitiva de la propiedad.</span></div>
+  </section>
+
+  <section class="consulta-section consulta-section--missing" *ngIf="detalle.Faltantes.length">
+    <div class="consulta-section__title"><span class="consulta-badge consulta-badge--missing">Dato faltante</span><h4>Información relevante no disponible</h4></div>
+    <ul><li *ngFor="let faltante of detalle.Faltantes">{{ faltante }}</li></ul>
+  </section>
+</ng-container>

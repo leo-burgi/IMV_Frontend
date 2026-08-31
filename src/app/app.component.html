@@ -201,7 +201,8 @@
     </div>
 
     <div *ngIf="seccionActiva === 'propiedades'" class="imv-page">
-      <div class="imv-card"><app-propiedades [idPropiedadSeleccionada]="idDestino('propiedades')"></app-propiedades></div>
+      <div class="imv-card"><app-propiedades [idPropiedadSeleccionada]="idDestino('propiedades')"
+        (solicitarNavegacion)="navegarContextual($event)"></app-propiedades></div>
     </div>
 
     <div *ngIf="seccionActiva === 'notariales'" class="imv-page">

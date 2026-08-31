@@ -55,6 +55,8 @@ export interface ConsultaPersona {
 
 export interface ConsultaPropiedad {
   IdPropiedad: number;
+  IdBarrio?: number;
+  IdCalle?: number;
   Catastro?: string;
   Calle?: string;
   Altura?: string;
@@ -62,6 +64,9 @@ export interface ConsultaPropiedad {
   Manzana?: string;
   Lote?: string;
   Observaciones?: string;
+  UsuarioUltimaModificacion?: string;
+  FechaUltimaModificacion?: string;
+  FechaBaja?: string;
 }
 
 export interface ConsultaPlan {
