@@ -79,5 +79,6 @@ export interface AdjudicacionCatalogos {
 
 export interface CambioEstadoNotarialPayload {
   IdEstado: number;
+  FechaCambio?: string;
   Observaciones?: string;
 }
