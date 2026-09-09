@@ -23,41 +23,23 @@
 .adjudicacion-status { display: inline-flex; padding: 3px 8px; border-radius: 999px; background: var(--imv-green-bg); color: var(--imv-green); font-size: 11px; font-weight: 600; }
 .adjudicacion-status--inactive { background: #eef1f5; color: var(--imv-text-secondary); }
 .adjudicaciones-error { margin-bottom: 14px; padding: 10px 12px; border-radius: 10px; background: #fcebeb; color: #a32d2d; font-size: 13px; }
-.adjudicaciones-table td { min-width: 110px; }
-.adjudicaciones-table td:first-child, .adjudicaciones-table td:last-child { min-width: auto; }
-.adjudicaciones-table .adjudicaciones-col-id {
-  width: 1%;
+.adjudicaciones-table { table-layout: fixed; font-size: 12px; line-height: 1.35; }
+.adjudicaciones-table th, .adjudicaciones-table td {
+  padding: 8px 5px;
   min-width: 0;
-  padding-right: 6px;
-  padding-left: 6px;
-  text-align: center;
-  white-space: nowrap;
-}
-.adjudicaciones-table .adjudicaciones-col-id .imv-badge-id { padding-right: 5px; padding-left: 5px; }
-.adjudicaciones-table .adjudicaciones-col-catastro,
-.adjudicaciones-table .adjudicaciones-col-expediente {
-  width: 1%;
-  min-width: 62px;
-  max-width: 82px;
-  padding-right: 8px;
-  padding-left: 8px;
-  overflow-wrap: anywhere;
   white-space: normal;
+  overflow-wrap: anywhere;
 }
-.adjudicaciones-table .adjudicaciones-col-fecha {
-  width: 1%;
-  min-width: 68px;
-  padding-right: 8px;
-  padding-left: 8px;
-  white-space: nowrap;
-}
-.adjudicaciones-table .adjudicaciones-col-acciones {
-  width: 1%;
-  min-width: 102px;
-  padding-right: 5px;
-  padding-left: 5px;
-  white-space: nowrap;
-}
+.adjudicaciones-table thead th { font-size: 10px; letter-spacing: 0; }
+.adjudicaciones-table .adjudicaciones-col-id { width: 5%; text-align: center; }
+.adjudicaciones-table .adjudicaciones-col-catastro,
+.adjudicaciones-table .adjudicaciones-col-expediente { width: 7%; }
+.adjudicaciones-table .adjudicaciones-col-fecha { width: 8%; }
+.adjudicaciones-table .adjudicaciones-col-acciones { width: 11%; }
+.adjudicaciones-table .imv-badge-id { max-width: 100%; padding: 2px 4px; }
+.adjudicaciones-table .imv-table-actions { gap: 4px; }
+.adjudicaciones-table .adjudicacion-status { max-width: 100%; padding: 3px 5px; }
+.adjudicaciones-toolbar > * { min-width: 0; max-width: 100%; }
 .cotitular-block { display: flex; flex-direction: column; gap: 2px; padding: 4px 0; }
 .cotitular-block + .cotitular-block { border-top: 1px solid rgba(0,0,0,0.08); margin-top: 4px; }
 .cotitular-block small, .cotitular-block span { color: var(--imv-text-muted); font-size: 11px; }
