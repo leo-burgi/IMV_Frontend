@@ -9,12 +9,12 @@
 </div>
 
 <div class="imv-alert imv-alert--success" *ngIf="mensajeExito">{{ mensajeExito }}</div>
-<div class="adjudicaciones-error" *ngIf="mensajeError && !mostrarModal">
+<div class="adjudicaciones-error" *ngIf="mensajeError && !mostrarModal && !mostrarCambioEstado">
   <i class="fas fa-exclamation-triangle"></i> {{ mensajeError }}
 </div>
 
 <div class="imv-modal-backdrop" *ngIf="mostrarModal">
-  <div class="imv-modal adjudicaciones-modal" role="dialog" aria-modal="true" aria-labelledby="adjudicacionTitle">
+  <div class="imv-modal imv-modal--wide adjudicaciones-modal" role="dialog" aria-modal="true" aria-labelledby="adjudicacionTitle">
     <div class="imv-modal__header">
       <h3 id="adjudicacionTitle">
         {{ modo === 'detalle' ? 'Detalle de adjudicación' : (modo === 'edicion' ? 'Editar adjudicación' : 'Nueva adjudicación') }}
@@ -23,13 +23,15 @@
     </div>
 
     <div class="imv-modal__body" *ngIf="modo === 'detalle' && seleccionada">
+      <div class="imv-table-empty" *ngIf="cargandoDetalle"><i class="fas fa-spinner fa-spin"></i> Cargando historial...</div>
       <div class="adjudicacion-detail-grid">
         <div><span>ID</span><strong>{{ seleccionada.IdAdjudicacion }}</strong></div>
         <div><span>Estado</span><strong>{{ seleccionada.Activa ? 'Activa' : 'Inactiva' }}</strong></div>
         <div><span>Propiedad</span><strong>{{ seleccionada.Propiedad }}</strong></div>
         <div><span>Catastro</span><strong>{{ seleccionada.Catastro || 'Sin dato' }}</strong></div>
         <div><span>Plan</span><strong>{{ seleccionada.NombrePlan || 'Sin nombre informado' }}</strong><small>{{ seleccionada.OrigenPlan }}</small></div>
-        <div><span>Legajo</span><strong>{{ seleccionada.NroLegajoFisico || 'Sin dato' }}</strong></div>
+        <div><span>N° EXPTE.</span><strong>{{ seleccionada.NroLegajoFisico || 'Sin dato' }}</strong></div>
+        <div><span>Estado notarial actual</span><strong>{{ seleccionada.EstadoNotarialActual?.Descripcion || 'Sin estado registrado' }}</strong><small *ngIf="seleccionada.EstadoNotarialActual">{{ seleccionada.EstadoNotarialActual.Usuario || 'Sin usuario' }} · {{ seleccionada.EstadoNotarialActual.FechaCambio | date:'dd/MM/yyyy HH:mm' }}</small></div>
         <div><span>Titular principal</span><strong>{{ seleccionada.TitularPrincipal }}</strong></div>
         <div><span>DNI</span><strong>{{ seleccionada.DniTitularPrincipal || 'Sin dato' }}</strong></div>
         <div class="adjudicacion-detail-cotitulares"><span>Cotitulares</span>
@@ -42,6 +44,15 @@
         </div>
         <div><span>Fecha</span><strong>{{ seleccionada.FechaAdjudicacion ? (seleccionada.FechaAdjudicacion | date:'dd/MM/yyyy') : 'Sin dato' }}</strong></div>
       </div>
+      <section class="adjudicacion-history" *ngIf="!cargandoDetalle">
+        <h4>Historial notarial</h4>
+        <p *ngIf="!seleccionada.HistorialEstados?.length">Todavía no se registraron cambios de estado.</p>
+        <article *ngFor="let estado of seleccionada.HistorialEstados">
+          <div><strong>{{ estado.Descripcion }}</strong><span>{{ estado.FechaCambio | date:'dd/MM/yyyy HH:mm' }}</span></div>
+          <span>{{ estado.Usuario || 'Sin usuario registrado' }}</span>
+          <small *ngIf="estado.Observaciones">{{ estado.Observaciones }}</small>
+        </article>
+      </section>
     </div>
 
     <div class="imv-modal__body adjudicacion-form-grid" *ngIf="modo !== 'detalle'">
@@ -75,7 +86,7 @@
         </select>
       </div>
       <div class="imv-form-row">
-        <label for="legajo">N.º de legajo físico</label>
+        <label for="legajo">N° EXPTE. <small>(opcional)</small></label>
         <input id="legajo" maxlength="50" [(ngModel)]="formulario.NroLegajoFisico" />
       </div>
       <div class="imv-form-row">
@@ -97,11 +108,45 @@
   </div>
 </div>
 
-<div class="imv-card">
+<div class="imv-modal-backdrop" *ngIf="mostrarCambioEstado && adjudicacionEstado">
+  <div class="imv-modal adjudicaciones-estado-modal" role="dialog" aria-modal="true" aria-labelledby="cambiarEstadoTitle">
+    <div class="imv-modal__header">
+      <h3 id="cambiarEstadoTitle">Cambiar estado notarial</h3>
+      <button class="imv-btn imv-btn--ghost imv-btn--icon" type="button" [disabled]="guardandoEstado" (click)="cerrarCambioEstado()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="imv-modal__body">
+      <div class="adjudicacion-current-state">
+        <span>Estado actual</span>
+        <strong>{{ adjudicacionEstado.EstadoNotarialActual?.Descripcion || 'Sin estado registrado' }}</strong>
+      </div>
+      <div class="imv-form-row">
+        <label for="estadoNotarial">Nuevo estado</label>
+        <select id="estadoNotarial" [(ngModel)]="estadoForm.IdEstado" [disabled]="guardandoEstado">
+          <option [ngValue]="0">Seleccionar estado</option>
+          <option *ngFor="let estado of catalogos.EstadosNotariales" [ngValue]="estado.IdEstado">{{ estado.Descripcion }}</option>
+        </select>
+      </div>
+      <div class="imv-form-row">
+        <label for="observacionEstado">Observación <small>(opcional)</small></label>
+        <textarea id="observacionEstado" rows="4" [(ngModel)]="estadoForm.Observaciones" [disabled]="guardandoEstado"></textarea>
+      </div>
+      <p class="adjudicacion-confirmation">Al confirmar se agregará un nuevo movimiento al historial. Los estados anteriores se conservarán.</p>
+      <p class="imv-form-error" *ngIf="mensajeError">{{ mensajeError }}</p>
+    </div>
+    <div class="imv-modal__footer">
+      <button class="imv-btn imv-btn--ghost" type="button" [disabled]="guardandoEstado" (click)="cerrarCambioEstado()">Cancelar</button>
+      <button class="imv-btn imv-btn--primary" type="button" [disabled]="guardandoEstado || !estadoForm.IdEstado" (click)="guardarEstado()">
+        <i class="fas fa-spinner fa-spin" *ngIf="guardandoEstado"></i> Confirmar cambio
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="adjudicaciones-list">
   <div class="imv-table-toolbar adjudicaciones-toolbar">
     <div class="imv-table-search">
       <i class="fas fa-search imv-table-search__icon"></i>
-      <input type="search" class="imv-table-search__input" placeholder="Buscar por propiedad, catastro, plan o persona..."
+      <input type="search" class="imv-table-search__input" placeholder="Buscar por propiedad, catastro, plan, expediente o persona..."
              [(ngModel)]="filtroBusqueda" (ngModelChange)="onFiltroChange($event)" />
     </div>
     <select class="adjudicaciones-filter" [(ngModel)]="filtroPlan" (ngModelChange)="onCriterioChange()">
@@ -116,11 +161,11 @@
 
   <div class="imv-table-wrapper">
     <table class="imv-table adjudicaciones-table">
-      <thead><tr><th>ID</th><th>Propiedad</th><th>Catastro</th><th>Plan</th><th>Titular principal</th><th>Cotitulares</th><th>N° EXPTE.</th><th>Fecha</th><th>Estado</th><th class="col-actions">Acciones</th></tr></thead>
+      <thead><tr><th class="adjudicaciones-col-id">ID</th><th>Propiedad</th><th class="adjudicaciones-col-catastro">Catastro</th><th>Plan</th><th>Titular principal</th><th>Cotitulares</th><th class="adjudicaciones-col-expediente">N° EXPTE.</th><th class="adjudicaciones-col-fecha">Fecha</th><th>Adjudicación</th><th>Estado notarial</th><th class="col-actions adjudicaciones-col-acciones">Acciones</th></tr></thead>
       <tbody>
         <tr *ngFor="let item of lista">
-          <td><span class="imv-badge-id">{{ item.IdAdjudicacion }}</span></td>
-          <td class="col-name">{{ item.Propiedad }}</td><td>{{ item.Catastro || 'Sin dato' }}</td>
+          <td class="adjudicaciones-col-id"><span class="imv-badge-id">{{ item.IdAdjudicacion }}</span></td>
+          <td class="col-name">{{ item.Propiedad }}</td><td class="adjudicaciones-col-catastro">{{ item.Catastro || 'Sin dato' }}</td>
           <td>{{ item.NombrePlan || 'Sin nombre informado' }}<small class="adjudicacion-secondary">{{ item.OrigenPlan }}</small></td>
           <td>{{ item.TitularPrincipal }}<small class="adjudicacion-secondary">DNI {{ item.DniTitularPrincipal || 'sin dato' }}</small></td>
           <td>
@@ -130,16 +175,17 @@
               <span class="cotitular-name">{{ cotitular.NombreCompleto }}</span>
               <span>DNI: {{ cotitular.DNI || 'Sin dato' }}</span>
             </div>
-          </td><td>{{ item.NroLegajoFisico || 'Sin dato' }}</td>
-          <td>{{ item.FechaAdjudicacion ? (item.FechaAdjudicacion | date:'dd/MM/yyyy') : 'Sin dato' }}</td>
+          </td><td class="adjudicaciones-col-expediente">{{ item.NroLegajoFisico || 'Sin dato' }}</td>
+          <td class="adjudicaciones-col-fecha">{{ item.FechaAdjudicacion ? (item.FechaAdjudicacion | date:'dd/MM/yyyy') : 'Sin dato' }}</td>
           <td><span class="adjudicacion-status" [class.adjudicacion-status--inactive]="!item.Activa">{{ item.Activa ? 'Activa' : 'Inactiva' }}</span></td>
-          <td class="col-actions"><div class="imv-table-actions">
+          <td>{{ item.EstadoNotarialActual?.Descripcion || 'Sin estado registrado' }}</td>
+          <td class="col-actions adjudicaciones-col-acciones"><div class="imv-table-actions">
             <button class="imv-btn imv-btn--icon imv-btn--view" type="button" (click)="abrirDetalle(item)" title="Ver"><i class="fas fa-eye"></i></button>
             <button class="imv-btn imv-btn--icon imv-btn--edit" type="button" (click)="abrirEdicion(item)" title="Editar"><i class="fas fa-edit"></i></button>
           </div></td>
         </tr>
-        <tr *ngIf="cargando"><td colspan="10"><div class="imv-table-empty"><i class="fas fa-spinner fa-spin"></i> Cargando adjudicaciones...</div></td></tr>
-        <tr *ngIf="!cargando && lista.length === 0"><td colspan="10"><div class="imv-table-empty"><i class="fas fa-key"></i> No hay adjudicaciones que coincidan con los filtros.</div></td></tr>
+        <tr *ngIf="cargando"><td colspan="11"><div class="imv-table-empty"><i class="fas fa-spinner fa-spin"></i> Cargando adjudicaciones...</div></td></tr>
+        <tr *ngIf="!cargando && lista.length === 0"><td colspan="11"><div class="imv-table-empty"><i class="fas fa-key"></i> No hay adjudicaciones que coincidan con los filtros.</div></td></tr>
       </tbody>
     </table>
   </div>

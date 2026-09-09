@@ -1,6 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import {
-  Adjudicacion, AdjudicacionCatalogos, AdjudicacionPayload
+  Adjudicacion, AdjudicacionCatalogos, AdjudicacionPayload, CambioEstadoNotarialPayload
 } from '../../core/models/adjudicacion.model';
 import { AdjudicacionService } from '../../core/services/adjudicacion.service';
 import { ImvSearchService } from '../../core/services/imv-search.service';
@@ -10,22 +11,28 @@ type ModalMode = 'alta' | 'edicion' | 'detalle';
 @Component({
   selector: 'app-adjudicaciones',
   templateUrl: './adjudicaciones.component.html',
-  styleUrls: ['../../shared/imv-table.css', './adjudicaciones.component.css']
+  styleUrls: ['../../shared/imv-table.css', '../../shared/imv-detail.css', './adjudicaciones.component.css']
 })
-export class AdjudicacionesComponent implements OnInit {
+export class AdjudicacionesComponent implements OnInit, OnDestroy {
   @Input() idAdjudicacionSeleccionada?: number;
   lista: Adjudicacion[] = [];
-  catalogos: AdjudicacionCatalogos = { Propiedades: [], Planes: [], Personas: [] };
+  catalogos: AdjudicacionCatalogos = { Propiedades: [], Planes: [], Personas: [], EstadosNotariales: [] };
   filtroBusqueda = '';
   filtroPlan = 0;
   filtroEstado = 'todas';
   cargando = false;
   guardando = false;
+  cargandoDetalle = false;
+  guardandoEstado = false;
   mostrarModal = false;
+  mostrarCambioEstado = false;
   modo: ModalMode = 'alta';
   mensajeError = '';
   mensajeExito = '';
   seleccionada: Adjudicacion | null = null;
+  adjudicacionEstado: Adjudicacion | null = null;
+  estadoForm: CambioEstadoNotarialPayload = { IdEstado: 0 };
+  private solicitudDetalle?: Subscription;
   readonly pageSize = 15;
   currentPage = 1;
   total = 0;
@@ -47,6 +54,8 @@ export class AdjudicacionesComponent implements OnInit {
     });
     this.cargarDatos();
   }
+
+  ngOnDestroy(): void { this.cancelarDetalle(); }
 
   cargarDatos(): void {
     this.cargando = true;
@@ -104,9 +113,24 @@ export class AdjudicacionesComponent implements OnInit {
   }
 
   abrirDetalle(item: Adjudicacion): void {
+    this.cancelarDetalle();
     this.modo = 'detalle';
     this.seleccionada = item;
+    this.cargandoDetalle = true;
     this.abrirModal();
+    const id = item.IdAdjudicacion;
+    this.solicitudDetalle = this.service.getDetalle(id).subscribe({
+      next: detalle => {
+        if (!this.cargandoDetalle || !this.seleccionada || this.seleccionada.IdAdjudicacion !== id) return;
+        this.seleccionada = detalle;
+        this.cargandoDetalle = false;
+      },
+      error: () => {
+        if (!this.cargandoDetalle || !this.seleccionada || this.seleccionada.IdAdjudicacion !== id) return;
+        this.cargandoDetalle = false;
+        this.mensajeError = 'No se pudo cargar el detalle completo de la adjudicación.';
+      }
+    });
   }
 
   abrirEdicion(item: Adjudicacion): void {
@@ -126,9 +150,60 @@ export class AdjudicacionesComponent implements OnInit {
   }
 
   cerrarModal(): void {
+    this.cancelarDetalle();
     this.mostrarModal = false;
     this.guardando = false;
+    this.cargandoDetalle = false;
     this.mensajeError = '';
+  }
+
+  abrirCambioEstado(item: Adjudicacion): void {
+    this.adjudicacionEstado = item;
+    this.estadoForm = { IdEstado: 0, Observaciones: '' };
+    this.mensajeError = '';
+    this.mensajeExito = '';
+    this.mostrarCambioEstado = true;
+  }
+
+  abrirCambioEstadoDesdeDetalle(): void {
+    const adjudicacion = this.seleccionada;
+    if (!adjudicacion) return;
+    this.cerrarModal();
+    this.abrirCambioEstado(adjudicacion);
+  }
+
+  cerrarCambioEstado(): void {
+    this.mostrarCambioEstado = false;
+    this.guardandoEstado = false;
+    this.adjudicacionEstado = null;
+    this.estadoForm = { IdEstado: 0 };
+    this.mensajeError = '';
+  }
+
+  guardarEstado(): void {
+    if (!this.adjudicacionEstado || !this.estadoForm.IdEstado) {
+      this.mensajeError = 'Seleccioná el nuevo estado notarial.';
+      return;
+    }
+    const payload: CambioEstadoNotarialPayload = {
+      IdEstado: Number(this.estadoForm.IdEstado),
+      Observaciones: this.optional(this.estadoForm.Observaciones)
+    };
+    this.guardandoEstado = true;
+    this.mensajeError = '';
+    this.service.cambiarEstadoNotarial(this.adjudicacionEstado.IdAdjudicacion, payload).subscribe({
+      next: () => {
+        this.cerrarCambioEstado();
+        this.mensajeExito = 'El estado notarial se actualizó y quedó registrado en el historial.';
+        this.cargarListado();
+      },
+      error: error => {
+        this.guardandoEstado = false;
+        this.mensajeError = error.error && error.error.Message
+          ? error.error.Message
+          : 'No se pudo cambiar el estado notarial.';
+      }
+    });
   }
 
   guardar(): void {
@@ -198,5 +273,12 @@ export class AdjudicacionesComponent implements OnInit {
 
   private optional(value?: string): string | undefined {
     return value && value.trim() ? value.trim() : undefined;
+  }
+
+  private cancelarDetalle(): void {
+    if (this.solicitudDetalle) {
+      this.solicitudDetalle.unsubscribe();
+      this.solicitudDetalle = undefined;
+    }
   }
 }

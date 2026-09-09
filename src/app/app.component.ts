@@ -18,9 +18,9 @@ export class AppComponent {
   sidebarCollapsed: boolean = false;
 
   avisosImportantes: string[] = [
-    'Germán no viene el lunes',
-    'Estela viene lunes, miercoles y viernes',
-    'Las secciones aún están en desarrollo, pueden tener datos de prueba o no funcionar del todo'
+    'Las secciones aún están en desarrollo, pueden tener datos incompletos o no funcionar como se espera',
+    'Se recomienda usar el buscador para navegar a las secciones de interés',
+    '"Estado de migración de datos" hace referencia a datos migrados del archivo Excel histórico y debe ser completado por personal idóneo para que el sistema funcione correctamente.',
   ];
 
   constructor(private searchService: ImvSearchService) {}

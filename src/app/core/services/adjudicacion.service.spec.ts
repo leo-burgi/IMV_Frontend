@@ -48,7 +48,7 @@ describe('AdjudicacionService', () => {
   });
 
   it('debe obtener catálogos mediante GET', () => {
-    const catalogos: AdjudicacionCatalogos = { Propiedades: [], Planes: [], Personas: [] };
+    const catalogos: AdjudicacionCatalogos = { Propiedades: [], Planes: [], Personas: [], EstadosNotariales: [] };
     service.getCatalogos().subscribe(response => expect(response).toEqual(catalogos));
     const req = httpMock.expectOne(`${apiUrl}/catalogos`);
     expect(req.request.method).toBe('GET');
@@ -75,6 +75,29 @@ describe('AdjudicacionService', () => {
     const req = httpMock.expectOne(`${apiUrl}/editar`);
     expect(req.request.method).toBe('PUT');
     expect(req.request.body.IdAdjudicacion).toBe(1);
+    req.flush(adjudicacion);
+  });
+
+  it('debe obtener los estados notariales válidos', () => {
+    service.getEstadosNotariales().subscribe(estados => expect(estados[0].Descripcion).toBe('Iniciado'));
+    const req = httpMock.expectOne(`${apiUrl}/estados-notariales`);
+    expect(req.request.method).toBe('GET');
+    req.flush([{ IdEstado: 1, Descripcion: 'Iniciado' }]);
+  });
+
+  it('debe obtener el historial notarial de una adjudicación', () => {
+    service.getHistorialEstados(1).subscribe(historial => expect(historial.length).toBe(1));
+    const req = httpMock.expectOne(`${apiUrl}/1/historial-estados`);
+    expect(req.request.method).toBe('GET');
+    req.flush([{ IdHistorial: 1, IdAdjudicacion: 1, IdEstado: 1, Descripcion: 'Iniciado', FechaCambio: '2026-08-31T10:00:00' }]);
+  });
+
+  it('debe enviar el cambio de estado con observación', () => {
+    const payload = { IdEstado: 2, Observaciones: 'Documentación recibida' };
+    service.cambiarEstadoNotarial(1, payload).subscribe(response => expect(response).toEqual(adjudicacion));
+    const req = httpMock.expectOne(`${apiUrl}/1/estado-notarial`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(payload);
     req.flush(adjudicacion);
   });
 

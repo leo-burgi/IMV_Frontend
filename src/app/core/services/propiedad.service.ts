@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { Propiedad } from '../models/propiedad.model';
+import { Propiedad, PropiedadUpdate } from '../models/propiedad.model';
 import { PagedResult } from '../models/pagination.model';
 
 @Injectable({ providedIn: 'root' })
@@ -25,5 +25,9 @@ export class PropiedadService {
 
   getPropiedad(idPropiedad: number): Observable<Propiedad> {
     return this.http.get<Propiedad>(`${this.apiUrl}/${idPropiedad}`);
+  }
+
+  updatePropiedad(propiedad: PropiedadUpdate): Observable<Propiedad> {
+    return this.http.put<Propiedad>(`${this.apiUrl}/editar`, propiedad);
   }
 }

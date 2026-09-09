@@ -47,6 +47,15 @@ describe('PropiedadService', () => {
     req.flush(propiedad);
   });
 
+  it('debe enviar la edición completa mediante PUT', () => {
+    const payload = { IdPropiedad: 1, IdBarrio: 2, IdCalle: 3, Altura: '300', Manzana: 'B', Lote: '4', NroCatastro: 'CAT-2' };
+    service.updatePropiedad(payload).subscribe(response => expect(response.IdPropiedad).toBe(1));
+    const req = httpMock.expectOne(`${apiUrl}/editar`);
+    expect(req.request.method).toBe('PUT');
+    expect(req.request.body).toEqual(payload);
+    req.flush({ ...propiedad, ...payload });
+  });
+
   it('debe propagar errores HTTP', () => {
     let status = 0;
     service.getPropiedades().subscribe({ error: error => status = error.status });

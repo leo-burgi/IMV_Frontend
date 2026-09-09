@@ -12,8 +12,14 @@ describe('AdjudicacionesComponent', () => {
   let service: jasmine.SpyObj<AdjudicacionService>;
 
   beforeEach(async () => {
-    service = jasmine.createSpyObj('AdjudicacionService', ['getCatalogos', 'getAdjudicacionesPaginadas']);
-    service.getCatalogos.and.returnValue(of({ Propiedades: [], Planes: [], Personas: [] }));
+    service = jasmine.createSpyObj('AdjudicacionService', [
+      'getCatalogos', 'getAdjudicacionesPaginadas', 'getDetalle', 'cambiarEstadoNotarial',
+      'createAdjudicacion', 'updateAdjudicacion'
+    ]);
+    service.getCatalogos.and.returnValue(of({
+      Propiedades: [], Planes: [], Personas: [],
+      EstadosNotariales: [{ IdEstado: 1, Descripcion: 'Iniciado' }, { IdEstado: 2, Descripcion: 'Escriturado' }]
+    }));
     service.getAdjudicacionesPaginadas.and.returnValue(of({ Page: 1, PageSize: 15, Total: 0, Items: [] }));
     await TestBed.configureTestingModule({
       declarations: [AdjudicacionesComponent],
@@ -62,6 +68,7 @@ describe('AdjudicacionesComponent', () => {
       NombrePlan: 'Plan Norte', OrigenPlan: 'IMV', TitularPrincipal: 'Pérez, Ana',
       IdTitularPrincipal: 4, Cotitulares: [], Activa: true
     };
+    service.getDetalle.and.returnValue(of(adjudicacion));
     component.idAdjudicacionSeleccionada = 8;
     service.getAdjudicacionesPaginadas.and.returnValue(of({ Page: 1, PageSize: 15, Total: 1, Items: [adjudicacion] }));
 
@@ -71,5 +78,45 @@ describe('AdjudicacionesComponent', () => {
     expect(component.mostrarModal).toBeTrue();
     expect(component.modo).toBe('detalle');
     expect(component.seleccionada?.IdAdjudicacion).toBe(8);
+  });
+
+  it('debe mostrar expediente, estado actual e historial completo en el detalle', () => {
+    const adjudicacion: any = {
+      IdAdjudicacion: 9, IdPropiedad: 1, Propiedad: 'Belgrano 100', IdPlan: 1,
+      NombrePlan: 'Plan Norte', OrigenPlan: 'IMV', TitularPrincipal: 'Pérez, Ana',
+      IdTitularPrincipal: 4, Cotitulares: [], Activa: true, NroLegajoFisico: 'EXP-20',
+      EstadoNotarialActual: { IdEstado: 2, Descripcion: 'Escriturado', FechaCambio: '2026-08-31T10:00:00', Usuario: 'operador' },
+      HistorialEstados: [
+        { IdHistorial: 2, IdAdjudicacion: 9, IdEstado: 2, Descripcion: 'Escriturado', FechaCambio: '2026-08-31T10:00:00', Usuario: 'operador' },
+        { IdHistorial: 1, IdAdjudicacion: 9, IdEstado: 1, Descripcion: 'Iniciado', FechaCambio: '2026-08-30T09:00:00', Usuario: 'operador' }
+      ]
+    };
+    service.getDetalle.and.returnValue(of(adjudicacion));
+
+    component.abrirDetalle(adjudicacion);
+    fixture.detectChanges();
+
+    const text = fixture.nativeElement.textContent;
+    expect(text).toContain('EXP-20');
+    expect(text).toContain('Estado notarial actual');
+    expect(text).toContain('Historial notarial');
+    expect(text).toContain('Iniciado');
+    expect(text).toContain('Escriturado');
+  });
+
+  it('debe permitir el primer estado y enviar usuario mediante el backend', () => {
+    const adjudicacion: any = {
+      IdAdjudicacion: 10, IdPropiedad: 1, Propiedad: 'Belgrano 100', IdPlan: 1,
+      NombrePlan: 'Plan Norte', OrigenPlan: 'IMV', TitularPrincipal: 'Pérez, Ana',
+      IdTitularPrincipal: 4, Cotitulares: [], Activa: true
+    };
+    service.cambiarEstadoNotarial.and.returnValue(of(adjudicacion));
+    component.abrirCambioEstado(adjudicacion);
+    component.estadoForm = { IdEstado: 1, Observaciones: ' Inicio ' };
+
+    component.guardarEstado();
+
+    expect(service.cambiarEstadoNotarial).toHaveBeenCalledWith(10, { IdEstado: 1, Observaciones: 'Inicio' });
+    expect(component.mensajeExito).toContain('historial');
   });
 });
