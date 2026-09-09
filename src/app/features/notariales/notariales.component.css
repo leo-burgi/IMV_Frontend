@@ -19,3 +19,5 @@
 
 .notariales-table .notariales-col-estado { text-align: center; }
 .notariales-status { justify-content: center; text-align: center; }
+.notariales-table .col-actions { width: 94px; min-width: 94px; }
+.notariales-table .imv-table-actions { flex-wrap: nowrap; align-items: center; }
