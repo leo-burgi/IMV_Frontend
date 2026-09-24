@@ -2,13 +2,16 @@
 .propiedades-toolbar .imv-table-search { max-width: 430px; }
 .propiedades-toolbar select { padding: 8px 10px; border: 0.5px solid rgba(0,0,0,0.12); border-radius: 8px; background: #fff; color: var(--imv-text-primary); font-size: 13px; }
 .propiedades-modal { width: min(100%, 760px); }
-.propiedad-detail-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
-.propiedad-detail-grid div { display: flex; flex-direction: column; gap: 3px; }
-.propiedad-detail-grid span { color: var(--imv-text-muted); font-size: 11px; }
-.propiedad-detail-grid strong { font-size: 14px; }
-.propiedad-detail-wide { grid-column: 1 / -1; }
-.propiedad-detail-grid h4 { margin: 8px 0 0; padding-top: 12px; border-top: 1px solid rgba(0,0,0,0.08); }
+.propiedades-modal--detail { width: min(100%, 1060px); }
 .propiedad-status { display: inline-flex; padding: 3px 8px; border-radius: 999px; background: var(--imv-green-bg); color: var(--imv-green); font-size: 11px; font-weight: 600; }
 .propiedad-status--inactive { background: #eef1f5; color: var(--imv-text-secondary); }
-.propiedades-error { margin-bottom: 14px; padding: 10px 12px; border-radius: 10px; background: #fcebeb; color: #a32d2d; font-size: 13px; }
-@media (max-width: 700px) { .propiedad-detail-grid { grid-template-columns: 1fr; } .propiedad-detail-wide { grid-column: auto; } }
+.propiedades-message { margin-bottom: 14px; padding: 10px 12px; border-radius: 10px; font-size: 13px; }
+.propiedades-message--error { background: #fcebeb; color: #a32d2d; }
+.propiedades-message--success { background: var(--imv-green-bg); color: var(--imv-green); }
+.propiedades-form > p { margin: 0 0 16px; color: var(--imv-text-secondary); font-size: 13px; }
+.propiedades-form__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 15px; }
+.propiedades-form label { display: flex; flex-direction: column; gap: 6px; color: var(--imv-text-secondary); font-size: 12px; font-weight: 600; }
+.propiedades-form input, .propiedades-form select, .propiedades-form textarea { width: 100%; padding: 9px 10px; border: 1px solid var(--imv-border); border-radius: 8px; background: #fff; color: var(--imv-text-primary); font: inherit; box-sizing: border-box; }
+.propiedades-form textarea { resize: vertical; }
+.propiedades-form__wide { grid-column: 1 / -1; }
+@media (max-width: 700px) { .propiedades-form__grid { grid-template-columns: 1fr; } .propiedades-form__wide { grid-column: auto; } }

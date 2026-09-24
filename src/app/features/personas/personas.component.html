@@ -69,9 +69,10 @@
   </div>
   <div class="imv-table-wrapper">
     <table class="imv-table">
-      <thead><tr><th>Apellido y nombre</th><th>DNI</th><th>CUIL/CUIT</th><th>Contacto</th><th class="col-actions">Acciones</th></tr></thead>
+      <thead><tr><th>ID</th><th>Apellido y nombre</th><th>DNI</th><th>CUIL/CUIT</th><th>Contacto</th><th class="col-actions">Acciones</th></tr></thead>
       <tbody>
         <tr *ngFor="let persona of personasPaginadas">
+          <td><span class="imv-badge-id">{{ persona.IdPersona }}</span></td>
           <td class="col-name">{{ persona.Apellido }}, {{ persona.Nombre }}</td>
           <td>{{ persona.DNI || 'Sin dato' }}</td>
           <td>{{ persona.CuilCuit || 'Sin dato' }}</td><td>{{ persona.Telefono || persona.Email || 'Sin dato' }}</td>
@@ -82,9 +83,9 @@
             </div>
           </td>
         </tr>
-        <tr *ngIf="cargando"><td colspan="5"><div class="imv-table-empty"><i class="fas fa-spinner fa-spin"></i> Cargando personas...</div></td></tr>
-        <tr *ngIf="!cargando && listaPersonas.length === 0"><td colspan="5"><div class="imv-table-empty">No hay personas registradas.</div></td></tr>
-        <tr *ngIf="!cargando && listaPersonas.length > 0 && personasFiltradas.length === 0"><td colspan="5"><div class="imv-table-empty"><i class="fas fa-search"></i> No se encontraron personas para "{{ filtroBusqueda }}"</div></td></tr>
+        <tr *ngIf="cargando"><td colspan="6"><div class="imv-table-empty"><i class="fas fa-spinner fa-spin"></i> Cargando personas...</div></td></tr>
+        <tr *ngIf="!cargando && listaPersonas.length === 0"><td colspan="6"><div class="imv-table-empty">No hay personas registradas.</div></td></tr>
+        <tr *ngIf="!cargando && listaPersonas.length > 0 && personasFiltradas.length === 0"><td colspan="6"><div class="imv-table-empty"><i class="fas fa-search"></i> No se encontraron personas para "{{ filtroBusqueda }}"</div></td></tr>
       </tbody>
     </table>
   </div>

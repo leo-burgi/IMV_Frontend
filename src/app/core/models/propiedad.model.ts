@@ -19,3 +19,14 @@ export interface Propiedad {
   FechaBaja?: string;
   HoraBaja?: string;
 }
+
+export interface PropiedadUpdate {
+  IdPropiedad: number;
+  IdBarrio: number;
+  IdCalle: number;
+  Altura?: string;
+  Manzana?: string;
+  Lote?: string;
+  NroCatastro?: string;
+  ObservacionesPropiedad?: string;
+}

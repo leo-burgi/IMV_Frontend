@@ -14,7 +14,7 @@
 .imv-topbar {
   position: fixed;
   top: 0;
-  left: 0;
+  left: var(--sidebar-w);
   right: 0;
   height: var(--topbar-h);
   background: var(--imv-white);
@@ -23,12 +23,12 @@
   z-index: 1000;
   display: flex;
   align-items: center;
-  padding: 0 24px 0 calc(var(--sidebar-w) + 24px);
-  transition: padding-left 0.25s ease;
+  padding: 0 24px;
+  transition: left 0.25s ease;
 }
 
-.imv-layout.sidebar-collapsed .imv-topbar {
-  padding-left: calc(var(--sidebar-w-min) + 24px);
+.imv-topbar--collapsed {
+  left: var(--sidebar-w-min);
 }
 
 .imv-topbar__inner {
@@ -124,7 +124,7 @@
 ════════════════════════════════════════════════════════ */
 .imv-sidebar {
   position: fixed;
-  top: var(--topbar-h);
+  top: 0;
   left: 0;
   bottom: 0;
   width: var(--sidebar-w);
@@ -138,7 +138,6 @@
 
 .imv-sidebar--collapsed {
   width: var(--sidebar-w-min);
-  justify-content: center;
 
 }
 
@@ -387,7 +386,7 @@
 
 .imv-notice-item {
   margin-bottom: 4px;
-  line-height: 1.35;
+  line-height: 1.15;
 }
 
 /* ═══════════════════════════════════════════════════════

@@ -18,6 +18,7 @@ import { PropiedadesComponent } from './features/propiedades/propiedades.compone
 import { PaginationComponent } from './shared/pagination/pagination.component';
 import { ConsultaIntegralComponent } from './features/consulta-integral/consulta-integral.component';
 import { PersonaFichaComponent } from './shared/persona-ficha/persona-ficha.component';
+import { PropiedadFichaComponent } from './shared/propiedad-ficha/propiedad-ficha.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { PersonaFichaComponent } from './shared/persona-ficha/persona-ficha.comp
     PropiedadesComponent,
     PaginationComponent,
     ConsultaIntegralComponent,
-    PersonaFichaComponent
+    PersonaFichaComponent,
+    PropiedadFichaComponent
   ],
   imports: [
     BrowserModule,

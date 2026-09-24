@@ -1,0 +1,10 @@
+:host { display: block; }
+.propiedad-ficha__first { margin-top: 0; }
+.propiedad-ficha__wide { grid-column: 1 / -1; }
+.propiedad-ficha__empty { padding: 18px; border-radius: 8px; background: #f8fafc; color: var(--imv-text-secondary); font-size: 13px; text-align: center; }
+.propiedad-ficha__badges { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
+.propiedad-ficha__history { margin-top: 12px; padding: 12px; border-radius: 8px; background: #f8fafc; color: var(--imv-text-secondary); font-size: 12px; }
+.propiedad-ficha__history--error { color: #991b1b; background: #fee2e2; }
+.propiedad-ficha__history article { display: grid; grid-template-columns: minmax(120px, .7fr) minmax(180px, 1.5fr) minmax(160px, 1fr); gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--imv-border); }
+.propiedad-ficha__history article:last-child { border-bottom: 0; }
+@media (max-width: 720px) { .propiedad-ficha__history article { grid-template-columns: 1fr; } }

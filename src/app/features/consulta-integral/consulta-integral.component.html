@@ -83,30 +83,13 @@
         <app-persona-ficha *ngIf="detail.Persona" [detalle]="detail"
           (solicitarNavegacion)="navegar($event.seccion, $event.id)"></app-persona-ficha>
 
-        <section class="consulta-section consulta-section--definitiva" *ngIf="!detail.Persona && (detail.Propiedad || detail.Adjudicaciones.length)">
+        <app-propiedad-ficha *ngIf="!detail.Persona && detail.Propiedad" [detalle]="detail"
+          (solicitarNavegacion)="navegar($event.seccion, $event.id)"></app-propiedad-ficha>
+
+        <section class="consulta-section consulta-section--definitiva" *ngIf="!detail.Persona && !detail.Propiedad && detail.Adjudicaciones.length">
           <div class="consulta-section__title">
             <span class="consulta-badge consulta-badge--confirmado">Confirmado</span>
             <h4>Información definitiva</h4>
-          </div>
-
-          <div class="consulta-grid" *ngIf="detail.Persona">
-            <div><span>Persona</span><strong>{{ detail.Persona.Apellido }}, {{ detail.Persona.Nombre }}</strong></div>
-            <div><span>DNI</span><strong>{{ detail.Persona.DNI || 'Sin dato' }}</strong></div>
-            <div><span>CUIT/CUIL</span><strong>{{ detail.Persona.CuilCuit || 'Sin dato' }}</strong></div>
-            <div><span>Contacto</span><strong>{{ detail.Persona.Telefono || detail.Persona.Email || 'Sin dato' }}</strong></div>
-          </div>
-          <div class="consulta-links" *ngIf="detail.Persona">
-            <button type="button" (click)="navegar('personas', detail.Persona.IdPersona)">Ver persona</button>
-          </div>
-
-          <div class="consulta-grid" *ngIf="detail.Propiedad">
-            <div><span>Propiedad</span><strong>{{ detail.Propiedad.Calle || 'Sin calle' }} {{ detail.Propiedad.Altura || '' }}</strong></div>
-            <div><span>Catastro</span><strong>{{ detail.Propiedad.Catastro || 'Sin dato' }}</strong></div>
-            <div><span>Barrio</span><strong>{{ detail.Propiedad.Barrio || 'Sin dato' }}</strong></div>
-            <div><span>Manzana / lote</span><strong>{{ detail.Propiedad.Manzana || 'Sin dato' }} / {{ detail.Propiedad.Lote || 'Sin dato' }}</strong></div>
-          </div>
-          <div class="consulta-links" *ngIf="detail.Propiedad">
-            <button type="button" (click)="navegar('propiedades', detail.Propiedad.IdPropiedad)">Ver propiedad</button>
           </div>
 
           <article class="consulta-adjudicacion" *ngFor="let adjudicacion of detail.Adjudicaciones">
@@ -122,6 +105,15 @@
               <div><span>Plan</span><strong>{{ adjudicacion.Plan.Nombre || 'Sin nombre' }} · {{ adjudicacion.Plan.Origen }}</strong></div>
               <div><span>Estado notarial actual</span><strong>{{ adjudicacion.EstadoNotarialActual?.Descripcion || 'Sin estado registrado' }}</strong></div>
             </div>
+            <div class="consulta-estado-history" *ngIf="adjudicacion.HistorialEstados?.length">
+              <strong>Historial notarial</strong>
+              <div *ngFor="let estado of adjudicacion.HistorialEstados">
+                <span>{{ estado.FechaCambio | date:'dd/MM/yyyy HH:mm' }}</span>
+                <b>{{ estado.Descripcion }}</b>
+                <span>{{ estado.Usuario || 'Sin usuario registrado' }}</span>
+                <small *ngIf="estado.Observaciones">{{ estado.Observaciones }}</small>
+              </div>
+            </div>
             <div class="consulta-titulares">
               <div><strong>Titular principal:</strong> {{ adjudicacion.TitularPrincipal?.NombreCompleto || 'Sin dato' }} · DNI {{ adjudicacion.TitularPrincipal?.DNI || 'Sin dato' }}</div>
               <div *ngFor="let cotitular of adjudicacion.Cotitulares"><strong>Cotitular:</strong> {{ cotitular.NombreCompleto }} · DNI {{ cotitular.DNI || 'Sin dato' }}</div>
@@ -135,7 +127,7 @@
           </article>
         </section>
 
-        <section class="consulta-section consulta-section--candidata" *ngIf="!detail.Persona && detail.CoincidenciaCandidata">
+        <section class="consulta-section consulta-section--candidata" *ngIf="!detail.Persona && !detail.Propiedad && detail.CoincidenciaCandidata">
           <div class="consulta-section__title">
             <span class="consulta-badge consulta-badge--candidato">Coincidencia candidata</span>
             <h4>Relaciones sugeridas pendientes de confirmación</h4>
@@ -148,7 +140,7 @@
           </div>
         </section>
 
-        <section class="consulta-section consulta-section--legacy" *ngIf="!detail.Persona && detail.AntecedentesLegacy.length">
+        <section class="consulta-section consulta-section--legacy" *ngIf="!detail.Persona && !detail.Propiedad && detail.AntecedentesLegacy.length">
           <div class="consulta-section__title">
             <span class="consulta-badge consulta-badge--legacy">Antecedente legacy no validado</span>
             <h4>Fuente histórica · lote activo</h4>
@@ -184,12 +176,12 @@
           </article>
         </section>
 
-        <section class="consulta-section consulta-section--missing" *ngIf="!detail.Persona && detail.Faltantes.length">
+        <section class="consulta-section consulta-section--missing" *ngIf="!detail.Persona && !detail.Propiedad && detail.Faltantes.length">
           <div class="consulta-section__title"><span class="consulta-badge consulta-badge--missing">Dato faltante</span><h4>Información relevante no disponible</h4></div>
           <ul><li *ngFor="let missing of detail.Faltantes">{{ missing }}</li></ul>
         </section>
 
-        <div class="consulta-warning" role="note" *ngIf="!detail.Persona">
+        <div class="consulta-warning" role="note" *ngIf="!detail.Persona && !detail.Propiedad">
           <i class="fas fa-exclamation-triangle"></i>
           <span>Los datos legacy que se muestran deben ser verificados y confirmados en cada sección. Son extractos de registros anteriores y pueden no constituir información definitiva.</span>
         </div>

@@ -2,7 +2,10 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { Adjudicacion, AdjudicacionCatalogos, AdjudicacionPayload } from '../models/adjudicacion.model';
+import {
+  Adjudicacion, AdjudicacionCatalogos, AdjudicacionPayload,
+  CambioEstadoNotarialPayload, EstadoNotarialOpcion, HistorialEstado
+} from '../models/adjudicacion.model';
 import { PagedResult } from '../models/pagination.model';
 
 @Injectable({ providedIn: 'root' })
@@ -36,5 +39,17 @@ export class AdjudicacionService {
 
   updateAdjudicacion(payload: AdjudicacionPayload): Observable<Adjudicacion> {
     return this.http.put<Adjudicacion>(`${this.apiUrl}/editar`, payload);
+  }
+
+  getEstadosNotariales(): Observable<EstadoNotarialOpcion[]> {
+    return this.http.get<EstadoNotarialOpcion[]>(`${this.apiUrl}/estados-notariales`);
+  }
+
+  getHistorialEstados(idAdjudicacion: number): Observable<HistorialEstado[]> {
+    return this.http.get<HistorialEstado[]>(`${this.apiUrl}/${idAdjudicacion}/historial-estados`);
+  }
+
+  cambiarEstadoNotarial(idAdjudicacion: number, payload: CambioEstadoNotarialPayload): Observable<Adjudicacion> {
+    return this.http.post<Adjudicacion>(`${this.apiUrl}/${idAdjudicacion}/estado-notarial`, payload);
   }
 }

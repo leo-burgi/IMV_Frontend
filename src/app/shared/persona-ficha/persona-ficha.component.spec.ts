@@ -41,6 +41,8 @@ describe('PersonaFichaComponent', () => {
     expect(text).toContain('Cotitular');
     expect(text).toContain('Antecedentes históricos');
     expect(text).toContain('Coincidencia candidata');
+    expect(text).toContain('Historial notarial');
+    expect(text).toContain('Estado iniciado');
     expect(text).toContain('PLAN_NO_RESUELTO');
     expect(text).toContain('Texto original');
     expect(text).toContain('Sin dato');
@@ -74,7 +76,11 @@ describe('PersonaFichaComponent', () => {
       Propiedad: { IdPropiedad: id, Calle: 'San Martín', Altura: '100', Catastro: 'C-1', Barrio: 'Centro' },
       Plan: { IdPlan: id, Nombre: `Plan ${id}`, Origen: 'IMV' },
       TitularPrincipal: { IdPersona: titularId, DNI: '12345678', NombreCompleto: 'Pérez, Ana', EsTitularPrincipal: true },
-      Cotitulares: cotitulares
+      Cotitulares: cotitulares,
+      HistorialEstados: [{
+        IdEstado: 1, Descripcion: 'Estado iniciado', FechaCambio: '2026-08-31T09:00:00',
+        Usuario: 'operador'
+      }]
     };
   }
 });
