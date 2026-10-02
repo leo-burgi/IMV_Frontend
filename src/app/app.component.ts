@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ConsultaDestino, ConsultaDestinoContextual, ConsultaIntegralEstado, ConsultaIntegralNavegacion } from './core/models/consulta-integral.model';
+import { AuthService } from './core/services/auth.service';
 import { ImvSearchService } from './core/services/imv-search.service';
 
 @Component({
@@ -7,7 +8,9 @@ import { ImvSearchService } from './core/services/imv-search.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
+
+  mostrarIngresoLocal = false;
 
   // estado inicial
   seccionActiva: string = 'bienvenida';
@@ -23,7 +26,9 @@ export class AppComponent {
     '"Estado de migración de datos" hace referencia a datos migrados del archivo Excel histórico y debe ser completado por personal idóneo para que el sistema funcione correctamente.',
   ];
 
-  constructor(private searchService: ImvSearchService) {}
+  constructor(private searchService: ImvSearchService, public auth: AuthService) {}
+
+  ngOnInit(): void { this.auth.cargarSesion(); }
 
   toggleSidebar() {
     this.sidebarCollapsed = !this.sidebarCollapsed;

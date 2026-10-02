@@ -1,7 +1,10 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+
+import { IngresoLocalComponent } from './core/auth/ingreso-local.component';
+import { WindowsAuthInterceptor } from './core/interceptors/windows-auth.interceptor';
 
 import { AppComponent } from './app.component';
 import { PlanesComponent } from './features/planes/planes.component';
@@ -23,6 +26,7 @@ import { PropiedadFichaComponent } from './shared/propiedad-ficha/propiedad-fich
 @NgModule({
   declarations: [
     AppComponent,
+    IngresoLocalComponent,
     PlanesComponent,
     BarriosComponent, 
     CallesComponent, 
@@ -45,7 +49,7 @@ import { PropiedadFichaComponent } from './shared/propiedad-ficha/propiedad-fich
     FormsModule,
     
   ],
-  providers: [],
+  providers: [{ provide: HTTP_INTERCEPTORS, useClass: WindowsAuthInterceptor, multi: true }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

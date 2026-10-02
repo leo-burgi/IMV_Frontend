@@ -7,5 +7,6 @@ export interface AuditoriaCambio {
   ValorAnterior?: string;
   ValorNuevo?: string;
   Usuario: string;
+  IdUsuarioAplicacion?: number;
   FechaHora: string;
 }

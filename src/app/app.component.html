@@ -1,3 +1,24 @@
+<ng-container *ngIf="auth.estado$ | async as estado">
+  <section *ngIf="estado !== 'autenticado'" class="imv-session" role="status" aria-live="polite">
+    <ng-container *ngIf="estado === 'cargando'">
+      <h1>Verificando acceso</h1><p>Estamos comprobando tu sesión de Windows.</p>
+    </ng-container>
+    <ng-container *ngIf="estado === 'no-autenticado'">
+      <h1>Ingresar al Portal IMV</h1>
+      <p>Podés ingresar con tu cuenta Windows municipal o con una cuenta interna habilitada por Informática.</p>
+    </ng-container>
+    <ng-container *ngIf="estado === 'denegado'">
+      <h1>Acceso denegado</h1><p>Tu usuario no tiene acceso habilitado a este portal. Contactá a Informática.</p>
+    </ng-container>
+    <ng-container *ngIf="estado === 'error'">
+      <h1>No se pudo verificar la sesión</h1><p>Comprobá la conexión a la red municipal y volvé a intentar.</p>
+    </ng-container>
+    <button type="button" (click)="mostrarIngresoLocal = true; auth.elegirIngresoLocal()">Usar cuenta IMV</button>
+    <button *ngIf="estado !== 'cargando'" type="button" (click)="mostrarIngresoLocal = false; auth.ingresarWindows()">Ingresar con Windows municipal</button>
+    <app-ingreso-local *ngIf="mostrarIngresoLocal"></app-ingreso-local>
+    <p>El ingreso Windows usa la sesión del equipo. Si no tenés cuenta municipal, ingresá con tu usuario del IMV.</p>
+  </section>
+  <ng-container *ngIf="estado === 'autenticado'">
 <!-- ═══════════════════════════════════════════════════════
      TOPBAR
 ════════════════════════════════════════════════════════ -->
@@ -21,8 +42,9 @@
     </div>
 
     <div class="imv-topbar__user">
-      <div class="imv-avatar" aria-hidden="true">AD</div>
-      <span class="imv-user-name">Administrador</span>
+      <div class="imv-avatar" aria-hidden="true">{{ auth.usuario?.Iniciales }}</div>
+      <span class="imv-user-name" [title]="auth.usuario?.CuentaWindows">{{ auth.usuario?.NombreMostrar }}<small class="imv-user-account">{{ auth.usuario?.CuentaWindows || auth.usuario?.UsuarioLocal }}</small></span>
+      <button *ngIf="auth.usuario?.MetodoIngreso === 'Local'" type="button" (click)="mostrarIngresoLocal = true; auth.salirLocal()">Cerrar sesión IMV</button>
     </div>
 
   </div>
@@ -211,3 +233,6 @@
 
   </main>
 </div>
+
+  </ng-container>
+</ng-container>

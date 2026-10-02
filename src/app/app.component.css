@@ -417,3 +417,8 @@
   padding: 0;
   overflow: hidden;
 }
+
+.imv-session { max-width: 640px; margin: 12vh auto; padding: 2rem; background: white; border-radius: 12px; }
+.imv-session h1 { font-size: 1.5rem; }
+.imv-session button { padding: .6rem 1.2rem; cursor: pointer; }
+.imv-user-account { display: block; font-size: .7rem; opacity: .8; }
