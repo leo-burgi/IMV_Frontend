@@ -96,7 +96,8 @@ export class BarriosComponent implements OnInit {
     const request = this.modoEdicion && this.barrioForm.IdBarrio
       ? this.barrioService.updateBarrio({
           ...datosBarrio,
-          IdBarrio: this.barrioForm.IdBarrio
+          IdBarrio: this.barrioForm.IdBarrio,
+          VersionFila: this.barrioForm.VersionFila
         })
       : this.barrioService.createBarrio(datosBarrio);
 
@@ -109,8 +110,9 @@ export class BarriosComponent implements OnInit {
         this.modoEdicion = false;
         this.barrioForm = { Nombre: '' };
       },
-      error: () => {
+      error: error => {
         this.guardando = false;
+        if (error.status === 409) { this.mensajeError = 'El registro cambió. Tus cambios no se guardaron. Cerrá la edición y actualizá la lista antes de reintentar.'; return; }
         this.mensajeError = 'No se pudo guardar el barrio. Verificá la conexión con IMV.Api.';
       }
     });

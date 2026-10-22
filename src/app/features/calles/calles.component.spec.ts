@@ -48,7 +48,7 @@ describe('CallesComponent', () => {
 
   it('debe incluir IdCalle al editar', () => {
     const calle: Calle = {
-      IdCalle: 12,
+      VersionFila: 'AAAAAAAAAAE=', IdCalle: 12,
       Nombre: 'Calle original',
       NombreReducido: 'Original'
     };
@@ -62,14 +62,14 @@ describe('CallesComponent', () => {
     component.guardarCalle();
 
     expect(calleService.updateCalle).toHaveBeenCalledWith({
-      IdCalle: 12,
+      VersionFila: 'AAAAAAAAAAE=', IdCalle: 12,
       Nombre: 'Calle editada',
       NombreReducido: 'Original'
     });
   });
 
   it('debe abrir una ficha de consulta sin activar la edición', () => {
-    const calle: Calle = { IdCalle: 12, Nombre: 'San Martín', NombreReducido: 'S. Martín' };
+    const calle: Calle = { VersionFila: 'AAAAAAAAAAE=', IdCalle: 12, Nombre: 'San Martín', NombreReducido: 'S. Martín' };
     component.verDetalle(calle);
     expect(component.mostrarDetalle).toBeTrue();
     expect(component.mostrarModalAlta).toBeFalse();

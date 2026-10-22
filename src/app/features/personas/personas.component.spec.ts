@@ -45,13 +45,13 @@ describe('PersonasComponent', () => {
   });
 
   it('debe incluir IdPersona y normalizar el payload de edición', () => {
-    const persona: Persona = { IdPersona: 4, DNI: '123', Apellido: 'Pérez', Nombre: 'Ana' };
+    const persona: Persona = { VersionFila: 'AAAAAAAAAAE=', IdPersona: 4, DNI: '123', Apellido: 'Pérez', Nombre: 'Ana' };
     personaService.updatePersona.and.returnValue(of(persona));
     component.abrirModalAlta(persona);
     component.personaForm.Nombre = ' Ana María ';
     component.guardarPersona();
     expect(personaService.updatePersona).toHaveBeenCalledWith({
-      IdPersona: 4,
+      VersionFila: 'AAAAAAAAAAE=', IdPersona: 4,
       DNI: '123',
       Apellido: 'Pérez',
       Nombre: 'Ana María',

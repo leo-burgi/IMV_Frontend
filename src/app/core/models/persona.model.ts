@@ -1,4 +1,5 @@
 export interface Persona {
+  VersionFila?: string;
   IdPersona?: number;
   DNI: string;
   CuilCuit?: string;

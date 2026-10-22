@@ -110,7 +110,8 @@ export class PlanesComponent implements OnInit {
     const request = this.modoEdicion && this.planForm.IdPlan
       ? this.planService.updatePlan({
           ...datosPlan,
-          IdPlan: this.planForm.IdPlan
+          IdPlan: this.planForm.IdPlan,
+          VersionFila: this.planForm.VersionFila
         })
       : this.planService.createPlan(datosPlan);
 

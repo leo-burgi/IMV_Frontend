@@ -130,7 +130,7 @@ export class PersonasComponent implements OnInit, OnDestroy {
       Email: this.optional(this.personaForm.Email)
     };
     const request = this.modoEdicion && this.personaForm.IdPersona
-      ? this.personaService.updatePersona({ ...datos, IdPersona: this.personaForm.IdPersona })
+      ? this.personaService.updatePersona({ ...datos, VersionFila: this.personaForm.VersionFila, IdPersona: this.personaForm.IdPersona })
       : this.personaService.createPersona(datos);
 
     this.guardando = true;

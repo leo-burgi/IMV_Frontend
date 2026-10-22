@@ -129,7 +129,7 @@ export class PropiedadesComponent implements OnInit, OnDestroy {
   editarPropiedad(item: Propiedad): void {
     if (item.FechaBaja) return;
     this.abrirEdicion({
-      IdPropiedad: item.IdPropiedad, IdBarrio: item.IdBarrio, IdCalle: item.IdCalle,
+      VersionFila: item.VersionFila, IdPropiedad: item.IdPropiedad, IdBarrio: item.IdBarrio, IdCalle: item.IdCalle,
       Altura: item.Altura, Manzana: item.Manzana, Lote: item.Lote,
       NroCatastro: item.NroCatastro, ObservacionesPropiedad: item.ObservacionesPropiedad
     });
@@ -140,7 +140,7 @@ export class PropiedadesComponent implements OnInit, OnDestroy {
     if (!propiedad || propiedad.FechaBaja || !propiedad.IdBarrio || !propiedad.IdCalle) return;
     this.cerrarDetalle();
     this.abrirEdicion({
-      IdPropiedad: propiedad.IdPropiedad, IdBarrio: propiedad.IdBarrio, IdCalle: propiedad.IdCalle,
+      VersionFila: propiedad.VersionFila, IdPropiedad: propiedad.IdPropiedad, IdBarrio: propiedad.IdBarrio, IdCalle: propiedad.IdCalle,
       Altura: propiedad.Altura, Manzana: propiedad.Manzana, Lote: propiedad.Lote,
       NroCatastro: propiedad.Catastro, ObservacionesPropiedad: propiedad.Observaciones
     });

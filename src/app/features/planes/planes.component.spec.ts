@@ -44,14 +44,14 @@ describe('PlanesComponent', () => {
   });
 
   it('debe incluir IdPlan, origen y nombre normalizados al editar', () => {
-    const plan: Plan = { IdPlan: 5, OrigenPlan: 'IMV', NombrePlan: 'Original' };
-    planService.updatePlan.and.returnValue(of({ IdPlan: 5, OrigenPlan: 'PROVINCIAL', NombrePlan: 'Editado' }));
+    const plan: Plan = { VersionFila: 'AAAAAAAAAAE=', IdPlan: 5, OrigenPlan: 'IMV', NombrePlan: 'Original' };
+    planService.updatePlan.and.returnValue(of({ VersionFila: 'AAAAAAAAAAE=', IdPlan: 5, OrigenPlan: 'PROVINCIAL', NombrePlan: 'Editado' }));
     component.abrirModalAlta(plan);
     component.planForm.OrigenPlan = ' PROVINCIAL ';
     component.planForm.NombrePlan = ' Editado ';
     component.guardarPlan();
     expect(planService.updatePlan).toHaveBeenCalledWith({
-      IdPlan: 5,
+      VersionFila: 'AAAAAAAAAAE=', IdPlan: 5,
       OrigenPlan: 'PROVINCIAL',
       NombrePlan: 'Editado'
     });
@@ -103,7 +103,7 @@ describe('PlanesComponent', () => {
   });
 
   it('debe separar la ficha de consulta del formulario de edición', () => {
-    const plan: Plan = { IdPlan: 5, OrigenPlan: 'IMV', NombrePlan: 'Plan', Barrio: 'Varios', Barrios: ['Norte', 'Sur'] };
+    const plan: Plan = { VersionFila: 'AAAAAAAAAAE=', IdPlan: 5, OrigenPlan: 'IMV', NombrePlan: 'Plan', Barrio: 'Varios', Barrios: ['Norte', 'Sur'] };
 
     component.verDetalle(plan);
 

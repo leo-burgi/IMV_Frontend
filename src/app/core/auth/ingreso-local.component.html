@@ -1,0 +1,14 @@
+<form class="imv-login-form" (ngSubmit)="ingresar()" #formulario="ngForm" autocomplete="on">
+      <h2>Ingresar con cuenta IMV</h2>
+      <p class="imv-login-help">Usá la cuenta interna habilitada por Informática. No ingreses tu contraseña de la red municipal.</p>
+      <div class="imv-login-field">
+      <label for="usuario-imv">Usuario IMV</label>
+      <input id="usuario-imv" name="usuario" [(ngModel)]="usuario" required maxlength="50" autocomplete="username" [disabled]="enviando" />
+      </div>
+      <div class="imv-login-field">
+      <label for="contrasena-imv">Contraseña IMV</label>
+      <input id="contrasena-imv" type="password" name="contrasena" [(ngModel)]="contrasena" required maxlength="128" autocomplete="current-password" [disabled]="enviando" />
+      </div>
+      <p class="imv-login-error" *ngIf="error" role="alert">{{ error }}</p>
+      <button class="imv-login-submit" type="submit" [disabled]="enviando || formulario.invalid">{{ enviando ? 'Ingresando…' : 'Ingresar' }}</button>
+    </form>

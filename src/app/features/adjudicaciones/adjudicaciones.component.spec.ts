@@ -106,7 +106,7 @@ describe('AdjudicacionesComponent', () => {
 
   it('debe permitir el primer estado y enviar usuario mediante el backend', () => {
     const adjudicacion: any = {
-      IdAdjudicacion: 10, IdPropiedad: 1, Propiedad: 'Belgrano 100', IdPlan: 1,
+      VersionFila: 'AAAAAAAAAAE=', IdAdjudicacion: 10, IdPropiedad: 1, Propiedad: 'Belgrano 100', IdPlan: 1,
       NombrePlan: 'Plan Norte', OrigenPlan: 'IMV', TitularPrincipal: 'Pérez, Ana',
       IdTitularPrincipal: 4, Cotitulares: [], Activa: true
     };
@@ -116,7 +116,7 @@ describe('AdjudicacionesComponent', () => {
 
     component.guardarEstado();
 
-    expect(service.cambiarEstadoNotarial).toHaveBeenCalledWith(10, { IdEstado: 1, Observaciones: 'Inicio' });
+    expect(service.cambiarEstadoNotarial).toHaveBeenCalledWith(10, { VersionFila: 'AAAAAAAAAAE=', IdEstado: 1, Observaciones: 'Inicio' });
     expect(component.mensajeExito).toContain('historial');
   });
 });

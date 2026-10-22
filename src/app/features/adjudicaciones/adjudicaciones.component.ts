@@ -137,7 +137,7 @@ export class AdjudicacionesComponent implements OnInit, OnDestroy {
     this.modo = 'edicion';
     this.seleccionada = item;
     this.formulario = {
-      IdAdjudicacion: item.IdAdjudicacion,
+      VersionFila: item.VersionFila, IdAdjudicacion: item.IdAdjudicacion,
       IdPropiedad: item.IdPropiedad,
       IdPlan: item.IdPlan,
       IdTitularPrincipal: item.IdTitularPrincipal,
@@ -186,7 +186,7 @@ export class AdjudicacionesComponent implements OnInit, OnDestroy {
       return;
     }
     const payload: CambioEstadoNotarialPayload = {
-      IdEstado: Number(this.estadoForm.IdEstado),
+      VersionFila: this.adjudicacionEstado.VersionFila, IdEstado: Number(this.estadoForm.IdEstado),
       Observaciones: this.optional(this.estadoForm.Observaciones)
     };
     this.guardandoEstado = true;

@@ -11,6 +11,9 @@ export class AuthService {
   readonly estado$ = this.estadoSubject.asObservable();
   usuario: UsuarioActual | null = null;
   private solicitud?: Subscription;
+  saliendo = false;
+  errorSalida = '';
+  mensajeServicio = '';
   constructor(private http: HttpClient) {}
 
   cargarSesion(): void {
@@ -20,8 +23,8 @@ export class AuthService {
     this.solicitud = this.http.get<UsuarioActual>(environment.apiUrl + '/auth/me').subscribe(
       usuario => this.aceptar(usuario),
       (error: HttpErrorResponse) => {
-        if (error.status === 401) { this.ingresarWindows(); }
-        else { this.registrarError(error.status); }
+        if (error.status === 401) { this.elegirIngresoLocal(); }
+        else { this.registrarError(error.status, error.error?.Codigo); }
       }
     );
   }
@@ -29,7 +32,7 @@ export class AuthService {
     this.cancelarCarga();
     this.estadoSubject.next('cargando');
     this.solicitud = this.http.get<UsuarioActual>(environment.apiUrl + '/auth/windows').subscribe(
-      usuario => this.aceptar(usuario), (error: HttpErrorResponse) => this.registrarError(error.status)
+      usuario => this.aceptar(usuario), (error: HttpErrorResponse) => this.registrarError(error.status, error.error?.Codigo)
     );
   }
   elegirIngresoLocal(): void {
@@ -42,15 +45,22 @@ export class AuthService {
   }
   aceptar(usuario: UsuarioActual): void {
     if (!usuario || !usuario.Autenticado || !usuario.IdUsuarioAplicacion) { this.registrarError(401); return; }
+    this.mensajeServicio = '';
     this.usuario = usuario;
     this.estadoSubject.next('autenticado');
   }
-  salirLocal(): void {
+  salirLocal(alSalir?: () => void): void {
+    if (this.saliendo) { return; }
+    this.saliendo = true;
+    this.errorSalida = '';
     this.http.post(environment.apiUrl + '/auth/salir', {}).subscribe(
-      () => this.elegirIngresoLocal(), () => this.registrarError(0)
+      () => { this.saliendo = false; this.elegirIngresoLocal(); if (alSalir) { alSalir(); } },
+      () => { this.saliendo = false; this.errorSalida = 'No se pudo confirmar la revocación. Volvé a intentar.'; }
     );
   }
-  registrarError(status: number): void {
+  registrarError(status: number, codigo?: string): void {
+    this.mensajeServicio = status === 503 && codigo === 'IMV_ESQUEMA_PENDIENTE' ?
+      'El acceso a IMV todavía no está preparado. Informática debe completar la actualización de la base de datos antes de iniciar sesión.' : '';
     this.usuario = null;
     this.estadoSubject.next(status === 401 ? 'no-autenticado' : status === 403 ? 'denegado' : 'error');
   }

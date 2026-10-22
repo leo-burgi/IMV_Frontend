@@ -9,6 +9,13 @@ export class NotarialesComponent implements OnInit {
   readonly pageSize = 15; currentPage = 1; total = 0;
   cargando = false; guardando = false; mensajeError = ''; mensajeExito = '';
   seleccionada: Adjudicacion | null = null; mostrarDetalle = false; mostrarEstado = false;
+  movimientoEnEdicion?: number;
+  corregirMovimiento(estado: any): void {
+    if (!this.seleccionada) { return; }
+    const item = this.seleccionada; this.mostrarDetalle = false; this.abrirEstado(item);
+    this.movimientoEnEdicion = estado.IdHistorial;
+    this.estadoForm = { IdEstado: estado.IdEstado, FechaCambio: estado.FechaCambio.substring(0, 10), Observaciones: estado.Observaciones || '' };
+  }
   estadoForm: CambioEstadoNotarialPayload = { IdEstado: 0, FechaCambio: '' };
   constructor(private service: NotarialService) { }
   ngOnInit(): void { this.service.getCatalogos().subscribe({ next: e => { this.estados = e; this.cargarListado(); }, error: () => this.mensajeError = 'No se pudo cargar el catálogo de estados notariales.' }); }
@@ -21,13 +28,14 @@ export class NotarialesComponent implements OnInit {
   abrirDetalle(item: Adjudicacion): void { this.mostrarDetalle = true; this.seleccionada = item; this.service.getDetalle(item.IdAdjudicacion).subscribe({ next: d => this.seleccionada = d, error: () => this.mensajeError = 'No se pudo cargar el historial notarial.' }); }
   cerrarDetalle(): void { this.mostrarDetalle = false; this.seleccionada = null; }
   abrirEstadoDesdeDetalle(): void { const item = this.seleccionada; if (!item) return; this.mostrarDetalle = false; this.abrirEstado(item); }
-  abrirEstado(item: Adjudicacion): void { this.seleccionada = item; this.estadoForm = { IdEstado: 0, FechaCambio: this.hoy(), Observaciones: '' }; this.mensajeError = ''; this.mostrarEstado = true; }
+  abrirEstado(item: Adjudicacion): void { this.movimientoEnEdicion = undefined; this.seleccionada = item; this.estadoForm = { IdEstado: 0, FechaCambio: this.hoy(), Observaciones: '' }; this.mensajeError = ''; this.mostrarEstado = true; }
   cerrarEstado(): void { this.mostrarEstado = false; this.guardando = false; this.seleccionada = null; }
   guardarEstado(): void {
     if (!this.seleccionada || !this.estadoForm.IdEstado || !this.estadoForm.FechaCambio) { this.mensajeError = 'Estado y fecha son obligatorios.'; return; }
-    const payload = { IdEstado: Number(this.estadoForm.IdEstado), FechaCambio: this.estadoForm.FechaCambio, Observaciones: this.estadoForm.Observaciones && this.estadoForm.Observaciones.trim() || undefined };
+    const payload = { VersionFila: this.seleccionada.VersionFila, IdEstado: Number(this.estadoForm.IdEstado), FechaCambio: this.estadoForm.FechaCambio, Observaciones: this.estadoForm.Observaciones && this.estadoForm.Observaciones.trim() || undefined };
     this.guardando = true;
-    this.service.addEstado(this.seleccionada.IdAdjudicacion, payload).subscribe({ next: () => { this.cerrarEstado(); this.mensajeExito = 'El movimiento notarial se registró correctamente.'; this.cargarListado(); }, error: e => { this.guardando = false; this.mensajeError = e.error && e.error.Message ? e.error.Message : 'No se pudo registrar el movimiento notarial.'; } });
+    const solicitud = this.movimientoEnEdicion ? this.service.corregirEstado(this.seleccionada.IdAdjudicacion, this.movimientoEnEdicion, payload) : this.service.addEstado(this.seleccionada.IdAdjudicacion, payload);
+    solicitud.subscribe({ next: () => { this.cerrarEstado(); this.mensajeExito = 'El movimiento notarial se registró correctamente.'; this.cargarListado(); }, error: e => { this.guardando = false; this.mensajeError = e.error && e.error.Message ? e.error.Message : 'No se pudo registrar el movimiento notarial.'; } });
   }
   private hoy(): string { const f = new Date(); return `${f.getFullYear()}-${String(f.getMonth() + 1).padStart(2, '0')}-${String(f.getDate()).padStart(2, '0')}`; }
 }

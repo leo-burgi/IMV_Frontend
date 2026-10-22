@@ -1,6 +1,6 @@
 # Usuarios internos: Windows municipal y cuenta local IMV
 
-La rama feat/usuarios-windows contiene ambos mecanismos sobre un único IdUsuarioAplicacion. Esta guía reemplaza la configuración anterior de Windows exclusivo. La migración está preparada y probada; no se aplicó automáticamente a IMV_Gestion.
+La rama feat/usuarios-windows contiene ambos mecanismos sobre un único IdUsuarioAplicacion. Esta guía reemplaza la configuración anterior de Windows exclusivo. La migración está preparada y probada. Posteriormente se aplicó explícitamente a la base local de desarrollo; ver [ingreso y administración en desarrollo](ingreso-desarrollo.md). No se aplicó al entorno municipal.
 
 ## Estructura y permisos
 

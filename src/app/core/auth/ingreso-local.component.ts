@@ -4,19 +4,8 @@ import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-ingreso-local',
-  template: `
-    <form (ngSubmit)="ingresar()" #formulario="ngForm" autocomplete="on">
-      <h2>Ingresar con cuenta IMV</h2>
-      <p>Usá la cuenta interna habilitada por Informática. No ingreses tu contraseña de la red municipal.</p>
-      <label for="usuario-imv">Usuario IMV</label>
-      <input id="usuario-imv" name="usuario" [(ngModel)]="usuario" required maxlength="50" autocomplete="username" [disabled]="enviando" />
-      <label for="contrasena-imv">Contraseña IMV</label>
-      <input id="contrasena-imv" type="password" name="contrasena" [(ngModel)]="contrasena" required maxlength="128" autocomplete="current-password" [disabled]="enviando" />
-      <p *ngIf="error" role="alert">{{ error }}</p>
-      <button type="submit" [disabled]="enviando || formulario.invalid">{{ enviando ? 'Ingresando…' : 'Ingresar' }}</button>
-    </form>
-  `,
-  styles: [`label { display: block; margin-top: 1rem; } input { width: 100%; padding: .5rem; } button { margin-top: 1rem; } h2 { font-size: 1.25rem; }`]
+  templateUrl: './ingreso-local.component.html',
+  styleUrls: ['./ingreso-local.component.css']
 })
 export class IngresoLocalComponent {
   usuario = '';
@@ -32,7 +21,9 @@ export class IngresoLocalComponent {
     this.contrasena = '';
     solicitud.pipe(finalize(() => { this.enviando = false; })).subscribe(
       usuario => this.auth.aceptar(usuario),
-      () => this.error = 'No se pudo ingresar. Verificá las credenciales o consultá a Informática.'
+      error => this.error = error.status === 503 && error.error?.Codigo === 'IMV_ESQUEMA_PENDIENTE' ?
+        'El acceso a IMV todavía no está preparado. Informática debe completar la actualización de la base de datos antes de iniciar sesión.' :
+        'No se pudo ingresar. Verificá las credenciales o consultá a Informática.'
     );
   }
 }

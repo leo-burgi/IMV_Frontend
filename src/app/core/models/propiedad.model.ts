@@ -1,4 +1,5 @@
 export interface Propiedad {
+  VersionFila?: string;
   IdPropiedad: number;
   IdBarrio: number;
   Barrio: string;
@@ -21,6 +22,7 @@ export interface Propiedad {
 }
 
 export interface PropiedadUpdate {
+  VersionFila?: string;
   IdPropiedad: number;
   IdBarrio: number;
   IdCalle: number;

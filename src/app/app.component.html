@@ -1,22 +1,26 @@
 <ng-container *ngIf="auth.estado$ | async as estado">
-  <section *ngIf="estado !== 'autenticado'" class="imv-session" role="status" aria-live="polite">
+  <section *ngIf="estado !== 'autenticado'" class="imv-session" aria-labelledby="imv-session-label">
+    <div class="imv-session__card">
+    <img class="imv-session__logo" src="assets/img/IMV-sinfondo.png" alt="Instituto Municipal de la Vivienda Rafaela" />
+    <p id="imv-session-label" class="imv-session__eyebrow">Portal de Gestión</p>
+    <div class="imv-session__status" role="status" aria-live="polite">
     <ng-container *ngIf="estado === 'cargando'">
-      <h1>Verificando acceso</h1><p>Estamos comprobando tu sesión de Windows.</p>
-    </ng-container>
-    <ng-container *ngIf="estado === 'no-autenticado'">
-      <h1>Ingresar al Portal IMV</h1>
-      <p>Podés ingresar con tu cuenta Windows municipal o con una cuenta interna habilitada por Informática.</p>
+      <h1 id="imv-session-title">Verificando acceso</h1><p>Estamos comprobando tu sesión de Windows.</p>
     </ng-container>
     <ng-container *ngIf="estado === 'denegado'">
-      <h1>Acceso denegado</h1><p>Tu usuario no tiene acceso habilitado a este portal. Contactá a Informática.</p>
+      <h1 id="imv-session-title">Acceso denegado</h1><p>Tu usuario no tiene acceso habilitado a este portal. Contactá a Informática.</p>
     </ng-container>
     <ng-container *ngIf="estado === 'error'">
-      <h1>No se pudo verificar la sesión</h1><p>Comprobá la conexión a la red municipal y volvé a intentar.</p>
+      <h1 id="imv-session-title">No se pudo verificar la sesión</h1><p>{{ auth.mensajeServicio || 'Comprobá la conexión a la red municipal y volvé a intentar.' }}</p>
     </ng-container>
-    <button type="button" (click)="mostrarIngresoLocal = true; auth.elegirIngresoLocal()">Usar cuenta IMV</button>
-    <button *ngIf="estado !== 'cargando'" type="button" (click)="mostrarIngresoLocal = false; auth.ingresarWindows()">Ingresar con Windows municipal</button>
-    <app-ingreso-local *ngIf="mostrarIngresoLocal"></app-ingreso-local>
-    <p>El ingreso Windows usa la sesión del equipo. Si no tenés cuenta municipal, ingresá con tu usuario del IMV.</p>
+    </div>
+    <div class="imv-session__actions">
+    <button class="imv-session__button imv-session__button--primary" type="button" [attr.aria-expanded]="mostrarIngresoLocal" aria-controls="imv-local-login" (click)="mostrarIngresoLocal = true; auth.elegirIngresoLocal()">Usar cuenta IMV</button>
+    <button class="imv-session__button" *ngIf="estado !== 'cargando'" type="button" (click)="mostrarIngresoLocal = false; auth.ingresarWindows()">Ingresar con Windows municipal</button>
+    </div>
+    <app-ingreso-local id="imv-local-login" *ngIf="mostrarIngresoLocal"></app-ingreso-local>
+    <p class="imv-session__footnote">El ingreso Windows usa la sesión del equipo. Si no tenés cuenta municipal, usá tu cuenta IMV habilitada por Informática.</p>
+    </div>
   </section>
   <ng-container *ngIf="estado === 'autenticado'">
 <!-- ═══════════════════════════════════════════════════════
@@ -41,10 +45,85 @@
       </form>
     </div>
 
-    <div class="imv-topbar__user">
-      <div class="imv-avatar" aria-hidden="true">{{ auth.usuario?.Iniciales }}</div>
-      <span class="imv-user-name" [title]="auth.usuario?.CuentaWindows">{{ auth.usuario?.NombreMostrar }}<small class="imv-user-account">{{ auth.usuario?.CuentaWindows || auth.usuario?.UsuarioLocal }}</small></span>
-      <button *ngIf="auth.usuario?.MetodoIngreso === 'Local'" type="button" (click)="mostrarIngresoLocal = true; auth.salirLocal()">Cerrar sesión IMV</button>
+    <div class="imv-topbar__user imv-user-disclosure">
+      <button #disparadorUsuario type="button" class="imv-user-trigger" aria-controls="imv-user-panel"
+        [attr.aria-expanded]="menuUsuarioAbierto" (click)="abrirMenuUsuario()">
+        <span class="imv-avatar" aria-hidden="true">{{ auth.usuario?.Iniciales }}</span>
+        <span class="imv-user-name">{{ auth.usuario?.NombreMostrar }}</span><span aria-hidden="true">▾</span>
+      </button>
+      <section #panelUsuarioElemento id="imv-user-panel" *ngIf="menuUsuarioAbierto" class="imv-user-panel" [class.imv-user-panel--admin]="panelUsuario === 'usuarios'" aria-label="Opciones de usuario">
+        <header class="imv-user-panel__header">
+          <span class="imv-user-panel__avatar" aria-hidden="true">{{ auth.usuario?.Iniciales }}</span>
+          <div><span class="imv-user-panel__eyebrow">Mi cuenta · IMV Rafaela</span><strong>{{ auth.usuario?.NombreMostrar }}</strong><small>{{ auth.usuario?.CuentaWindows || auth.usuario?.UsuarioLocal }}</small></div>
+        </header>
+        <nav class="imv-user-tabs" aria-label="Cuenta">
+          <button type="button" [attr.aria-current]="panelUsuario === 'perfil' ? 'page' : null" (click)="panelUsuario = 'perfil'">Mi perfil</button>
+          <button type="button" [attr.aria-current]="panelUsuario === 'configuracion' ? 'page' : null" (click)="panelUsuario = 'configuracion'">Configuración</button>
+          <button type="button" [attr.aria-current]="panelUsuario === 'sesion' ? 'page' : null" (click)="panelUsuario = 'sesion'">Sesión</button>
+          <button type="button" *ngIf="puede('Admin')" [attr.aria-current]="panelUsuario === 'usuarios' ? 'page' : null" (click)="cargarUsuarios()">Administración de usuarios</button>
+        </nav>
+        <div class="imv-user-panel__content">
+        <div class="imv-user-section" *ngIf="panelUsuario === 'perfil'">
+          <h2>Mi perfil</h2><p class="imv-user-help">Tu identidad y los permisos asignados por el administrador.</p>
+          <dl class="imv-user-details">
+            <div><dt>Nombre</dt><dd>{{ auth.usuario?.NombreMostrar }}</dd></div>
+            <div><dt>Cuenta</dt><dd>{{ auth.usuario?.CuentaWindows || auth.usuario?.UsuarioLocal }}</dd></div>
+            <div><dt>Método de ingreso</dt><dd>{{ auth.usuario?.MetodoIngreso }}</dd></div>
+            <div><dt>Roles asignados</dt><dd><span class="imv-user-role" *ngFor="let rol of auth.usuario?.Roles">{{ rol }}</span><span *ngIf="!auth.usuario?.Roles?.length">Sin roles asignados</span></dd></div>
+          </dl>
+        </div>
+        <div class="imv-user-section" *ngIf="panelUsuario === 'configuracion'">
+          <h2>Configuración</h2>
+          <form class="imv-user-card" *ngIf="auth.usuario?.MetodoIngreso === 'Local'" (ngSubmit)="cambiarClave()" #claveForm="ngForm">
+            <h3>Cambiar contraseña IMV</h3><p>Entre 15 y 128 caracteres, diferente de la actual. Se revocarán todas tus sesiones.</p>
+            <label>Contraseña actual <input type="password" name="claveActual" [(ngModel)]="claveActual" required maxlength="128" autocomplete="current-password" /></label>
+            <label>Nueva contraseña <input type="password" name="claveNueva" [(ngModel)]="claveNueva" required minlength="15" maxlength="128" autocomplete="new-password" /></label>
+            <button type="submit" [disabled]="guardandoSeguridad || claveForm.invalid">Cambiar y revocar sesiones</button>
+          </form>
+          <label class="imv-user-check"><input type="checkbox" [(ngModel)]="sidebarCollapsed" (ngModelChange)="guardarPreferencias()" /> Contraer barra lateral</label>
+          <p *ngIf="auth.usuario?.MetodoIngreso === 'Windows'">La contraseña Windows se gestiona mediante los mecanismos municipales.</p>
+        </div>
+        <div class="imv-user-section" *ngIf="panelUsuario === 'sesion'">
+          <h2>Sesión</h2><p>Ingreso: {{ auth.usuario?.MetodoIngreso }}</p>
+          <p *ngIf="auth.usuario?.ExpiraUtc">Vencimiento: {{ auth.usuario.ExpiraUtc | date:'short' }}</p>
+          <p>La salida revoca todas tus sesiones de IMV. La sesión Windows del equipo permanece abierta.</p>
+        </div>
+        <div class="imv-user-section imv-user-administration" *ngIf="panelUsuario === 'usuarios' && puede('Admin')">
+          <h2>Administración de usuarios</h2><p>Guardar revoca todas las sesiones del usuario. No se puede quitar el último Admin activo.</p>
+          <form class="imv-user-card imv-user-create" (ngSubmit)="crearUsuarioLocal()" #altaLocalForm="ngForm" aria-label="Alta de cuenta IMV">
+            <h3>{{ idAltaLocal ? 'Habilitar ingreso IMV en identidad existente' : 'Crear cuenta IMV' }}</h3>
+            <p>{{ idAltaLocal ? 'Se mantiene el identificador y los roles existentes. Se revocarán sus sesiones.' : 'La cuenta nace habilitada y sin roles: no puede acceder a módulos hasta que un Admin le asigne permisos.' }}</p>
+            <label for="alta-local-nombre">Nombre para mostrar</label>
+            <input id="alta-local-nombre" name="altaLocalNombre" [(ngModel)]="nombreAltaLocal" required maxlength="100" [readOnly]="!!idAltaLocal" autocomplete="off" />
+            <label for="alta-local-usuario">Usuario IMV</label>
+            <input id="alta-local-usuario" name="altaLocalUsuario" [(ngModel)]="usuarioAltaLocal" required maxlength="50" pattern="[a-zA-Z0-9._-]+" autocomplete="off" />
+            <label for="alta-local-clave">Contraseña inicial IMV (15–128 caracteres)</label>
+            <input id="alta-local-clave" name="altaLocalClave" type="password" [(ngModel)]="contrasenaAltaLocal" required minlength="15" maxlength="128" autocomplete="new-password" />
+            <label for="alta-local-confirmar">Repetir contraseña</label>
+            <input id="alta-local-confirmar" name="altaLocalConfirmar" type="password" [(ngModel)]="confirmarAltaLocal" required minlength="15" maxlength="128" autocomplete="new-password" />
+            <p>No uses la contraseña Windows municipal. Entregá la clave inicial por un canal privado; el titular debe cambiarla en su primer ingreso.</p>
+            <button type="submit" [disabled]="guardandoSeguridad || altaLocalForm.invalid || contrasenaAltaLocal !== confirmarAltaLocal">{{ idAltaLocal ? 'Habilitar ingreso IMV' : 'Crear sin roles' }}</button>
+            <button class="imv-user-secondary" type="button" *ngIf="idAltaLocal" (click)="prepararAltaLocal()">Volver a cuenta nueva</button>
+          </form>
+          <p class="imv-user-message imv-user-message--success" *ngIf="exitoSeguridad" role="status">{{ exitoSeguridad }}</p>
+          <button class="imv-user-secondary" type="button" (click)="cargarUsuarios()">Actualizar lista</button>
+          <form class="imv-user-card imv-user-account-card" *ngFor="let usuario of usuariosAdmin" (ngSubmit)="guardarAcceso(usuario)">
+            <h3>{{ usuario.NombreMostrar }}</h3><p>Windows: {{ usuario.CuentaWindows || 'Sin vínculo' }} · IMV: {{ usuario.UsuarioLocal || 'Sin ingreso local' }}</p>
+            <button class="imv-user-secondary" type="button" *ngIf="usuario.Activo && usuario.CuentaWindows && !usuario.UsuarioLocal" (click)="prepararAltaLocal(usuario)">Habilitar ingreso IMV sin duplicar usuario</button>
+            <label class="imv-user-check"><input type="checkbox" [name]="'activo' + usuario.IdUsuarioAplicacion" [(ngModel)]="usuario.Activo" /> Habilitado</label>
+            <label class="imv-user-check" *ngFor="let rol of rolesDisponibles"><input type="checkbox" [checked]="usuario.Roles.indexOf(rol) >= 0"
+              (change)="asignarRol(usuario, rol, $event.target.checked)" /> {{ rol }}</label>
+            <button type="submit" [disabled]="guardandoSeguridad">Guardar acceso y revocar sesiones</button>
+          </form>
+        </div>
+        <p class="imv-user-message imv-user-message--error" role="alert" *ngIf="errorSeguridad">{{ errorSeguridad }}</p>
+        </div>
+        <footer class="imv-user-panel__footer">
+        <button class="imv-user-logout" type="button" [disabled]="auth.saliendo" (click)="cerrarSesiones()">{{ auth.saliendo ? 'Revocando…' : 'Cerrar todas mis sesiones de IMV' }}</button>
+        <p class="imv-user-message imv-user-message--error" role="alert" *ngIf="auth.errorSalida">{{ auth.errorSalida }}</p>
+        <button class="imv-user-secondary" type="button" (click)="cerrarMenuUsuario()">Cerrar panel</button>
+        </footer>
+      </section>
     </div>
 
   </div>
@@ -53,13 +132,16 @@
 <!-- ═══════════════════════════════════════════════════════
      LAYOUT PRINCIPAL
 ════════════════════════════════════════════════════════ -->
+<aside *ngIf="sesionPorVencer()" role="alert" class="imv-expiration">Tu sesión está por vencer o venció. Guardá los cambios antes de volver a ingresar.
+  <button type="button" (click)="reautenticar()">Volver a ingresar</button></aside>
+<aside *ngIf="!auth.usuario?.Roles?.length" role="status" class="imv-expiration">Tu cuenta está habilitada, pero todavía no tiene roles asignados. Podés consultar tu perfil y cambiar tu contraseña IMV; un Admin debe asignarte los permisos de tu área.</aside>
 <div class="imv-layout" [class.sidebar-collapsed]="sidebarCollapsed">
 
   <!-- ── SIDEBAR ── -->
   <nav class="imv-sidebar" [class.imv-sidebar--collapsed]="sidebarCollapsed">
 
     <div class="imv-nav-item" [class.imv-nav-item--active]="seccionActiva === 'bienvenida'"  
-    (click)="cambiarSeccion('bienvenida')" title="Inicio">
+    routerLink="/bienvenida" title="Inicio">
       <div class="imv-logo-box" >
         <img src="assets/img/IMV-sinfondo.png" alt="IMV Rafaela" class="imv-logo-img" />
       </div>
@@ -72,55 +154,55 @@
     <div class="imv-sidebar__nav">
 
       <a class="imv-nav-item" [class.imv-nav-item--active]="seccionActiva === 'home'"
-         (click)="cambiarSeccion('home')" title="Dashboard">
+         imvRol="Administrativo" routerLink="/home" title="Dashboard">
         <i class="fas fa-fw fa-th-large imv-nav-icon"></i>
         <span class="imv-nav-label">Dashboard</span>
       </a>
 
       <a class="imv-nav-item" [class.imv-nav-item--active]="seccionActiva === 'consulta-integral'"
-         (click)="cambiarSeccion('consulta-integral')" title="Consulta integral">
+         imvRol="Administrativo" routerLink="/consulta-integral" title="Consulta integral">
         <i class="fas fa-fw fa-search-location imv-nav-icon"></i>
         <span class="imv-nav-label">Consulta integral</span>
       </a>
 
       <a class="imv-nav-item" [class.imv-nav-item--active]="seccionActiva === 'planes'"
-         (click)="cambiarSeccion('planes')" title="Planes">
+         imvRol="Administrativo" routerLink="/planes" title="Planes">
         <i class="fas fa-fw fa-clipboard-list imv-nav-icon"></i>
         <span class="imv-nav-label">Planes</span>
       </a>
 
       <a class="imv-nav-item" [class.imv-nav-item--active]="seccionActiva === 'barrios'"
-         (click)="cambiarSeccion('barrios')" title="Barrios">
+         imvRol="Administrativo" routerLink="/barrios" title="Barrios">
         <i class="fas fa-fw fa-map-marked-alt imv-nav-icon"></i>
         <span class="imv-nav-label">Barrios</span>
       </a>
 
       <a class="imv-nav-item" [class.imv-nav-item--active]="seccionActiva === 'calles'"
-         (click)="cambiarSeccion('calles')" title="Calles">
+         imvRol="Administrativo" routerLink="/calles" title="Calles">
         <i class="fas fa-fw fa-road imv-nav-icon"></i>
         <span class="imv-nav-label">Calles</span>
       </a>
 
       <a class="imv-nav-item" [class.imv-nav-item--active]="seccionActiva === 'personas'"
-         (click)="cambiarSeccion('personas')" title="Personas">
+         imvRol="Administrativo,Notarial" routerLink="/personas" title="Personas">
         <i class="fas fa-fw fa-user-tie imv-nav-icon"></i>
         <span class="imv-nav-label">Personas</span>
       </a>
 
       <a class="imv-nav-item" [class.imv-nav-item--active]="seccionActiva === 'adjudicaciones'"
-         (click)="cambiarSeccion('adjudicaciones')" title="Adjudicaciones">
+         imvRol="Administrativo,Notarial" routerLink="/adjudicaciones" title="Adjudicaciones">
         <i class="fas fa-fw fa-key imv-nav-icon"></i>
         <span class="imv-nav-label">Adjudicaciones</span>
       </a>
 
       <a class="imv-nav-item" [class.imv-nav-item--active]="seccionActiva === 'propiedades'"
-         (click)="cambiarSeccion('propiedades')" title="Propiedades">
+         imvRol="Administrativo,Notarial" routerLink="/propiedades" title="Propiedades">
         <i class="fas fa-fw fa-home imv-nav-icon"></i>
         <span class="imv-nav-label">Propiedades</span>
       </a>
 
       <a class="imv-nav-item" [class.imv-nav-item--active]="seccionActiva === 'notariales'"
-         (click)="cambiarSeccion('notariales')" title="Notariales">
+         imvRol="Notarial" routerLink="/notariales" title="Notariales">
         <i class="fas fa-fw fa-file-signature imv-nav-icon"></i>
         <span class="imv-nav-label">Notariales</span>
       </a>
@@ -146,92 +228,7 @@
   </nav>
 
   <!-- ── CONTENIDO ── -->
-  <main class="imv-content">
-
-    <!-- Bienvenida -->
-    <div *ngIf="seccionActiva === 'bienvenida'" class="imv-page">
-      <div class="imv-welcome">
-        <div class="imv-welcome__text">
-          <h2 class="imv-page-title">Bienvenido al Portal de Gestión Interna Integral</h2>
-
-          <p class="imv-page-sub">Avisos importantes:</p>
-          <ul class="imv-notice-list" *ngIf="avisosImportantes.length; else sinAvisos">
-            <li class="imv-notice-item" *ngFor="let aviso of avisosImportantes">{{ aviso }}</li>
-          </ul>
-          <ng-template #sinAvisos>
-            <p class="imv-page-sub">No hay avisos para mostrar.</p>
-          </ng-template>
-        </div>
-        <img src="assets/img/rafaela-logo.png" alt="Rafaela" class="imv-welcome__logo" />
-      </div>
-
-      <app-calidad-datos-panel
-        (verAdjudicaciones)="cambiarSeccion('adjudicaciones')">
-      </app-calidad-datos-panel>
-    </div>
-
-    <!-- Dashboard -->
-    <div *ngIf="seccionActiva === 'home'" class="imv-page">
-      <div class="imv-section-header">
-        <app-dashboard (solicitarNavegacion)="cambiarSeccion($event)"></app-dashboard>
-      </div>
-      
-    </div>
-
-    <!-- Planes -->
-    <div *ngIf="seccionActiva === 'consulta-integral'" class="imv-page">
-      <div class="imv-card">
-        <app-consulta-integral [estadoInicial]="consultaIntegralEstado"
-          (solicitarNavegacion)="navegarDesdeConsulta($event)"></app-consulta-integral>
-      </div>
-    </div>
-
-    <!-- Planes -->
-    <div *ngIf="seccionActiva === 'planes'" class="imv-page">
-      <div class="imv-section-header">
-      </div>
-      <div class="imv-card">
-        <app-planes [idPlanSeleccionado]="idDestino('planes')"></app-planes>
-      </div>
-    </div>
-
-    <!-- Barrios -->
-    <div *ngIf="seccionActiva === 'barrios'" class="imv-page">
-      <div class="imv-section-header">
-      </div>
-      <div class="imv-card">
-        <app-barrios></app-barrios>
-      </div>
-    </div>
-
-    <!-- Calles -->
-    <div *ngIf="seccionActiva === 'calles'" class="imv-page">
-      <div class="imv-section-header">
-      </div>
-      <div class="imv-card">
-        <app-calles></app-calles>
-      </div>
-    </div>
-
-    <div *ngIf="seccionActiva === 'personas'" class="imv-page">
-      <div class="imv-card"><app-personas [idPersonaSeleccionada]="idDestino('personas')"
-        (solicitarNavegacion)="navegarContextual($event)"></app-personas></div>
-    </div>
-
-    <div *ngIf="seccionActiva === 'adjudicaciones'" class="imv-page">
-      <div class="imv-card"><app-adjudicaciones [idAdjudicacionSeleccionada]="idDestino('adjudicaciones')"></app-adjudicaciones></div>
-    </div>
-
-    <div *ngIf="seccionActiva === 'propiedades'" class="imv-page">
-      <div class="imv-card"><app-propiedades [idPropiedadSeleccionada]="idDestino('propiedades')"
-        (solicitarNavegacion)="navegarContextual($event)"></app-propiedades></div>
-    </div>
-
-    <div *ngIf="seccionActiva === 'notariales'" class="imv-page">
-      <div class="imv-card"><app-notariales></app-notariales></div>
-    </div>
-
-  </main>
+  <router-outlet></router-outlet>
 </div>
 
   </ng-container>

@@ -23,7 +23,7 @@ export class WindowsAuthInterceptor implements HttpInterceptor {
     return next.handle(solicitud).pipe(
       catchError((error: HttpErrorResponse) => {
         const ingreso = destino.pathname === ruta + '/auth/login' || destino.pathname === ruta + '/auth/windows' || destino.pathname === ruta + '/auth/me';
-        if (!ingreso && (error.status === 401 || error.status === 403)) {
+        if (!ingreso && error.status === 401 && destino.pathname !== ruta + '/auth/salir') {
           this.injector.get(AuthService).registrarError(error.status);
         }
         return throwError(error);

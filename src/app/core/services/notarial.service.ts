@@ -17,5 +17,6 @@ export class NotarialService {
   }
   getCatalogos(): Observable<EstadoNotarialOpcion[]> { return this.http.get<EstadoNotarialOpcion[]>(`${this.apiUrl}/catalogos`); }
   getDetalle(id: number): Observable<Adjudicacion> { return this.http.get<Adjudicacion>(`${this.apiUrl}/${id}`); }
+  corregirEstado(id: number, movimiento: number, payload: CambioEstadoNotarialPayload): Observable<Adjudicacion> { return this.http.put<Adjudicacion>(`${this.apiUrl}/${id}/estados/${movimiento}`, payload); }
   addEstado(id: number, payload: CambioEstadoNotarialPayload): Observable<Adjudicacion> { return this.http.post<Adjudicacion>(`${this.apiUrl}/${id}/estados`, payload); }
 }

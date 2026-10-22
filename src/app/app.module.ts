@@ -3,9 +3,11 @@ import { NgModule } from '@angular/core';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 
+import { PermisoDirective } from './core/auth/permiso.directive';
 import { IngresoLocalComponent } from './core/auth/ingreso-local.component';
 import { WindowsAuthInterceptor } from './core/interceptors/windows-auth.interceptor';
 
+import { SeccionComponent } from './seccion.component';
 import { AppComponent } from './app.component';
 import { PlanesComponent } from './features/planes/planes.component';
 import { BarriosComponent } from './features/barrios/barrios.component';
@@ -26,6 +28,8 @@ import { PropiedadFichaComponent } from './shared/propiedad-ficha/propiedad-fich
 @NgModule({
   declarations: [
     AppComponent,
+    SeccionComponent,
+    PermisoDirective,
     IngresoLocalComponent,
     PlanesComponent,
     BarriosComponent, 

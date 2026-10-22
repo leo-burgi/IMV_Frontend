@@ -18,6 +18,7 @@ export interface HistorialEstado extends EstadoNotarial {
 }
 
 export interface Adjudicacion {
+  VersionFila?: string;
   IdAdjudicacion: number;
   IdPropiedad: number;
   Propiedad: string;
@@ -37,6 +38,7 @@ export interface Adjudicacion {
 }
 
 export interface AdjudicacionPayload {
+  VersionFila?: string;
   IdAdjudicacion?: number;
   IdPropiedad: number;
   IdPlan: number;
@@ -78,6 +80,7 @@ export interface AdjudicacionCatalogos {
 }
 
 export interface CambioEstadoNotarialPayload {
+  VersionFila?: string;
   IdEstado: number;
   FechaCambio?: string;
   Observaciones?: string;

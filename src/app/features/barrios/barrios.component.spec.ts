@@ -44,19 +44,19 @@ describe('BarriosComponent', () => {
   });
 
   it('debe incluir IdBarrio al editar', () => {
-    const barrio: Barrio = { IdBarrio: 8, Nombre: 'Original' };
-    barrioService.updateBarrio.and.returnValue(of({ IdBarrio: 8, Nombre: 'Editado' }));
+    const barrio: Barrio = { VersionFila: 'AAAAAAAAAAE=', IdBarrio: 8, Nombre: 'Original' };
+    barrioService.updateBarrio.and.returnValue(of({ VersionFila: 'AAAAAAAAAAE=', IdBarrio: 8, Nombre: 'Editado' }));
     component.abrirModalAlta(barrio);
     component.barrioForm.Nombre = ' Editado ';
     component.guardarBarrio();
     expect(barrioService.updateBarrio).toHaveBeenCalledWith({
-      IdBarrio: 8,
+      VersionFila: 'AAAAAAAAAAE=', IdBarrio: 8,
       Nombre: 'Editado'
     });
   });
 
   it('debe abrir una ficha de consulta sin activar la edición', () => {
-    const barrio: Barrio = { IdBarrio: 8, Nombre: 'Barrio Norte' };
+    const barrio: Barrio = { VersionFila: 'AAAAAAAAAAE=', IdBarrio: 8, Nombre: 'Barrio Norte' };
     component.verDetalle(barrio);
     expect(component.mostrarDetalle).toBeTrue();
     expect(component.mostrarModalAlta).toBeFalse();

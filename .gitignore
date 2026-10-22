@@ -44,3 +44,8 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+# Evidencia local de verificaciones
+/audit-*.log
+/onboarding-*.log
+/panel-verificacion.log

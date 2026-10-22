@@ -33,7 +33,6 @@ describe('Sesión integrada Windows', () => {
   [401, 403, 0, 500].forEach(status => it('resuelve el error de sesión ' + status, () => {
     auth.cargarSesion();
     backend.expectOne(environment.apiUrl + '/auth/me').flush(null, { status, statusText: 'Fallo' });
-    if (status === 401) { backend.expectOne(environment.apiUrl + '/auth/windows').flush(null, { status, statusText: 'Fallo' }); }
     expect(estado).toBe(status === 401 ? 'no-autenticado' : status === 403 ? 'denegado' : 'error');
     expect(auth.usuario).toBeNull();
   }));
@@ -45,9 +44,11 @@ describe('Sesión integrada Windows', () => {
     req.flush({});
   }));
   [401, 403].forEach(status => it('centraliza ' + status + ' de una operación funcional', () => {
+    auth.aceptar({ Autenticado: true, IdUsuarioAplicacion: 1, NombreMostrar: 'Prueba', Iniciales: 'PR', MetodoIngreso: 'Local' });
     http.get(environment.apiUrl + '/planes').subscribe(() => fail('debió fallar'), () => {});
     backend.expectOne(environment.apiUrl + '/planes').flush({}, { status, statusText: 'Denegado' });
-    expect(estado).toBe(status === 401 ? 'no-autenticado' : 'denegado');
+    expect(estado).toBe(status === 401 ? 'no-autenticado' : 'autenticado');
+    if (status === 403) { expect(auth.usuario.IdUsuarioAplicacion).toBe(1); }
   }));
   ['https://otro.invalid/api/planes', environment.apiUrl + '-otro/planes', 'assets/config.json'].forEach(url =>
     it('no envía credenciales fuera de API: ' + url, () => {
@@ -61,9 +62,12 @@ describe('Sesión integrada Windows', () => {
     backend.expectOne(environment.apiUrl + '/auth/me').flush({ Autenticado: false });
     expect(estado).toBe('no-autenticado');
   });
-  it('intenta Windows automáticamente cuando no existe sesión', () => {
+  it('requiere entrada Windows explícita después de recargar sin sesión', () => {
     auth.cargarSesion();
     backend.expectOne(environment.apiUrl + '/auth/me').flush({}, { status: 401, statusText: 'Sin sesión' });
+    backend.expectNone(environment.apiUrl + '/auth/windows');
+    expect(estado).toBe('no-autenticado');
+    auth.ingresarWindows();
     const windows = backend.expectOne(environment.apiUrl + '/auth/windows');
     expect(windows.request.method).toBe('GET');
     expect(windows.request.withCredentials).toBeTrue();
@@ -88,7 +92,17 @@ describe('Sesión integrada Windows', () => {
     expect(req.cancelled).toBeTrue();
     expect(estado).toBe('no-autenticado');
   });
-  it('cierra la sesión local mediante POST protegido', () => {
+  it('conserva la sesión cuando falla la revocación y permite reintentar', () => {
+    auth.aceptar({ Autenticado: true, IdUsuarioAplicacion: 1, NombreMostrar: 'Prueba', Iniciales: 'PR', MetodoIngreso: 'Windows' });
+    auth.salirLocal();
+    backend.expectOne(environment.apiUrl + '/auth/salir').flush({}, { status: 500, statusText: 'Fallo' });
+    expect(estado).toBe('autenticado');
+    expect(auth.usuario.IdUsuarioAplicacion).toBe(1);
+    expect(auth.errorSalida).toContain('No se pudo confirmar');
+    auth.salirLocal(); backend.expectOne(environment.apiUrl + '/auth/salir').flush({});
+    expect(estado).toBe('no-autenticado');
+  });
+  it('cierra la sesión local mediante POST protegido' , () => {
     auth.salirLocal();
     const req = backend.expectOne(environment.apiUrl + '/auth/salir');
     expect(req.request.method).toBe('POST');

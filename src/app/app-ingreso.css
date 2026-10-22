@@ -1,0 +1,19 @@
+/* Ingreso: utiliza la paleta, tipografía y tarjetas del portal. */
+.imv-session { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 32px 20px; }
+.imv-session__card { width: 100%; max-width: 480px; padding: 36px 40px; background: var(--imv-white); border-radius: 25px; box-shadow: var(--imv-card-shadow); text-align: center; }
+.imv-session__logo { display: block; width: 240px; max-width: 100%; height: auto; margin: 0 auto 20px; }
+.imv-session__eyebrow { color: var(--imv-navy); font-size: 12px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 16px; }
+.imv-session__status h1 { font-size: 24px; margin-bottom: 12px; }
+.imv-session__status p { color: var(--imv-text-secondary); font-size: 14px; line-height: 1.6; }
+.imv-session__actions { display: flex; flex-direction: column; align-items: center; gap: 14px; margin-top: 28px; }
+.imv-session__button { width: 100%; max-width: 320px; min-height: 46px; padding: 12px 18px; border: 1px solid var(--imv-navy); border-radius: 15px; background: var(--imv-white); color: var(--imv-navy); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; transition: background .15s, color .15s; }
+.imv-session__button:hover { background: #f0f4fa; }
+.imv-session__button--primary { background: var(--imv-navy); color: var(--imv-white); }
+.imv-session__button--primary:hover { background: var(--imv-navy-light); }
+.imv-session__button:focus { outline: 3px solid var(--imv-accent); outline-offset: 3px; }
+.imv-session__footnote { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--imv-border); color: var(--imv-text-secondary); font-size: 12px; line-height: 1.6; }
+@media (max-width: 480px) {
+  .imv-session { padding: 20px 12px; }
+  .imv-session__card { padding: 28px 22px; }
+  .imv-session__status h1 { font-size: 22px; }
+}

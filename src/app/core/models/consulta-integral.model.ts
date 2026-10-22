@@ -44,6 +44,7 @@ export interface ConsultaIntegralResultado {
 export type ConsultaIntegralPagina = PagedResult<ConsultaIntegralResultado>;
 
 export interface ConsultaPersona {
+  VersionFila?: string;
   IdPersona: number;
   DNI?: string;
   CuilCuit?: string;
@@ -54,6 +55,7 @@ export interface ConsultaPersona {
 }
 
 export interface ConsultaPropiedad {
+  VersionFila?: string;
   IdPropiedad: number;
   IdBarrio?: number;
   IdCalle?: number;

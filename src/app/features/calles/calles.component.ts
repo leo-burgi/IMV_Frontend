@@ -119,7 +119,8 @@ export class CallesComponent implements OnInit {
       this.modoEdicion && this.calleForm.IdCalle
         ? this.calleService.updateCalle({
             ...datosCalle,
-            IdCalle: this.calleForm.IdCalle
+            IdCalle: this.calleForm.IdCalle,
+          VersionFila: this.calleForm.VersionFila
           })
         : this.calleService.createCalle(datosCalle);
 
@@ -140,8 +141,9 @@ export class CallesComponent implements OnInit {
           NombreReducido: ''
         };
       },
-      error: () => {
+      error: error => {
         this.guardando = false;
+        if (error.status === 409) { this.mensajeError = 'El registro cambió. Tus cambios no se guardaron. Cerrá la edición y actualizá la lista antes de reintentar.'; return; }
         this.mensajeError = 'No se pudo guardar la calle. Verificá la conexión con IMV.Api.';
       }
     });

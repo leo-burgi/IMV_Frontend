@@ -1,4 +1,7 @@
 export interface UsuarioActual {
+  ExpiraUtc?: string;
+  AlcanceSalida?: string;
+  Roles?: string[];
   Autenticado: boolean;
   IdUsuarioAplicacion: number;
   NombreMostrar: string;

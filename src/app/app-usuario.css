@@ -1,0 +1,55 @@
+/* Panel de cuenta: usa los tokens compartidos de IMV Rafaela. */
+.imv-user-disclosure { position:relative; min-width:0; }
+.imv-user-trigger { display:flex; align-items:center; gap:10px; max-width:260px; padding:6px 10px; border:1px solid transparent; border-radius:12px; background:transparent; color:var(--imv-text-primary); font:inherit; cursor:pointer; }
+.imv-user-trigger:hover,.imv-user-trigger[aria-expanded="true"] { background:var(--imv-blue-bg); border-color:var(--imv-border); }
+.imv-user-trigger .imv-user-name { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.imv-user-panel { position:absolute; top:calc(100% + 12px); right:0; z-index:2000; display:flex; flex-direction:column; width:440px; max-width:calc(100vw - 32px); max-height:calc(100vh - 100px); max-height:calc(100dvh - 100px); overflow:hidden; border:1px solid var(--imv-border); border-radius:20px; background:var(--imv-white); color:var(--imv-text-primary); box-shadow:0 16px 48px rgba(17,30,61,.18); }
+.imv-user-panel--admin { width:720px; }
+.imv-user-panel__header { display:flex; align-items:center; gap:14px; padding:20px 24px; background:var(--imv-navy); color:var(--imv-white); }
+.imv-user-panel__avatar { display:grid; place-items:center; flex:0 0 48px; width:48px; height:48px; border:1px solid rgba(255,255,255,.25); border-radius:14px; background:rgba(255,255,255,.12); font-size:18px; font-weight:600; }
+.imv-user-panel__header div { min-width:0; }
+.imv-user-panel__header strong,.imv-user-panel__header small { display:block; overflow-wrap:anywhere; }
+.imv-user-panel__header strong { font-size:16px; line-height:1.4; }
+.imv-user-panel__header small { font-size:12px; opacity:.85; }
+.imv-user-panel__eyebrow { display:block; margin-bottom:3px; font-size:10px; letter-spacing:.08em; text-transform:uppercase; opacity:.8; }
+.imv-user-tabs { display:flex; flex-wrap:wrap; gap:4px; flex-shrink:0; padding:10px 14px; border-bottom:1px solid var(--imv-border); }
+.imv-user-panel button { padding:9px 13px; border:1px solid var(--imv-border); border-radius:9px; background:var(--imv-navy); color:var(--imv-white); font:inherit; font-size:12px; font-weight:600; line-height:1.4; cursor:pointer; white-space:normal; }
+.imv-user-panel button:hover:enabled { background:var(--imv-navy-light); }
+.imv-user-panel button:disabled { opacity:.5; cursor:not-allowed; }
+.imv-user-tabs button { border-color:transparent; background:transparent; color:var(--imv-text-secondary); }
+.imv-user-tabs button:hover:enabled,.imv-user-tabs button[aria-current="page"] { background:var(--imv-blue-bg); color:var(--imv-blue); }
+.imv-user-panel__content { flex:1; min-height:0; overflow-y:auto; overscroll-behavior:contain; padding:20px 24px; }
+.imv-user-section h2 { margin:0 0 8px; color:var(--imv-text-primary); font-size:18px; font-weight:600; }
+.imv-user-section h3 { margin:0 0 10px; color:var(--imv-text-primary); font-size:14px; font-weight:600; }
+.imv-user-section p { margin:0 0 14px; color:var(--imv-text-secondary); font-size:12px; line-height:1.65; overflow-wrap:anywhere; }
+.imv-user-details { display:grid; gap:10px; margin:18px 0 0; }
+.imv-user-details div { min-width:0; padding:12px 14px; border:1px solid var(--imv-border); border-radius:10px; background:#f7f8fb; }
+.imv-user-details dt { margin-bottom:5px; color:var(--imv-text-secondary); font-size:10px; font-weight:600; letter-spacing:.04em; text-transform:uppercase; }
+.imv-user-details dd { margin:0; font-size:13px; overflow-wrap:anywhere; }
+.imv-user-role { display:inline-block; margin:2px 4px 2px 0; padding:4px 9px; border-radius:20px; background:var(--imv-blue-bg); color:var(--imv-blue); font-size:11px; font-weight:600; }
+.imv-user-card { margin:16px 0; padding:16px; border:1px solid var(--imv-border); border-radius:14px; background:#f7f8fb; }
+.imv-user-card label:not(.imv-user-check) { display:block; margin:12px 0 5px; color:var(--imv-text-primary); font-size:12px; font-weight:500; }
+.imv-user-panel input:not([type="checkbox"]) { display:block; width:100%; min-width:0; min-height:40px; margin:6px 0 12px; padding:9px 12px; border:1px solid #d5dae3; border-radius:8px; background:var(--imv-white); color:var(--imv-text-primary); font:inherit; font-size:13px; }
+.imv-user-panel input[readonly] { background:#edf0f5; }
+.imv-user-check { display:inline-flex; align-items:center; gap:8px; margin:6px 12px 10px 0; color:var(--imv-text-primary); font-size:12px; cursor:pointer; }
+.imv-user-check input { flex-shrink:0; width:16px; height:16px; accent-color:var(--imv-navy); }
+.imv-user-card button { margin:5px 5px 0 0; }
+.imv-user-account-card { background:var(--imv-white); box-shadow:var(--imv-card-shadow); }
+.imv-user-panel .imv-user-secondary { background:var(--imv-white); color:var(--imv-navy); }
+.imv-user-panel .imv-user-secondary:hover:enabled { background:var(--imv-blue-bg); }
+.imv-user-panel__footer { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px; flex-shrink:0; padding:14px 24px; border-top:1px solid var(--imv-border); background:#f7f8fb; }
+.imv-user-panel .imv-user-logout { background:var(--imv-white); border-color:#f0d4d4; color:#a83232; }
+.imv-user-panel .imv-user-logout:hover:enabled { background:#fff0f0; }
+.imv-user-message { width:100%; margin:12px 0 0; padding:10px 12px; border-radius:9px; font-size:12px; line-height:1.6; }
+.imv-user-panel .imv-user-message--error { background:#fff0f0; color:#a83232; }
+.imv-user-panel .imv-user-message--success { background:var(--imv-green-bg); color:var(--imv-green); }
+.imv-user-trigger:focus-visible,.imv-user-panel button:focus-visible,.imv-user-panel input:focus-visible { outline:3px solid var(--imv-accent); outline-offset:3px; }
+@media(max-width:600px) {
+ .imv-user-trigger { max-width:170px; padding:4px; }
+ .imv-user-panel { position:fixed; top:calc(var(--topbar-h) + 8px); right:12px; left:12px; width:auto; max-width:none; max-height:calc(100vh - var(--topbar-h) - 24px); max-height:calc(100dvh - var(--topbar-h) - 24px); border-radius:16px; }
+ .imv-user-panel__header,.imv-user-panel__content { padding:16px; }
+ .imv-user-tabs { padding:8px; }
+ .imv-user-panel__footer { padding:12px 16px; }
+ .imv-user-panel__footer button { flex:1 1 150px; }
+ .imv-user-card { padding:12px; }
+}
