@@ -114,8 +114,15 @@
 ════════════════════════════════════════════════════════ */
 .imv-layout {
   display: flex;
+  margin-left: var(--sidebar-w);
   padding-top: var(--topbar-h);
   min-height: 100vh;
+  min-width: 0;
+  transition: margin-left 0.25s ease;
+}
+
+.imv-layout.sidebar-collapsed {
+  margin-left: var(--sidebar-w-min);
 }
 
 
@@ -309,17 +316,14 @@
 ════════════════════════════════════════════════════════ */
 .imv-content {
   flex: 1;
-  margin-left: var(--sidebar-w);
+  width: 100%;
   padding: 28px 28px 40px;
-  transition: margin-left 0.25s ease;
   min-width: 0;
 }
 
-.imv-layout.sidebar-collapsed .imv-content {
-  margin-left: var(--sidebar-w-min);
-}
-
 .imv-page {
+  width: 100%;
+  min-width: 0;
   animation: imvFadeIn 0.2s ease;
 }
 

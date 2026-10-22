@@ -1,0 +1,7 @@
+/* El componente activado por Router es el elemento flexible del layout.
+   Su ancho no debe depender de las columnas o del contenido de cada módulo. */
+:host {
+  display: block;
+  flex: 1 1 0%;
+  min-width: 0;
+}
